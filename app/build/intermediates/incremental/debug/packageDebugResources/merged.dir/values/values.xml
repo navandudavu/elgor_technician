@@ -7,6 +7,8 @@
     <string name="add_note_placeholder">Dodaj napomenu…</string>
     <string name="address_label">Adresa: %1$s</string>
     <string name="app_name">ELGOR ServisHub</string>
+    <string name="appliance_details">Podaci o uređaju</string>
+    <string name="asset_label">Uređaj</string>
     <string name="back">Nazad</string>
     <string name="btn_continue">Nastavi</string>
     <string name="cancel">Otkaži</string>
@@ -50,6 +52,7 @@
     <string name="photo_category_before">Pre</string>
     <string name="photo_category_label">Nalepnica</string>
     <string name="photo_category_other">Drugo</string>
+    <string name="photo_category_other_desc">Opšta slika</string>
     <string name="photo_category_title">Kategorija fotografije</string>
     <string name="photos">Fotografije</string>
     <string name="priority_high">Visok</string>
@@ -59,7 +62,7 @@
     <string name="refresh">Osveži</string>
     <string name="save">Sačuvaj</string>
     <string name="scheduled_at">Planirano za</string>
-    <string name="serial_number">Serijski broj: %1$s</string>
+    <string name="serial_number">Serijski broj</string>
     <string name="server_address_label">Adresa servera</string>
     <string name="server_address_placeholder">http://192.168.1.100:4000</string>
     <string name="server_setup_footer">Pitajte administratora ako niste sigurni. Ovo možete promeniti kasnije u podešavanjima.</string>

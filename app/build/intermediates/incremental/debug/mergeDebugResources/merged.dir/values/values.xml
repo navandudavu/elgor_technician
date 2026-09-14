@@ -106,6 +106,8 @@
     <string name="address_label">Adresa: %1$s</string>
     <string name="androidx_startup" translatable="false">androidx.startup</string>
     <string name="app_name">ELGOR ServisHub</string>
+    <string name="appliance_details">Podaci o uređaju</string>
+    <string name="asset_label">Uređaj</string>
     <string name="back">Nazad</string>
     <string name="btn_continue">Nastavi</string>
     <string name="call_notification_answer_action">Answer</string>
@@ -227,6 +229,7 @@
     <string name="photo_category_before">Pre</string>
     <string name="photo_category_label">Nalepnica</string>
     <string name="photo_category_other">Drugo</string>
+    <string name="photo_category_other_desc">Opšta slika</string>
     <string name="photo_category_title">Kategorija fotografije</string>
     <string name="photos">Fotografije</string>
     <string name="priority_high">Visok</string>
@@ -239,7 +242,7 @@
     <string name="save">Sačuvaj</string>
     <string name="scheduled_at">Planirano za</string>
     <string name="selected">Selected</string>
-    <string name="serial_number">Serijski broj: %1$s</string>
+    <string name="serial_number">Serijski broj</string>
     <string name="server_address_label">Adresa servera</string>
     <string name="server_address_placeholder">http://192.168.1.100:4000</string>
     <string name="server_setup_footer">Pitajte administratora ako niste sigurni. Ovo možete promeniti kasnije u podešavanjima.</string>
@@ -354,14 +357,23 @@
         <attr format="reference" name="fontProviderCerts"/>
         
         <attr name="fontProviderFetchStrategy">
-            
+            <!-- The blocking font fetch works as follows.
+              First, check the local cache, then if the requested font is not cached, request the
+              font from the provider and wait until it is finished.  You can change the length of
+              the timeout by modifying fontProviderFetchTimeout.  If the timeout happens, the
+              default typeface will be used instead. -->
             <enum name="blocking" value="0"/>
-            
+            <!-- The async font fetch works as follows.
+              First, check the local cache, then if the requeted font is not cached, trigger a
+              request the font and continue with layout inflation. Once the font fetch succeeds, the
+              target text view will be refreshed with the downloaded font data. The
+              fontProviderFetchTimeout will be ignored if async loading is specified. -->
             <enum name="async" value="1"/>
         </attr>
         
         <attr format="integer" name="fontProviderFetchTimeout">
-            
+            <!-- A special value for the timeout. In this case, the blocking font fetching will not
+              timeout and wait until a reply is received from the font provider. -->
             <enum name="forever" value="-1"/>
         </attr>
         

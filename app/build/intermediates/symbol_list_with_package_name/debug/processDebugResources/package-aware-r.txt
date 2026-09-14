@@ -197,6 +197,8 @@ string add_note_placeholder
 string address_label
 string androidx_startup
 string app_name
+string appliance_details
+string asset_label
 string back
 string btn_continue
 string call_notification_answer_action
@@ -314,6 +316,7 @@ string photo_category_after
 string photo_category_before
 string photo_category_label
 string photo_category_other
+string photo_category_other_desc
 string photo_category_title
 string photos
 string priority_high

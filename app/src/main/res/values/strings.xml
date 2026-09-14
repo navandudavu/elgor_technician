@@ -21,7 +21,6 @@
     <!-- Job List Screen -->
     <string name="my_jobs">Moji poslovi</string>
     <string name="refresh">Osveži</string>
-    <string name="scan_qr">Skeniraj QR</string>
     <string name="sign_out">Odjavi se</string>
     <string name="no_jobs_assigned">Trenutno nemate dodeljenih poslova.</string>
     <string name="hours_suffix">%1$s č</string>
@@ -57,20 +56,13 @@
     <string name="photo_category_after">Posle</string>
     <string name="photo_category_label">Nalepnica</string>
     <string name="photo_category_other">Drugo</string>
+    <string name="photo_category_other_desc">Opšta slika</string>
     <string name="photo_category_title">Kategorija fotografije</string>
 
     <!-- Camera / photo capture -->
     <string name="error_start_camera">Kamera nije mogla da se pokrene</string>
     <string name="error_camera_file_missing">Fotografija nije pronađena nakon slikanja</string>
     <string name="error_copy_photo">Fotografiju nije moguće kopirati</string>
-    <string name="camera_permission_denied">Pristup kameri je neophodan za skeniranje.</string>
-
-    <!-- Scanner -->
-    <string name="scanner_title">Skeniranje uređaja</string>
-    <string name="scanner_hint">Usmerite kameru ka QR kodu ili bar-kodu na uređaju</string>
-    <string name="searching_asset">Pretraga uređaja…</string>
-    <string name="error_asset_not_found">Uređaj nije pronađen u sistemu.</string>
-    <string name="asset_history_title">Istorija uređaja</string>
 
     <!-- Duration picker dialog -->
     <string name="hours">sati</string>
@@ -88,7 +80,9 @@
     <string name="note_author_date">%1$s · %2$s</string>
 
     <!-- Appliance details -->
-    <string name="serial_number">Serijski broj: %1$s</string>
+    <string name="serial_number">Serijski broj</string>
+    <string name="asset_label">Uređaj</string>
+    <string name="appliance_details">Podaci o uređaju</string>
 
     <!-- Statuses -->
     <string name="status_pending">Na čekanju</string>

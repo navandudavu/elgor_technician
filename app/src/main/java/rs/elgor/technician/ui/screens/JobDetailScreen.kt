@@ -69,6 +69,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -458,32 +459,59 @@ private fun JobDetailContent(
             }
 
             if (job.applianceType != null) {
+                Text(
+                    text = stringResource(R.string.appliance_details),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+
                 Card(
                     colors = CardDefaults.cardColors(
-                        containerColor =
-                            MaterialTheme.colorScheme.secondaryContainer
-                                .copy(alpha = 0.4f)
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
                     ),
-                    modifier = Modifier.padding(top = 8.dp)
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                 ) {
                     Column(
-                        modifier = Modifier.padding(12.dp)
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         Text(
-                            "${job.applianceType}: " +
-                                    "${job.applianceBrand ?: ""} " +
-                                    "${job.applianceModel ?: ""}",
-                            fontWeight = FontWeight.SemiBold
+                            text = job.applianceType,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary
                         )
-
-                        if (!job.applianceSerial.isNullOrBlank()) {
-                            Text(
-                                stringResource(
-                                    R.string.serial_number,
-                                    job.applianceSerial
-                                ),
-                                style = MaterialTheme.typography.labelMedium
-                            )
+                        
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = job.applianceBrand ?: "-",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = job.applianceModel ?: "-",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            }
+                            
+                            if (!job.applianceSerial.isNullOrBlank()) {
+                                Column(horizontalAlignment = Alignment.End) {
+                                    Text(
+                                        text = stringResource(R.string.serial_number),
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = job.applianceSerial,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -1078,75 +1106,71 @@ private fun CategoryPickerDialog(
         onDismissRequest = onDismiss
     ) {
         Card(
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(24.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    stringResource(
-                        R.string.photo_category_title
-                    ),
-                    style = MaterialTheme.typography.titleLarge
+                    stringResource(R.string.photo_category_title),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
                 )
 
-                Spacer(
-                    Modifier.height(8.dp)
-                )
+                Spacer(Modifier.height(24.dp))
 
-                CategoryItem(
-                    label = stringResource(
-                        R.string.photo_category_before
-                    ),
-                    icon = Icons.Default.History,
-                    onClick = {
-                        onConfirm("before")
-                    }
-                )
-
-                CategoryItem(
-                    label = stringResource(
-                        R.string.photo_category_after
-                    ),
-                    icon = Icons.Default.Check,
-                    onClick = {
-                        onConfirm("after")
-                    }
-                )
-
-                CategoryItem(
-                    label = stringResource(
-                        R.string.photo_category_label
-                    ),
-                    icon = Icons.Default.Label,
-                    onClick = {
-                        onConfirm("label")
-                    }
-                )
-
-                CategoryItem(
-                    label = stringResource(
-                        R.string.photo_category_other
-                    ),
-                    icon = Icons.Default.Image,
-                    onClick = {
-                        onConfirm("other")
-                    }
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    TextButton(
-                        onClick = onDismiss
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Text(
-                            stringResource(R.string.cancel)
+                        CategoryItem(
+                            label = stringResource(R.string.photo_category_before),
+                            icon = Icons.Default.History,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            modifier = Modifier.weight(1f),
+                            onClick = { onConfirm("before") }
+                        )
+                        CategoryItem(
+                            label = stringResource(R.string.photo_category_after),
+                            icon = Icons.Default.Check,
+                            color = MaterialTheme.colorScheme.secondaryContainer,
+                            modifier = Modifier.weight(1f),
+                            onClick = { onConfirm("after") }
                         )
                     }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        CategoryItem(
+                            label = stringResource(R.string.photo_category_label),
+                            icon = Icons.Default.Label,
+                            color = MaterialTheme.colorScheme.tertiaryContainer,
+                            modifier = Modifier.weight(1f),
+                            onClick = { onConfirm("label") }
+                        )
+                        CategoryItem(
+                            label = stringResource(R.string.photo_category_other),
+                            icon = Icons.Default.Image,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            modifier = Modifier.weight(1f),
+                            onClick = { onConfirm("other") }
+                        )
+                    }
+                }
+
+                Spacer(Modifier.height(24.dp))
+
+                TextButton(
+                    onClick = onDismiss,
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text(stringResource(R.string.cancel))
                 }
             }
         }
@@ -1157,32 +1181,31 @@ private fun CategoryPickerDialog(
 private fun CategoryItem(
     label: String,
     icon: ImageVector,
+    color: Color,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant,
-        modifier = Modifier.fillMaxWidth()
+        shape = RoundedCornerShape(16.dp),
+        color = color,
+        modifier = modifier.aspectRatio(1f)
     ) {
-        Row(
+        Column(
             modifier = Modifier.padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Icon(
                 icon,
                 contentDescription = null,
-                modifier = Modifier.size(24.dp),
-                tint = MaterialTheme.colorScheme.primary
+                modifier = Modifier.size(32.dp)
             )
-
-            Spacer(
-                Modifier.padding(start = 12.dp)
-            )
-
+            Spacer(Modifier.height(8.dp))
             Text(
                 label,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold
             )
         }
     }

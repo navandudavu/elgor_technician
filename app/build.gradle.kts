@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -75,16 +76,12 @@ dependencies {
     // Cuvanje JWT tokena izmedju pokretanja aplikacije
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
+    // Firebase Cloud Messaging
+    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
+    implementation("com.google.firebase:firebase-messaging-ktx")
+
     // Ucitavanje fotografija poslova
     implementation("io.coil-kt:coil-compose:2.6.0")
-
-    // CameraX i ML Kit za skeniranje QR kodova
-    val camerax_version = "1.3.4"
-    implementation("androidx.camera:camera-core:$camerax_version")
-    implementation("androidx.camera:camera-camera2:$camerax_version")
-    implementation("androidx.camera:camera-lifecycle:$camerax_version")
-    implementation("androidx.camera:camera-view:$camerax_version")
-    implementation("com.google.mlkit:barcode-scanning:17.3.0")
 
     // Biranje/snimanje fotografija sa telefona za upload na poslove
     implementation("androidx.activity:activity-ktx:1.9.1")

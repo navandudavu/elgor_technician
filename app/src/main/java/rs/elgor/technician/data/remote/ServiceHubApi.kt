@@ -43,6 +43,9 @@ interface ServiceHubApi {
     @GET("api/auth/me")
     suspend fun getMe(): Response<User>
 
+    @POST("api/auth/token")
+    suspend fun updatePushToken(@Body body: Map<String, String>): Response<Unit>
+
     // all=1 lets a technician see the full board if they ever need to,
     // but the default (no param) is "only my assigned jobs" - matches the
     // web app's default for technician accounts.
@@ -86,9 +89,6 @@ interface ServiceHubApi {
 
     @GET("api/jobs/photos/{filename}")
     suspend fun getPhoto(@Path("filename") filename: String): Response<ResponseBody>
-
-    @GET("api/jobs/search/serial/{serial}")
-    suspend fun searchBySerial(@Path("serial") serial: String): Response<rs.elgor.technician.model.AssetSearchResponse>
 
     @DELETE("api/jobs/{jobId}/photos/{photoId}")
     suspend fun deletePhoto(@Path("jobId") jobId: Int, @Path("photoId") photoId: Int): Response<Job>

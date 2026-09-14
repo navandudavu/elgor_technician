@@ -9,7 +9,6 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import rs.elgor.technician.data.remote.ServiceHubApi
-import rs.elgor.technician.model.AssetSearchResponse
 import rs.elgor.technician.model.HealthResponse
 import rs.elgor.technician.model.HoursUpdateRequest
 import rs.elgor.technician.model.Job
@@ -64,6 +63,9 @@ class JobRepository(private val api: ServiceHubApi) {
 
     suspend fun getMe(): Result<User> = unwrap { api.getMe() }
 
+    suspend fun updatePushToken(token: String): Result<Unit> =
+        unwrap { api.updatePushToken(mapOf("token" to token, "platform" to "android")) }
+
     suspend fun getJobs(statusFilter: String? = null, showAll: Boolean = false): Result<List<Job>> =
         unwrap { api.getJobs(status = statusFilter, all = if (showAll) 1 else null) }
 
@@ -90,9 +92,6 @@ class JobRepository(private val api: ServiceHubApi) {
 
     suspend fun deletePhoto(jobId: Int, photoId: Int): Result<Job> =
         unwrap { api.deletePhoto(jobId, photoId) }
-
-    suspend fun searchBySerial(serial: String): Result<AssetSearchResponse> =
-        unwrap { api.searchBySerial(serial) }
 
     // Returns the raw photo bytes for display - the caller (JobPhoto
     // composable) turns this into a bitmap. Auth-gated on the server side,

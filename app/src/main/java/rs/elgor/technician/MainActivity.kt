@@ -11,9 +11,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        
+        val jobId = intent.getIntExtra("jobId", -1).takeIf { it != -1 }
+        
         setContent {
             ElgorTechnicianTheme {
-                ElgorTechnicianApp()
+                ElgorTechnicianApp(initialJobId = jobId)
             }
         }
     }

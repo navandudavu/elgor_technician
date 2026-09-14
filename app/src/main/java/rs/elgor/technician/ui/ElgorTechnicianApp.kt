@@ -38,7 +38,7 @@ import rs.elgor.technician.ui.screens.ServerSetupScreen
 // wrapper in App.jsx, just with an extra step since this app also needs
 // to know WHERE the server is before it can check WHO's logged in.
 @Composable
-fun ElgorTechnicianApp() {
+fun ElgorTechnicianApp(initialJobId: Int? = null) {
     val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
     val scope = rememberCoroutineScope()
@@ -68,17 +68,33 @@ fun ElgorTechnicianApp() {
         JobRepository(ElgorNetwork.create(serverUrl!!, sessionManager))
     }
 
-    MainNavHost(repository = repository, sessionManager = sessionManager, serverUrl = serverUrl!!)
+    MainNavHost(
+        repository = repository,
+        sessionManager = sessionManager,
+        serverUrl = serverUrl!!,
+        initialJobId = initialJobId
+    )
 }
 
 @Composable
-private fun MainNavHost(repository: JobRepository, sessionManager: SessionManager, serverUrl: String) {
+private fun MainNavHost(
+    repository: JobRepository,
+    sessionManager: SessionManager,
+    serverUrl: String,
+    initialJobId: Int?
+) {
     val navController = rememberNavController()
     val authViewModel = viewModel<AuthViewModel>(
         factory = AuthViewModelFactory(repository, sessionManager),
         key = "auth_$serverUrl"
     )
     val authState by authViewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.LoggedIn && initialJobId != null) {
+            navController.navigate(Destination.JobDetail.createRoute(initialJobId))
+        }
+    }
 
     LaunchedEffect(Unit) { authViewModel.checkExistingSession() }
 
