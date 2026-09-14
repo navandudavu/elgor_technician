@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Unlike the ELGOR customer app (which blocks cleartext entirely, correct
+    for a public HTTPS site), this technician app needs to work against a
+    ServiceHub backend running on plain http:// during development and
+    local-network testing - the backend has no HTTPS deployment yet.
+
+    cleartextTrafficPermitted="true" here allows http:// connections to ANY
+    host, which is intentionally permissive for now. Once ServiceHub is
+    deployed with a real HTTPS certificate, tighten this to a domain-config
+    block scoped to that specific domain instead of leaving it wide open -
+    see https://developer.android.com/privacy-and-security/security-config
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
