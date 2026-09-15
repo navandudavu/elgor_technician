@@ -78,8 +78,9 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // Firebase Cloud Messaging
-    implementation(platform("com.google.firebase:firebase-bom:33.2.0"))
-    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation(platform("com.google.firebase:firebase-bom:33.1.0"))
+    implementation("com.google.firebase:firebase-messaging")
+    implementation("com.google.firebase:firebase-analytics")
 
     // Ucitavanje fotografija poslova
     implementation("io.coil-kt:coil-compose:2.6.0")

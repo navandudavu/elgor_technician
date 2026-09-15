@@ -8,6 +8,10 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
+import kotlinx.coroutines.flow.firstOrNull
+import rs.elgor.technician.data.local.JobDao
+import rs.elgor.technician.data.local.toDomain
+import rs.elgor.technician.data.local.toEntity
 import rs.elgor.technician.data.remote.ServiceHubApi
 import rs.elgor.technician.model.HealthResponse
 import rs.elgor.technician.model.HoursUpdateRequest
@@ -24,7 +28,10 @@ import java.io.File
 // {"error": "..."} message on failure instead of a generic HTTP status -
 // mirrors how the web app's api/client.js throws Error(data.error) on a
 // non-ok response.
-class JobRepository(private val api: ServiceHubApi) {
+class JobRepository(
+    private val api: ServiceHubApi,
+    private val dao: JobDao
+) {
 
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
@@ -66,32 +73,94 @@ class JobRepository(private val api: ServiceHubApi) {
     suspend fun updatePushToken(token: String): Result<Unit> =
         unwrap { api.updatePushToken(mapOf("token" to token, "platform" to "android")) }
 
-    suspend fun getJobs(statusFilter: String? = null, showAll: Boolean = false): Result<List<Job>> =
-        unwrap { api.getJobs(status = statusFilter, all = if (showAll) 1 else null) }
+    suspend fun getJobs(statusFilter: String? = null, showAll: Boolean = false): Result<List<Job>> {
+        val networkResult = unwrap { api.getJobs(status = statusFilter, all = if (showAll) 1 else null) }
+        
+        return if (networkResult.isSuccess) {
+            val jobs = networkResult.getOrNull() ?: emptyList()
+            // Only cache if it's the default "my assigned jobs" list to avoid 
+            // overwriting the local "source of truth" with filtered results.
+            if (statusFilter == null && !showAll) {
+                dao.insertJobs(jobs.map { it.toEntity() })
+            }
+            networkResult
+        } else {
+            // Fallback to local data
+            val localJobs = dao.getAllJobs().firstOrNull() ?: emptyList()
+            if (localJobs.isNotEmpty()) {
+                Result.success(localJobs.map { it.toDomain() })
+            } else {
+                networkResult
+            }
+        }
+    }
 
-    suspend fun getJob(id: Int): Result<Job> = unwrap { api.getJob(id) }
+    suspend fun getJob(id: Int): Result<Job> {
+        val networkResult = unwrap { api.getJob(id) }
+        
+        return if (networkResult.isSuccess) {
+            val job = networkResult.getOrNull()
+            if (job != null) {
+                dao.insertJob(job.toEntity())
+                dao.deleteNotesForJob(id)
+                dao.insertNotes(job.notes.map { it.toEntity() })
+                dao.deletePhotosForJob(id)
+                dao.insertPhotos(job.photos.map { it.toEntity() })
+            }
+            networkResult
+        } else {
+            // Fallback to local
+            val entity = dao.getJobById(id).firstOrNull()
+            if (entity != null) {
+                val notes = dao.getNotesForJob(id).firstOrNull() ?: emptyList()
+                val photos = dao.getPhotosForJob(id).firstOrNull() ?: emptyList()
+                Result.success(entity.toDomain(notes, photos))
+            } else {
+                networkResult
+            }
+        }
+    }
 
     suspend fun updateStatus(id: Int, status: String): Result<Job> =
-        unwrap { api.updateStatus(id, StatusUpdateRequest(status)) }
+        unwrap { api.updateStatus(id, StatusUpdateRequest(status)) }.also { result ->
+            result.getOrNull()?.let { dao.insertJob(it.toEntity()) }
+        }
 
     suspend fun updateHours(id: Int, hours: Double?): Result<Job> =
-        unwrap { api.updateHours(id, HoursUpdateRequest(hours)) }
+        unwrap { api.updateHours(id, HoursUpdateRequest(hours)) }.also { result ->
+            result.getOrNull()?.let { dao.insertJob(it.toEntity()) }
+        }
 
     suspend fun updateSchedule(id: Int, scheduledAt: String?): Result<Job> =
-        unwrap { api.updateSchedule(id, ScheduleUpdateRequest(scheduledAt)) }
+        unwrap { api.updateSchedule(id, ScheduleUpdateRequest(scheduledAt)) }.also { result ->
+            result.getOrNull()?.let { dao.insertJob(it.toEntity()) }
+        }
 
     suspend fun addNote(id: Int, note: String): Result<Job> =
-        unwrap { api.addNote(id, NoteCreateRequest(note)) }
+        unwrap { api.addNote(id, NoteCreateRequest(note)) }.also { result ->
+            result.getOrNull()?.let { job ->
+                dao.insertNotes(job.notes.map { it.toEntity() })
+            }
+        }
 
     suspend fun uploadPhoto(id: Int, file: File, mimeType: String, category: String = "other"): Result<Job> {
         val requestBody = file.asRequestBody(mimeType.toMediaTypeOrNull())
         val part = MultipartBody.Part.createFormData("photo", file.name, requestBody)
         val categoryBody = category.toRequestBody("text/plain".toMediaTypeOrNull())
-        return unwrap { api.uploadPhoto(id, part, categoryBody) }
+        return unwrap { api.uploadPhoto(id, part, categoryBody) }.also { result ->
+            result.getOrNull()?.let { job ->
+                dao.insertPhotos(job.photos.map { it.toEntity() })
+            }
+        }
     }
 
     suspend fun deletePhoto(jobId: Int, photoId: Int): Result<Job> =
-        unwrap { api.deletePhoto(jobId, photoId) }
+        unwrap { api.deletePhoto(jobId, photoId) }.also { result ->
+            result.getOrNull()?.let { job ->
+                dao.deletePhotosForJob(jobId)
+                dao.insertPhotos(job.photos.map { jobPhoto -> jobPhoto.toEntity() })
+            }
+        }
 
     // Returns the raw photo bytes for display - the caller (JobPhoto
     // composable) turns this into a bitmap. Auth-gated on the server side,

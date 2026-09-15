@@ -26,6 +26,7 @@ import rs.elgor.technician.data.JobRepository
 import rs.elgor.technician.data.JobsViewModel
 import rs.elgor.technician.data.JobsViewModelFactory
 import rs.elgor.technician.data.SessionManager
+import rs.elgor.technician.data.local.AppDatabase
 import rs.elgor.technician.data.remote.ElgorNetwork
 import rs.elgor.technician.ui.screens.JobDetailScreen
 import rs.elgor.technician.ui.screens.JobListScreen
@@ -65,7 +66,11 @@ fun ElgorTechnicianApp(initialJobId: Int? = null) {
     }
 
     val repository = remember(serverUrl) {
-        JobRepository(ElgorNetwork.create(serverUrl!!, sessionManager))
+        val database = AppDatabase.getDatabase(context)
+        JobRepository(
+            api = ElgorNetwork.create(serverUrl!!, sessionManager),
+            dao = database.jobDao()
+        )
     }
 
     MainNavHost(

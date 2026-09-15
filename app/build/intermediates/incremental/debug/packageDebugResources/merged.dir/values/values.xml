@@ -24,6 +24,11 @@
     <string name="error_invalid_url">Adresa mora početi sa http:// ili https://</string>
     <string name="error_load_job">Učitavanje posla nije uspelo</string>
     <string name="error_start_camera">Kamera nije mogla da se pokrene</string>
+    <string name="gcm_defaultSenderId" translatable="false">292999192987</string>
+    <string name="google_api_key" translatable="false">AIzaSyBsb-IpFeIkI9LxF2m6Rqb1vHwivjlMHB0</string>
+    <string name="google_app_id" translatable="false">1:292999192987:android:156f6be54e1bfbf78f413e</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBsb-IpFeIkI9LxF2m6Rqb1vHwivjlMHB0</string>
+    <string name="google_storage_bucket" translatable="false">elgor-servishub.firebasestorage.app</string>
     <string name="hours">sati</string>
     <string name="hours_logged">Evidentirano vreme</string>
     <string name="hours_minutes_format">%1$d č %2$d min</string>
@@ -59,6 +64,7 @@
     <string name="priority_low">Nizak</string>
     <string name="priority_normal">Normalan</string>
     <string name="priority_urgent">Hitno</string>
+    <string name="project_id" translatable="false">elgor-servishub</string>
     <string name="refresh">Osveži</string>
     <string name="save">Sačuvaj</string>
     <string name="scheduled_at">Planirano za</string>

@@ -26,6 +26,11 @@ string error_copy_photo
 string error_invalid_url
 string error_load_job
 string error_start_camera
+string gcm_defaultSenderId
+string google_api_key
+string google_app_id
+string google_crash_reporting_api_key
+string google_storage_bucket
 string hours
 string hours_logged
 string hours_minutes_format
@@ -61,6 +66,7 @@ string priority_high
 string priority_low
 string priority_normal
 string priority_urgent
+string project_id
 string refresh
 string save
 string scheduled_at

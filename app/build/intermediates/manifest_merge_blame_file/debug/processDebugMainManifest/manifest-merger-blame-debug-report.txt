@@ -11,181 +11,430 @@
 11    <uses-permission android:name="android.permission.INTERNET" />
 11-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:4:5-67
 11-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:4:22-64
-12
-13    <uses-feature
-13-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:5:5-85
-14        android:name="android.hardware.camera"
-14-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:5:19-57
-15        android:required="false" />
-15-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:5:58-82
-16
-17    <queries>
-17-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:7:5-11:15
-18        <intent>
-18-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:8:9-10:18
-19            <action android:name="android.media.action.IMAGE_CAPTURE" />
-19-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:9:13-73
-19-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:9:21-70
-20        </intent>
-21    </queries>
-22
-23    <permission
-23-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\8e0a0bff2d388b6446750efdf4a5758f\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
-24        android:name="rs.elgor.technician.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-24-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\8e0a0bff2d388b6446750efdf4a5758f\transformed\core-1.13.1\AndroidManifest.xml:23:9-81
-25        android:protectionLevel="signature" />
-25-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\8e0a0bff2d388b6446750efdf4a5758f\transformed\core-1.13.1\AndroidManifest.xml:24:9-44
-26
-27    <uses-permission android:name="rs.elgor.technician.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-27-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\8e0a0bff2d388b6446750efdf4a5758f\transformed\core-1.13.1\AndroidManifest.xml:26:5-97
-27-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\8e0a0bff2d388b6446750efdf4a5758f\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
-28
-29    <application
-29-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:13:5-45:19
-30        android:allowBackup="true"
-30-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:14:9-35
-31        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-31-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\8e0a0bff2d388b6446750efdf4a5758f\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
-32        android:debuggable="true"
-33        android:extractNativeLibs="false"
-34        android:icon="@mipmap/ic_launcher"
-34-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:15:9-43
-35        android:label="@string/app_name"
-35-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:16:9-41
-36        android:networkSecurityConfig="@xml/network_security_config"
-36-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:20:9-69
-37        android:roundIcon="@mipmap/ic_launcher_round"
-37-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:17:9-54
-38        android:supportsRtl="true"
-38-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:18:9-35
-39        android:testOnly="true"
-40        android:theme="@style/Theme.ElgorTechnician"
-40-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:19:9-53
-41        android:usesCleartextTraffic="true" >
-41-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:21:9-44
-42        <activity
-42-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:23:9-31:20
-43            android:name="rs.elgor.technician.MainActivity"
-43-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:24:13-41
-44            android:exported="true"
-44-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:25:13-36
-45            android:theme="@style/Theme.ElgorTechnician" >
-45-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:26:13-57
-46            <intent-filter>
-46-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:27:13-30:29
-47                <action android:name="android.intent.action.MAIN" />
-47-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:28:17-69
-47-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:28:25-66
-48
-49                <category android:name="android.intent.category.LAUNCHER" />
-49-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:29:17-77
-49-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:29:27-74
-50            </intent-filter>
-51        </activity>
-52
-53        <provider
-53-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:33:9-44:20
-54            android:name="androidx.core.content.FileProvider"
-54-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:34:13-62
-55            android:authorities="rs.elgor.technician.fileprovider"
-55-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:35:13-67
-56            android:exported="false"
-56-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:36:13-37
-57            android:grantUriPermissions="true" >
-57-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:37:13-47
-58            <meta-data
-58-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:38:13-40:54
-59                android:name="android.support.FILE_PATHS"
-59-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:39:17-58
-60                android:resource="@xml/file_paths" />
-60-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:40:17-51
-61            <meta-data
-61-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:41:13-43:54
-62                android:name="android.support.FILE_PROVIDER_PATHS"
-62-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:42:17-67
-63                android:resource="@xml/file_paths" />
-63-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:43:17-51
-64        </provider>
-65
-66        <activity
-66-->[androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\0f13b7f6767d10f25a4d6c6ec95a306a\transformed\jetified-ui-tooling-release\AndroidManifest.xml:23:9-25:39
-67            android:name="androidx.compose.ui.tooling.PreviewActivity"
-67-->[androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\0f13b7f6767d10f25a4d6c6ec95a306a\transformed\jetified-ui-tooling-release\AndroidManifest.xml:24:13-71
-68            android:exported="true" />
-68-->[androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\0f13b7f6767d10f25a4d6c6ec95a306a\transformed\jetified-ui-tooling-release\AndroidManifest.xml:25:13-36
-69
-70        <provider
-70-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\81de327c2e3d389f25388b00a9ab10d6\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
-71            android:name="androidx.startup.InitializationProvider"
-71-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\81de327c2e3d389f25388b00a9ab10d6\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:25:13-67
-72            android:authorities="rs.elgor.technician.androidx-startup"
-72-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\81de327c2e3d389f25388b00a9ab10d6\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:26:13-68
-73            android:exported="false" >
-73-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\81de327c2e3d389f25388b00a9ab10d6\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:27:13-37
-74            <meta-data
-74-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\81de327c2e3d389f25388b00a9ab10d6\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
-75                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-75-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\81de327c2e3d389f25388b00a9ab10d6\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:30:17-75
-76                android:value="androidx.startup" />
-76-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\81de327c2e3d389f25388b00a9ab10d6\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:31:17-49
-77            <meta-data
-77-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\navandudavu\.gradle\caches\transforms-4\0d778c51b105f30710faf768e65a0a71\transformed\jetified-lifecycle-process-2.8.4\AndroidManifest.xml:29:13-31:52
-78                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-78-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\navandudavu\.gradle\caches\transforms-4\0d778c51b105f30710faf768e65a0a71\transformed\jetified-lifecycle-process-2.8.4\AndroidManifest.xml:30:17-78
-79                android:value="androidx.startup" />
-79-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\navandudavu\.gradle\caches\transforms-4\0d778c51b105f30710faf768e65a0a71\transformed\jetified-lifecycle-process-2.8.4\AndroidManifest.xml:31:17-49
-80            <meta-data
-80-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
-81                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-81-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
-82                android:value="androidx.startup" />
-82-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
-83        </provider>
-84
-85        <activity
-85-->[androidx.compose.ui:ui-test-manifest:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\09d7ffedf83ff4ca278798c7d79f0acc\transformed\jetified-ui-test-manifest-1.6.8\AndroidManifest.xml:23:9-25:39
-86            android:name="androidx.activity.ComponentActivity"
-86-->[androidx.compose.ui:ui-test-manifest:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\09d7ffedf83ff4ca278798c7d79f0acc\transformed\jetified-ui-test-manifest-1.6.8\AndroidManifest.xml:24:13-63
-87            android:exported="true" />
-87-->[androidx.compose.ui:ui-test-manifest:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\09d7ffedf83ff4ca278798c7d79f0acc\transformed\jetified-ui-test-manifest-1.6.8\AndroidManifest.xml:25:13-36
-88
-89        <receiver
-89-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
-90            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-90-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
-91            android:directBootAware="false"
-91-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
-92            android:enabled="true"
-92-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
-93            android:exported="true"
-93-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
-94            android:permission="android.permission.DUMP" >
-94-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
-95            <intent-filter>
-95-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
-96                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-96-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
-96-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
-97            </intent-filter>
-98            <intent-filter>
-98-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
-99                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-99-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
-99-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
-100            </intent-filter>
-101            <intent-filter>
-101-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
-102                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-102-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
-102-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
-103            </intent-filter>
-104            <intent-filter>
-104-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
-105                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-105-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
-105-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\a36e384492913ba24ae5891b6164429e\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+12    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+12-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:5:5-77
+12-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:5:22-74
+13
+14    <uses-feature
+14-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:6:5-85
+15        android:name="android.hardware.camera"
+15-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:6:19-57
+16        android:required="false" />
+16-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:6:58-82
+17
+18    <queries>
+18-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:8:5-12:15
+19        <intent>
+19-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:9:9-11:18
+20            <action android:name="android.media.action.IMAGE_CAPTURE" />
+20-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:10:13-73
+20-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:10:21-70
+21        </intent>
+22    </queries>
+23
+24    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+24-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:22:5-79
+24-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:22:22-76
+25    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+25-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:24:5-68
+25-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:24:22-65
+26    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+26-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:26:5-82
+26-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:26:22-79
+27    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
+27-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:26:5-110
+27-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:26:22-107
+28    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+28-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:25:5-79
+28-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:25:22-76
+29    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION" />
+29-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:26:5-88
+29-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:26:22-85
+30    <uses-permission android:name="android.permission.ACCESS_ADSERVICES_AD_ID" />
+30-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:27:5-82
+30-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:27:22-79
+31
+32    <permission
+32-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\6304624fab0045c655a438afa9c6a214\transformed\core-1.13.1\AndroidManifest.xml:22:5-24:47
+33        android:name="rs.elgor.technician.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+33-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\6304624fab0045c655a438afa9c6a214\transformed\core-1.13.1\AndroidManifest.xml:23:9-81
+34        android:protectionLevel="signature" />
+34-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\6304624fab0045c655a438afa9c6a214\transformed\core-1.13.1\AndroidManifest.xml:24:9-44
+35
+36    <uses-permission android:name="rs.elgor.technician.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+36-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\6304624fab0045c655a438afa9c6a214\transformed\core-1.13.1\AndroidManifest.xml:26:5-97
+36-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\6304624fab0045c655a438afa9c6a214\transformed\core-1.13.1\AndroidManifest.xml:26:22-94
+37
+38    <application
+38-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:14:5-55:19
+39        android:name="rs.elgor.technician.ElgorApplication"
+39-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:15:9-41
+40        android:allowBackup="true"
+40-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:16:9-35
+41        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+41-->[androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\6304624fab0045c655a438afa9c6a214\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
+42        android:debuggable="true"
+43        android:extractNativeLibs="false"
+44        android:icon="@mipmap/ic_launcher"
+44-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:17:9-43
+45        android:label="@string/app_name"
+45-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:18:9-41
+46        android:networkSecurityConfig="@xml/network_security_config"
+46-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:22:9-69
+47        android:roundIcon="@mipmap/ic_launcher_round"
+47-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:19:9-54
+48        android:supportsRtl="true"
+48-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:20:9-35
+49        android:testOnly="true"
+50        android:theme="@style/Theme.ElgorTechnician"
+50-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:21:9-53
+51        android:usesCleartextTraffic="true" >
+51-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:23:9-44
+52        <activity
+52-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:25:9-33:20
+53            android:name="rs.elgor.technician.MainActivity"
+53-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:26:13-41
+54            android:exported="true"
+54-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:27:13-36
+55            android:theme="@style/Theme.ElgorTechnician" >
+55-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:28:13-57
+56            <intent-filter>
+56-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:29:13-32:29
+57                <action android:name="android.intent.action.MAIN" />
+57-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:30:17-69
+57-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:30:25-66
+58
+59                <category android:name="android.intent.category.LAUNCHER" />
+59-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:31:17-77
+59-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:31:27-74
+60            </intent-filter>
+61        </activity>
+62
+63        <provider
+63-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:35:9-46:20
+64            android:name="androidx.core.content.FileProvider"
+64-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:36:13-62
+65            android:authorities="rs.elgor.technician.fileprovider"
+65-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:37:13-67
+66            android:exported="false"
+66-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:38:13-37
+67            android:grantUriPermissions="true" >
+67-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:39:13-47
+68            <meta-data
+68-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:40:13-42:54
+69                android:name="android.support.FILE_PATHS"
+69-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:41:17-58
+70                android:resource="@xml/file_paths" />
+70-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:42:17-51
+71            <meta-data
+71-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:43:13-45:54
+72                android:name="android.support.FILE_PROVIDER_PATHS"
+72-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:44:17-67
+73                android:resource="@xml/file_paths" />
+73-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:45:17-51
+74        </provider>
+75
+76        <service
+76-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:48:9-54:19
+77            android:name="rs.elgor.technician.service.ElgorMessagingService"
+77-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:49:13-58
+78            android:exported="false" >
+78-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:50:13-37
+79            <intent-filter>
+79-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:51:13-53:29
+80                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+80-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:52:17-78
+80-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:52:25-75
+81            </intent-filter>
+82        </service>
+83
+84        <receiver
+84-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:29:9-40:20
+85            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+85-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:30:13-78
+86            android:exported="true"
+86-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:31:13-36
+87            android:permission="com.google.android.c2dm.permission.SEND" >
+87-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:32:13-73
+88            <intent-filter>
+88-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:33:13-35:29
+89                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+89-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:34:17-81
+89-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:34:25-78
+90            </intent-filter>
+91
+92            <meta-data
+92-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:37:13-39:40
+93                android:name="com.google.android.gms.cloudmessaging.FINISHED_AFTER_HANDLED"
+93-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:38:17-92
+94                android:value="true" />
+94-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:39:17-37
+95        </receiver>
+96        <!--
+97             FirebaseMessagingService performs security checks at runtime,
+98             but set to not exported to explicitly avoid allowing another app to call it.
+99        -->
+100        <service
+100-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:46:9-53:19
+101            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+101-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:47:13-82
+102            android:directBootAware="true"
+102-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:48:13-43
+103            android:exported="false" >
+103-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:49:13-37
+104            <intent-filter android:priority="-500" >
+104-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:51:13-53:29
+105                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+105-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:52:17-78
+105-->C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:52:25-75
 106            </intent-filter>
-107        </receiver>
-108    </application>
-109
-110</manifest>
+107        </service>
+108        <service
+108-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:54:9-63:19
+109            android:name="com.google.firebase.components.ComponentDiscoveryService"
+109-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:55:13-84
+110            android:directBootAware="true"
+110-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:32:13-43
+111            android:exported="false" >
+111-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:56:13-37
+112            <meta-data
+112-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:57:13-59:85
+113                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingKtxRegistrar"
+113-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:58:17-122
+114                android:value="com.google.firebase.components.ComponentRegistrar" />
+114-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:59:17-82
+115            <meta-data
+115-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:60:13-62:85
+116                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+116-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:61:17-119
+117                android:value="com.google.firebase.components.ComponentRegistrar" />
+117-->[com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:62:17-82
+118            <meta-data
+118-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:37:13-39:85
+119                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+119-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:38:17-139
+120                android:value="com.google.firebase.components.ComponentRegistrar" />
+120-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:39:17-82
+121            <meta-data
+121-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\40aeeb2457dfe73e2e2c6caa3f75f5b1\transformed\jetified-firebase-installations-18.0.0\AndroidManifest.xml:15:13-17:85
+122                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsKtxRegistrar"
+122-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\40aeeb2457dfe73e2e2c6caa3f75f5b1\transformed\jetified-firebase-installations-18.0.0\AndroidManifest.xml:16:17-130
+123                android:value="com.google.firebase.components.ComponentRegistrar" />
+123-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\40aeeb2457dfe73e2e2c6caa3f75f5b1\transformed\jetified-firebase-installations-18.0.0\AndroidManifest.xml:17:17-82
+124            <meta-data
+124-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\40aeeb2457dfe73e2e2c6caa3f75f5b1\transformed\jetified-firebase-installations-18.0.0\AndroidManifest.xml:18:13-20:85
+125                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+125-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\40aeeb2457dfe73e2e2c6caa3f75f5b1\transformed\jetified-firebase-installations-18.0.0\AndroidManifest.xml:19:17-127
+126                android:value="com.google.firebase.components.ComponentRegistrar" />
+126-->[com.google.firebase:firebase-installations:18.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\40aeeb2457dfe73e2e2c6caa3f75f5b1\transformed\jetified-firebase-installations-18.0.0\AndroidManifest.xml:20:17-82
+127            <meta-data
+127-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\9dcbd233ff38c7eba65e84ded44cc655\transformed\jetified-firebase-common-ktx-21.0.0\AndroidManifest.xml:12:13-14:85
+128                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+128-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\9dcbd233ff38c7eba65e84ded44cc655\transformed\jetified-firebase-common-ktx-21.0.0\AndroidManifest.xml:13:17-116
+129                android:value="com.google.firebase.components.ComponentRegistrar" />
+129-->[com.google.firebase:firebase-common-ktx:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\9dcbd233ff38c7eba65e84ded44cc655\transformed\jetified-firebase-common-ktx-21.0.0\AndroidManifest.xml:14:17-82
+130            <meta-data
+130-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:35:13-37:85
+131                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+131-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:36:17-109
+132                android:value="com.google.firebase.components.ComponentRegistrar" />
+132-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:37:17-82
+133            <meta-data
+133-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\navandudavu\.gradle\caches\transforms-4\0c5fa1f1dca19e77942e0407d0b4f0e8\transformed\jetified-firebase-datatransport-18.2.0\AndroidManifest.xml:25:13-27:85
+134                android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
+134-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\navandudavu\.gradle\caches\transforms-4\0c5fa1f1dca19e77942e0407d0b4f0e8\transformed\jetified-firebase-datatransport-18.2.0\AndroidManifest.xml:26:17-115
+135                android:value="com.google.firebase.components.ComponentRegistrar" />
+135-->[com.google.firebase:firebase-datatransport:18.2.0] C:\Users\navandudavu\.gradle\caches\transforms-4\0c5fa1f1dca19e77942e0407d0b4f0e8\transformed\jetified-firebase-datatransport-18.2.0\AndroidManifest.xml:27:17-82
+136        </service>
+137
+138        <activity
+138-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\eece0af357b8b91c85961fe8dee60777\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:9-22:45
+139            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+139-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\eece0af357b8b91c85961fe8dee60777\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:20:19-85
+140            android:exported="false"
+140-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\eece0af357b8b91c85961fe8dee60777\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:22:19-43
+141            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+141-->[com.google.android.gms:play-services-base:18.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\eece0af357b8b91c85961fe8dee60777\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:21:19-78
+142        <activity
+142-->[androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\4a1455be98c3df4a5e50b531db19cfd0\transformed\jetified-ui-tooling-release\AndroidManifest.xml:23:9-25:39
+143            android:name="androidx.compose.ui.tooling.PreviewActivity"
+143-->[androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\4a1455be98c3df4a5e50b531db19cfd0\transformed\jetified-ui-tooling-release\AndroidManifest.xml:24:13-71
+144            android:exported="true" />
+144-->[androidx.compose.ui:ui-tooling-android:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\4a1455be98c3df4a5e50b531db19cfd0\transformed\jetified-ui-tooling-release\AndroidManifest.xml:25:13-36
+145
+146        <receiver
+146-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:29:9-33:20
+147            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+147-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:30:13-85
+148            android:enabled="true"
+148-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:31:13-35
+149            android:exported="false" >
+149-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:32:13-37
+150        </receiver>
+151
+152        <service
+152-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:35:9-38:40
+153            android:name="com.google.android.gms.measurement.AppMeasurementService"
+153-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:36:13-84
+154            android:enabled="true"
+154-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:37:13-35
+155            android:exported="false" />
+155-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:38:13-37
+156        <service
+156-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:39:9-43:72
+157            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+157-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:40:13-87
+158            android:enabled="true"
+158-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:41:13-35
+159            android:exported="false"
+159-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:42:13-37
+160            android:permission="android.permission.BIND_JOB_SERVICE" />
+160-->[com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:43:13-69
+161
+162        <property
+162-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:30:9-32:61
+163            android:name="android.adservices.AD_SERVICES_CONFIG"
+163-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:31:13-65
+164            android:resource="@xml/ga_ad_services_config" />
+164-->[com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:32:13-58
+165
+166        <provider
+166-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:23:9-28:39
+167            android:name="com.google.firebase.provider.FirebaseInitProvider"
+167-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:24:13-77
+168            android:authorities="rs.elgor.technician.firebaseinitprovider"
+168-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:25:13-72
+169            android:directBootAware="true"
+169-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:26:13-43
+170            android:exported="false"
+170-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:27:13-37
+171            android:initOrder="100" />
+171-->[com.google.firebase:firebase-common:21.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\33e20782f3ec5e672edcfeee81f00e35\transformed\jetified-firebase-common-21.0.0\AndroidManifest.xml:28:13-36
+172
+173        <service
+173-->[androidx.room:room-runtime:2.6.1] C:\Users\navandudavu\.gradle\caches\transforms-4\c83b15f98e63722e5fcb46016c8b3c27\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
+174            android:name="androidx.room.MultiInstanceInvalidationService"
+174-->[androidx.room:room-runtime:2.6.1] C:\Users\navandudavu\.gradle\caches\transforms-4\c83b15f98e63722e5fcb46016c8b3c27\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
+175            android:directBootAware="true"
+175-->[androidx.room:room-runtime:2.6.1] C:\Users\navandudavu\.gradle\caches\transforms-4\c83b15f98e63722e5fcb46016c8b3c27\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
+176            android:exported="false" />
+176-->[androidx.room:room-runtime:2.6.1] C:\Users\navandudavu\.gradle\caches\transforms-4\c83b15f98e63722e5fcb46016c8b3c27\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
+177
+178        <provider
+178-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c061d7a9a79508f62fa9782b19b7fc28\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+179            android:name="androidx.startup.InitializationProvider"
+179-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c061d7a9a79508f62fa9782b19b7fc28\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:25:13-67
+180            android:authorities="rs.elgor.technician.androidx-startup"
+180-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c061d7a9a79508f62fa9782b19b7fc28\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:26:13-68
+181            android:exported="false" >
+181-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c061d7a9a79508f62fa9782b19b7fc28\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:27:13-37
+182            <meta-data
+182-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c061d7a9a79508f62fa9782b19b7fc28\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+183                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+183-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c061d7a9a79508f62fa9782b19b7fc28\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:30:17-75
+184                android:value="androidx.startup" />
+184-->[androidx.emoji2:emoji2:1.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c061d7a9a79508f62fa9782b19b7fc28\transformed\jetified-emoji2-1.3.0\AndroidManifest.xml:31:17-49
+185            <meta-data
+185-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\navandudavu\.gradle\caches\transforms-4\e477b64a029ff510bd09b6ea08b3290f\transformed\jetified-lifecycle-process-2.8.4\AndroidManifest.xml:29:13-31:52
+186                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+186-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\navandudavu\.gradle\caches\transforms-4\e477b64a029ff510bd09b6ea08b3290f\transformed\jetified-lifecycle-process-2.8.4\AndroidManifest.xml:30:17-78
+187                android:value="androidx.startup" />
+187-->[androidx.lifecycle:lifecycle-process:2.8.4] C:\Users\navandudavu\.gradle\caches\transforms-4\e477b64a029ff510bd09b6ea08b3290f\transformed\jetified-lifecycle-process-2.8.4\AndroidManifest.xml:31:17-49
+188            <meta-data
+188-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+189                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+189-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+190                android:value="androidx.startup" />
+190-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+191        </provider>
+192
+193        <uses-library
+193-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] C:\Users\navandudavu\.gradle\caches\transforms-4\a653e7bc81c633f8bebab9bc326f6595\transformed\jetified-ads-adservices-1.0.0-beta05\AndroidManifest.xml:23:9-25:40
+194            android:name="android.ext.adservices"
+194-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] C:\Users\navandudavu\.gradle\caches\transforms-4\a653e7bc81c633f8bebab9bc326f6595\transformed\jetified-ads-adservices-1.0.0-beta05\AndroidManifest.xml:24:13-50
+195            android:required="false" />
+195-->[androidx.privacysandbox.ads:ads-adservices:1.0.0-beta05] C:\Users\navandudavu\.gradle\caches\transforms-4\a653e7bc81c633f8bebab9bc326f6595\transformed\jetified-ads-adservices-1.0.0-beta05\AndroidManifest.xml:25:13-37
+196
+197        <meta-data
+197-->[com.google.android.gms:play-services-basement:18.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c93fb9c4265ae57ab8f0490e8e9cf1dd\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:21:9-23:69
+198            android:name="com.google.android.gms.version"
+198-->[com.google.android.gms:play-services-basement:18.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c93fb9c4265ae57ab8f0490e8e9cf1dd\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:22:13-58
+199            android:value="@integer/google_play_services_version" />
+199-->[com.google.android.gms:play-services-basement:18.3.0] C:\Users\navandudavu\.gradle\caches\transforms-4\c93fb9c4265ae57ab8f0490e8e9cf1dd\transformed\jetified-play-services-basement-18.3.0\AndroidManifest.xml:23:13-66
+200
+201        <activity
+201-->[androidx.compose.ui:ui-test-manifest:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\b40fd0d385f940e6d8d2d73f5cc015ec\transformed\jetified-ui-test-manifest-1.6.8\AndroidManifest.xml:23:9-25:39
+202            android:name="androidx.activity.ComponentActivity"
+202-->[androidx.compose.ui:ui-test-manifest:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\b40fd0d385f940e6d8d2d73f5cc015ec\transformed\jetified-ui-test-manifest-1.6.8\AndroidManifest.xml:24:13-63
+203            android:exported="true" />
+203-->[androidx.compose.ui:ui-test-manifest:1.6.8] C:\Users\navandudavu\.gradle\caches\transforms-4\b40fd0d385f940e6d8d2d73f5cc015ec\transformed\jetified-ui-test-manifest-1.6.8\AndroidManifest.xml:25:13-36
+204
+205        <service
+205-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:28:9-34:19
+206            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+206-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:29:13-103
+207            android:exported="false" >
+207-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:30:13-37
+208            <meta-data
+208-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:31:13-33:39
+209                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+209-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:32:17-94
+210                android:value="cct" />
+210-->[com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:33:17-36
+211        </service>
+212        <service
+212-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ef70d471e4cd30756afe84e7a1f514e2\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:26:9-30:19
+213            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+213-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ef70d471e4cd30756afe84e7a1f514e2\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:27:13-117
+214            android:exported="false"
+214-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ef70d471e4cd30756afe84e7a1f514e2\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:28:13-37
+215            android:permission="android.permission.BIND_JOB_SERVICE" >
+215-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ef70d471e4cd30756afe84e7a1f514e2\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:29:13-69
+216        </service>
+217
+218        <receiver
+218-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ef70d471e4cd30756afe84e7a1f514e2\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:32:9-34:40
+219            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+219-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ef70d471e4cd30756afe84e7a1f514e2\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:33:13-132
+220            android:exported="false" />
+220-->[com.google.android.datatransport:transport-runtime:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ef70d471e4cd30756afe84e7a1f514e2\transformed\jetified-transport-runtime-3.1.9\AndroidManifest.xml:34:13-37
+221        <receiver
+221-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+222            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+222-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+223            android:directBootAware="false"
+223-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+224            android:enabled="true"
+224-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+225            android:exported="true"
+225-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+226            android:permission="android.permission.DUMP" >
+226-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+227            <intent-filter>
+227-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+228                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+228-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+228-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+229            </intent-filter>
+230            <intent-filter>
+230-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+231                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+231-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+231-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+232            </intent-filter>
+233            <intent-filter>
+233-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+234                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+234-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+234-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+235            </intent-filter>
+236            <intent-filter>
+236-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+237                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+237-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+237-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandudavu\.gradle\caches\transforms-4\7c37b30f20e90bb082910764f2e39a49\transformed\jetified-profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+238            </intent-filter>
+239        </receiver>
+240    </application>
+241
+242</manifest>

@@ -19,19 +19,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.rememberCoroutineScope
 import rs.elgor.technician.R
 import rs.elgor.technician.data.JobRepository
 import rs.elgor.technician.data.SessionManager
+import rs.elgor.technician.data.local.AppDatabase
 import rs.elgor.technician.data.remote.ElgorNetwork
 import rs.elgor.technician.data.remote.NetworkConfig
 
@@ -52,6 +54,7 @@ fun ServerSetupScreen(
     var error by remember { mutableStateOf<String?>(null) }
     var successMessage by remember { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -110,7 +113,11 @@ fun ServerSetupScreen(
                         error = null
                         successMessage = null
                         scope.launch {
-                            val tempRepo = JobRepository(ElgorNetwork.create(trimmed, sessionManager))
+                            val database = AppDatabase.getDatabase(context)
+                            val tempRepo = JobRepository(
+                                api = ElgorNetwork.create(trimmed, sessionManager),
+                                dao = database.jobDao()
+                            )
                             tempRepo.checkHealth().fold(
                                 onSuccess = { successMessage = "Veza potvrđena!" },
                                 onFailure = { error = "Greška: ${it.message}" }
