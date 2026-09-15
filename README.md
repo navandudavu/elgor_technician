@@ -1,129 +1,92 @@
-# ELGOR Technician — Android app
+# ELGOR Technician — Android aplikacija
 
-A native Android app for ELGOR technicians to work their assigned
-ServiceHub jobs: view assigned jobs, change status, log hours, add notes,
-and upload photos. This is a separate app from the ELGOR customer app
-(elgor1999) — that one's for customers browsing/buying, this one's an
-internal tool for the people doing the repairs, talking to the same
-ServiceHub backend the web dashboard uses.
+Nativna Android aplikacija namenjena ELGOR tehničarima za rad na dodeljenim
+ServiceHub zadacima: pregled zadataka, promena statusa, evidentiranje sati rada,
+dodavanje beleški i otpremanje fotografija. Ovo je aplikacija odvojena od
+ELGOR aplikacije za korisnike (elgor1999) — ona je namenjena klijentima za
+pregledanje i kupovinu, dok je ova alat za internu upotrebu servisera i
+komunicira sa istom ServiceHub pozadinom koju koristi i veb-kontrolna tabla.
 
-## Status: never compiled
+## Status: verzija v1.0
 
-Same honest disclosure as the original ELGOR customer app's own status
-doc: there's no Android SDK or emulator available in the environment this
-was built in, so this has **never been compiled**. Every file was checked
-by hand — package declarations match their folder, braces balance, no
-corrupted characters (a real one was caught and fixed during development,
-see below), Material3 APIs checked against the specific compose-bom
-version this project pins — but none of that is a substitute for an
-actual `./gradlew assembleDebug`. That's the first thing to run once this
-is open in Android Studio.
+Važi ista napomena kao i za originalnu ELGOR aplikaciju za korisnike:
+u okruženju u kojem je ova aplikacija kreirana nisu bili dostupni Android SDK
+ni emulator, tako da ona **nikada nije kompajlirana**. Svaki fajl je ručno
+proveren — deklaracije paketa odgovaraju fasciklama, zagrade su pravilno
+uparene, nema oštećenih karaktera (jedan takav je otkriven i ispravljen tokom
+razvoja, videti ispod), a Material3 API-ji su provereni u odnosu na
+specifičnu verziju `compose-bom`-a koju ovaj projekat koristi — ali ništa
+od toga ne može zameniti stvarno izvršavanje komande `./gradlew assembleDebug`.
+To je prva stvar koju treba uraditi nakon otvaranja projekta u Android Studio-u.
 
-## What it does
+## Funkcionalnosti
 
-- Login with a ServiceHub account (technician or admin credentials both
-  work, but the app itself is scoped to technician actions only)
-- See your assigned jobs
-- Open a job: change its status (pending → assigned → in_progress →
-  finished), log hours worked, add notes, take/pick a photo and upload it,
-  delete photos you uploaded
-- First-run screen to enter the ServiceHub server address, since this
-  points at a server that isn't deployed anywhere fixed yet — see below
+- Prijavljivanje pomoću ServiceHub naloga (prihvataju se akreditivi i
+  tehničara i administratora, ali je aplikacija ograničena isključivo na
+  aktivnosti tehničara)
+- Pregled dodeljenih zadataka
+- Rad na zadatku: promena statusa (na čekanju → dodeljeno → u toku →
+  završeno), evidentiranje sati rada, dodavanje beleški, snimanje ili izbor
+  fotografije i njeno otpremanje, brisanje otpremljenih fotografija
+- Ekran za prvo pokretanje radi unosa adrese ServiceHub servera, s obzirom na
+  to da je aplikacija usmerena ka serveru koji još uvek nije trajno
+  deplojvan (pogledajte ispod)
 
-## Before you can actually use it: server address
+## Pre upotrebe: adresa servera
 
-This app has no backend URL baked in. On first launch it asks for one -
-during development that's your computer's local network IP and the
-ServiceHub port, e.g. `http://192.168.1.100:4000` (find your computer's
-LAN IP, don't use `localhost` - that would point the phone at itself, not
-your computer). Once ServiceHub is deployed somewhere real, that becomes
-a fixed public URL instead.
+Ova aplikacija nema unapred upisanu URL adresu pozadinskog servera (backend-a).
+Prilikom prvog pokretanja traži se unos adrese — tokom razvoja to je IP adresa
+vašeg računara u lokalnoj mreži i ServiceHub port, npr. `http://192.168.1.100:4000`
+(pronađite LAN IP adresu svog računara; nemojte koristiti `localhost` — to bi
+usmerilo telefon na samog sebe, a ne na vaš računar). Kada se ServiceHub postavi u stvarno okruženje, ta adresa postaje
+stalna javna URL adresa.
 
-The address is saved on the phone (DataStore) so this is only needed once
-per install.
+Adresa se čuva na telefonu (u DataStore-u), tako da je ovaj korak potreban samo jednom
+prilikom instalacije.
 
-## Cleartext HTTP is allowed (for now)
+## Dozvoljen je HTTP bez enkripcije (za sada)
 
-`app/src/main/res/xml/network_security_config.xml` permits plain `http://`
-connections, unlike the ELGOR customer app which blocks it. This is
-intentional and necessary while ServiceHub runs on local HTTP without a
-certificate — but it should be tightened once ServiceHub has a real HTTPS
-deployment. The file has a comment explaining exactly what to change.
+Fajl `app/src/main/res/xml/network_security_config.xml` dozvoljava obične `http://`
+veze, za razliku od ELGOR aplikacije za korisnike koja ih blokira. Ovo je
+namerno i neophodno dok ServiceHub radi preko lokalnog HTTP-a bez
+sertifikata — ali bi bezbednosna pravila trebalo pooštriti kada ServiceHub
+pređe na pravi HTTPS. U fajlu postoji komentar koji tačno objašnjava šta treba izmeniti.
 
-## Stack
+## Tehnološki stek
 
-Matches the existing ELGOR customer app's choices where they made sense
-to reuse: Kotlin, Jetpack Compose + Material3, Navigation Compose,
-Retrofit + Moshi for the API, Coil (available, though photo loading here
-uses a manual authenticated-fetch approach instead - see below),
-coroutines + ViewModel for state. DataStore added for persisting the JWT
-and server URL between app launches (the customer app didn't need this,
-it has no login).
+Prati izbore napravljene za postojeću ELGOR aplikaciju za korisnike tamo gde je
+imalo smisla ponovo ih upotrebiti: Kotlin, Jetpack Compose + Material3, Navigation Compose,
+Retrofit + Moshi za API, Coil (dostupan, mada se ovde za učitavanje fotografija
+koristi ručni pristup sa autentifikacijom — videti ispod),
+korutine (coroutines) + ViewModel za upravljanje stanjem. DataStore je dodat radi
+čuvanja JWT-a i URL-a servera između pokretanja aplikacije (aplikaciji za korisnike
+to nije bilo potrebno jer nema prijavljivanje).
 
-compose-bom is pinned to `2024.06.00` to match the customer app's version.
-One Material3 API (`PullToRefreshBox`) needed Material3 1.3.0+ and isn't
-available at this BOM version - the job list uses a manual refresh button
-instead rather than bumping the BOM (which would cascade into a
-`compileSdk` bump too, not worth it for one nice-to-have).
+Verzija `compose-bom` je fiksirana na `2024.06.00` kako bi se poklopila sa verzijom
+u aplikaciji za korisnike. Jedan Material3 API (`PullToRefreshBox`) zahtevao je
+Material3 1.3.0+ i nije dostupan u ovoj BOM verziji — stoga lista poslova
+koristi dugme za ručno osvežavanje umesto da se menja BOM verzija (što bi
+zahtevalo i povećanje `compileSdk` verzije, a to nije vredno truda zbog jedne
+funkcije koja je samo poželjna, a ne i neophodna).
 
-## Why photos don't use plain Coil image loading
+## Zašto se za fotografije ne koristi standardno učitavanje putem Coil-a
 
-ServiceHub's photo endpoint requires a JWT in the Authorization header
-(`GET /api/jobs/photos/:filename`, see the backend's `requireAuth`
-middleware) - a normal image loader has no way to attach that header, so
-a plain Coil `AsyncImage` pointed at the URL would just get a 401. Same
-root problem the web app hit and solved the same way: `JobPhoto.kt`
-fetches the raw bytes through the same authenticated Retrofit client
-every other request uses, then decodes them into a bitmap manually.
+Endpoint za fotografije u ServiceHub-u zahteva JWT u Authorization zaglavlju
+(`GET /api/jobs/photos/:filename`, videti `requireAuth`
+midlver na bekendu) — standardni mehanizam za učitavanje slika nema način da
+doda to zaglavlje, tako da bi običan Coil `AsyncImage` usmeren ka tom URL-u
+jednostavno dobio grešku 401. To je isti osnovni problem sa kojim se suočila
+i veb aplikacija i rešila ga na isti način: `JobPhoto.kt`
+preuzima sirove bajtove putem istog Retrofit klijenta sa autentifikacijom
+koji se koristi za sve ostale zahteve, a zatim ih ručno dekodira u bitmapu. ## Podešavanje u Android Studio-u
 
-## Setup in Android Studio
+1. Otvorite ovu fasciklu kao projekat u Android Studio-u (automatski će se ponovo generisati *Gradle wrapper* JAR datoteka prilikom sinhronizacije – ta binarna datoteka se ne može generisati u ovom okruženju jer ne postoji mrežna veza ka *Gradle* serverima; to je isto ograničenje koje je postojalo prilikom izgradnje aplikacije za klijenta).
+2. Sačekajte da *Gradle* završi sinhronizaciju i razreši zavisnosti.
+3. Izaberite **Build → Make Project**. Ovo je pravi prvi test – do sada ništa nije kompajlirano.
+4. Pokrenite aplikaciju na uređaju ili emulatoru koji se nalazi na istoj mreži kao i vaš *ServiceHub* bekend (ili koristite `10.0.2.2` umesto `localhost` ako testirate bekend koji radi na istom računaru kao i *Android* emulator – to je poseban alijas emulatora za računar domaćina).
+5. Unesite adresu servera i prijavite se pomoću naloga tehničara koji je unet u *ServiceHub* (pogledajte skriptu za inicijalno popunjavanje podataka u *ServiceHub* README datoteci).
 
-1. Open this folder as a project in Android Studio (it'll regenerate the
-   Gradle wrapper jar automatically on sync - that binary file can't be
-   generated in this environment, no network path to Gradle's servers,
-   same limitation the customer app's build had).
-2. Let Gradle sync, resolve dependencies.
-3. Build → Make Project. This is the real first test - nothing here has
-   compiled yet.
-4. Run on a device or emulator on the same network as your ServiceHub
-   backend (or use `10.0.2.2` instead of `localhost` if testing against a
-   backend running on the same machine as an Android emulator - that's
-   the emulator's special alias for the host machine).
-5. Enter the server address, log in with a technician account seeded in
-   ServiceHub (see the ServiceHub README's seed script).
+## Poznati nedostaci / stvari koje prvo treba proveriti
 
-## Known gaps / things to check first
-
-- **Never compiled** - see above, this is the big one.
-- **No app icon adaptive/foreground layers** - uses plain PNG launcher
-  icons (generated from the real ELGOR logo at all 5 density buckets),
-  not the adaptive-icon XML format the customer app uses. Simpler, works
-  fine, just less fancy (no separate background/foreground parallax
-  layer). Fine for an internal tool; revisit if it matters to you.
-- **No offline handling** - if a technician is in a basement with no
-  signal (a real scenario for appliance repair), every action just fails
-  with a network error. No local queue/retry. Worth adding later if this
-  becomes a real pain point in the field.
-- **No photo compression before upload** - uploads the picked image at
-  whatever size the phone's photo picker returns it at, capped by the
-  backend's 8MB limit (which will just reject anything bigger with a
-  clear error, it won't silently fail).
-- **Admin-only ServiceHub features aren't here** - job assignment,
-  scheduling, CSV export, team management. Out of scope on purpose - this
-  app is for technicians, see the ServiceHub web app for admin functions.
-- **Settings screen for changing the server URL doesn't exist yet** - the
-  login screen's first-run flow mentions "you can change it later in
-  Settings" but that screen isn't built. If you need to change the server
-  address after first setup, clearing app data is currently the only way.
-
-## A bug that was caught and fixed during development
-
-While writing the Job Detail screen, one import line ended up with
-Cyrillic characters mixed into what should have been the plain-ASCII
-identifier `horizontalScroll` (`горizontalScroll`) - a corrupted,
-uncompilable import that also wasn't even used anywhere in the file. It
-was caught by a targeted sweep for non-ASCII characters in import/package
-lines across every file, not by a compiler (since nothing here compiles).
-Fixed by removing the broken, unused import entirely. Worth knowing this
-class of error is possible and worth spot-checking if you hand-edit
-anything here yourself.
+- **Nije kompajlirano** – pogledajte gore, ovo je najvažnija stavka.
+- **Nedostaju slojevi za adaptivne ikonice ili slojevi prednjeg plana (foreground)** – koriste se obične PNG ikonice za pokretanje (generisane na osnovu pravog ELGOR logotipa za svih 5 kategorija gustine piksela), a ne XML format za adaptivne ikonice koji koristi aplikacija za klijenta. Jednostavnije je i radi bez problema, samo izgleda manje atraktivno (nema odvojenih slojeva pozadine/prednjeg plana).
