@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "292999192987",
+    "project_id": "elgor-servishub",
+    "storage_bucket": "elgor-servishub.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292999192987:android:156f6be54e1bfbf78f413e",
+        "android_client_info": {
+          "package_name": "rs.elgor.technician"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsb-IpFeIkI9LxF2m6Rqb1vHwivjlMHB0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">292999192987</string>
+    <string name="google_api_key" translatable="false">AIzaSyBsb-IpFeIkI9LxF2m6Rqb1vHwivjlMHB0</string>
+    <string name="google_app_id" translatable="false">1:292999192987:android:156f6be54e1bfbf78f413e</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyBsb-IpFeIkI9LxF2m6Rqb1vHwivjlMHB0</string>
+    <string name="google_storage_bucket" translatable="false">elgor-servishub.firebasestorage.app</string>
+    <string name="project_id" translatable="false">elgor-servishub</string>
+</resources>
