@@ -84,9 +84,4 @@ koji se koristi za sve ostale zahteve, a zatim ih ručno dekodira u bitmapu. ## 
 2. Sačekajte da *Gradle* završi sinhronizaciju i razreši zavisnosti.
 3. Izaberite **Build → Make Project**. Ovo je pravi prvi test – do sada ništa nije kompajlirano.
 4. Pokrenite aplikaciju na uređaju ili emulatoru koji se nalazi na istoj mreži kao i vaš *ServiceHub* bekend (ili koristite `10.0.2.2` umesto `localhost` ako testirate bekend koji radi na istom računaru kao i *Android* emulator – to je poseban alijas emulatora za računar domaćina).
-5. Unesite adresu servera i prijavite se pomoću naloga tehničara koji je unet u *ServiceHub* (pogledajte skriptu za inicijalno popunjavanje podataka u *ServiceHub* README datoteci).
-
-## Poznati nedostaci / stvari koje prvo treba proveriti
-
-- **Nije kompajlirano** – pogledajte gore, ovo je najvažnija stavka.
-- **Nedostaju slojevi za adaptivne ikonice ili slojevi prednjeg plana (foreground)** – koriste se obične PNG ikonice za pokretanje (generisane na osnovu pravog ELGOR logotipa za svih 5 kategorija gustine piksela), a ne XML format za adaptivne ikonice koji koristi aplikacija za klijenta. Jednostavnije je i radi bez problema, samo izgleda manje atraktivno (nema odvojenih slojeva pozadine/prednjeg plana).
+5. 5. Unesite adresu servera i prijavite se pomoću naloga tehničara koji je unet u *ServiceHub* (pogledajte skriptu za inicijalno popunjavanje podataka u *ServiceHub* README datoteci).
