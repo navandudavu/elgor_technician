@@ -1,5 +1,6 @@
 package rs.elgor.technician.data
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
@@ -95,6 +96,7 @@ class AuthViewModel(
                 repository.updatePushToken(token)
             } catch (e: Exception) {
                 // Not critical if fails, will retry on next login/app start
+                Log.e("AuthViewModel", "Failed to sync push token", e)
             }
         }
     }
