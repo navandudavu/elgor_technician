@@ -31,6 +31,19 @@ class AuthViewModel(
     private val _isLoggingIn = MutableStateFlow(false)
     val isLoggingIn: StateFlow<Boolean> = _isLoggingIn.asStateFlow()
 
+    init {
+        // The network layer clears the token on any 401 (see AuthInterceptor). Seeing it vanish
+        // while logged in means the session died: back to the login screen.
+        viewModelScope.launch {
+            sessionManager.tokenFlow.collect { token ->
+                if (token.isNullOrBlank() && _authState.value is AuthState.LoggedIn) {
+                    _authState.value = AuthState.LoggedOut
+                    _loginError.value = "Sesija je istekla. Prijavite se ponovo."
+                }
+            }
+        }
+    }
+
     // Called once when the app starts - if a token is already saved, verify
     // it's still valid (server might have restarted with a new JWT_SECRET,
     // or the token could have simply expired) by hitting /auth/me rather

@@ -1,0 +1,8 @@
+# Build / IDE / lokalno
+.gradle/
+.idea/
+build/
+*/build/
+local.properties
+*.iml
+.DS_Store
