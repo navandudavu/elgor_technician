@@ -132,3 +132,67 @@ data class NoteView(
 
 @JsonClass(generateAdapter = true)
 data class CreateNoteRequest(val body: String)
+
+// --- Edit (PUT /api/nalozi/{id}) and the server-side price preview. No money is ever sent: only
+// quantities and hours. Hours travel as a String ("2.50"), never through a Double.
+
+@JsonClass(generateAdapter = true)
+data class PartView(
+    val id: Long,
+    val sku: String?,
+    val name: String,
+    val unitPrice: String,
+    val stockQty: Int,
+    val active: Boolean
+)
+
+@JsonClass(generateAdapter = true)
+data class PartPage(
+    val items: List<PartView>,
+    val page: Int,
+    val size: Int,
+    val totalItems: Long,
+    val totalPages: Int
+)
+
+@JsonClass(generateAdapter = true)
+data class PartLineInput(val partId: Long, val quantity: Int)
+
+@JsonClass(generateAdapter = true)
+data class ApplianceInput(
+    val type: String,
+    val brand: String,
+    val model: String? = null,
+    val serialNumber: String? = null
+)
+
+@JsonClass(generateAdapter = true)
+data class UpdateNalogRequest(
+    val customerId: Long,
+    val appliance: ApplianceInput,
+    val diagnosis: String,
+    val partLines: List<PartLineInput>,
+    val laborHours: String,
+    val paymentType: String,
+    val expectedVersion: Long
+)
+
+@JsonClass(generateAdapter = true)
+data class PreviewRequest(
+    val partLines: List<PartLineInput>,
+    val laborHours: String,
+    val nalogId: Long? = null
+)
+
+@JsonClass(generateAdapter = true)
+data class NalogPreview(
+    val laborHours: String,
+    val laborRate: String,
+    val laborTotal: String,
+    val partLines: List<NalogPartLine> = emptyList(),
+    val partsTotal: String,
+    val subtotal: String,
+    val vatRate: String,
+    val vatAmount: String,
+    val total: String
+)

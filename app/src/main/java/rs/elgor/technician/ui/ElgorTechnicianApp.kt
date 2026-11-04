@@ -20,6 +20,8 @@ import kotlinx.coroutines.launch
 import rs.elgor.technician.data.AuthState
 import rs.elgor.technician.data.AuthViewModel
 import rs.elgor.technician.data.AuthViewModelFactory
+import rs.elgor.technician.data.NalogEditViewModel
+import rs.elgor.technician.data.NalogEditViewModelFactory
 import rs.elgor.technician.data.NalogDetailViewModel
 import rs.elgor.technician.data.NalogDetailViewModelFactory
 import rs.elgor.technician.data.NalogListViewModel
@@ -37,6 +39,7 @@ import rs.elgor.technician.ui.screens.JobDetailScreen
 import rs.elgor.technician.ui.screens.JobListScreen
 import rs.elgor.technician.ui.screens.LoginScreen
 import rs.elgor.technician.ui.screens.NalogDetailScreen
+import rs.elgor.technician.ui.screens.NalogEditScreen
 import rs.elgor.technician.ui.screens.NalogListScreen
 import rs.elgor.technician.ui.screens.ServerSetupScreen
 
@@ -143,12 +146,40 @@ private fun MainNavHost(
                         key = "nalog_detail_$nalogId"
                     )
                     val me = (authState as? AuthState.LoggedIn)?.user
+                    // The edit screen sets this flag on its way back so the detail reloads the saved values.
+                    val needsRefresh by backStackEntry.savedStateHandle
+                        .getStateFlow("nalog_changed", false).collectAsState()
+                    LaunchedEffect(needsRefresh) {
+                        if (needsRefresh) {
+                            nalogDetailViewModel.load()
+                            backStackEntry.savedStateHandle["nalog_changed"] = false
+                        }
+                    }
                     NalogDetailScreen(
                         viewModel = nalogDetailViewModel,
                         repository = nalogRepository,
                         currentUserId = (me?.id ?: -1).toLong(),
                         isAdmin = me?.role == "admin",
-                        onBack = { navController.popBackStack() }
+                        onBack = { navController.popBackStack() },
+                        onEdit = { navController.navigate(Destination.NalogEdit.createRoute(nalogId)) }
+                    )
+                }
+                composable(
+                    route = Destination.NalogEdit.route,
+                    arguments = listOf(navArgument("nalogId") { type = NavType.LongType })
+                ) { backStackEntry ->
+                    val nalogId = backStackEntry.arguments?.getLong("nalogId") ?: return@composable
+                    val editViewModel = viewModel<NalogEditViewModel>(
+                        factory = NalogEditViewModelFactory(nalogRepository, nalogId),
+                        key = "nalog_edit_$nalogId"
+                    )
+                    NalogEditScreen(
+                        viewModel = editViewModel,
+                        onBack = { navController.popBackStack() },
+                        onSaved = {
+                            navController.previousBackStackEntry?.savedStateHandle?.set("nalog_changed", true)
+                            navController.popBackStack()
+                        }
                     )
                 }
                 composable(Destination.JobList.route) {

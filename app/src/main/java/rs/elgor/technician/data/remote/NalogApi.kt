@@ -18,6 +18,11 @@ import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
+import rs.elgor.technician.model.NalogPreview
+import rs.elgor.technician.model.PartPage
+import rs.elgor.technician.model.PreviewRequest
+import rs.elgor.technician.model.UpdateNalogRequest
+import retrofit2.http.PUT
 import rs.elgor.technician.model.CreateNoteRequest
 import rs.elgor.technician.model.NoteView
 
@@ -34,6 +39,22 @@ interface NalogApi {
 
     @GET("api/nalozi/{id}")
     suspend fun get(@Path("id") id: Long): Response<Nalog>
+
+    // Admin: any nalog. Technician: only their own. Never COMPLETED / CANCELLED (server enforces all of it).
+    @PUT("api/nalozi/{id}")
+    suspend fun update(@Path("id") id: Long, @Body body: UpdateNalogRequest): Response<Nalog>
+
+    // "What would this cost?" - the server does the money maths, the phone only displays it.
+    @POST("api/nalozi/preview")
+    suspend fun preview(@Body body: PreviewRequest): Response<NalogPreview>
+
+    // Inventory lookup. Technicians may search, not edit.
+    @GET("api/parts")
+    suspend fun parts(
+        @Query("q") q: String? = null,
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20
+    ): Response<PartPage>
 
     // Admin only (server enforces it); not allowed for COMPLETED.
     @DELETE("api/nalozi/{id}")

@@ -43,7 +43,7 @@ Java servis se u razvoju traži na istoj mašini, na portu `8081`
 - Lista i detalj naloga, promena statusa, istorija statusa, fotografije
 - **Beleške**: lista i dodavanje (svi koji vide nalog); brisanje beleške samo administrator
 - **Brisanje naloga**: samo administrator, ne za završene naloge (server vraća rezervne delove na stanje)
-- **Izmena naloga** (stavke, delovi, cene) je namerno samo na veb aplikaciji
+- **Izmena naloga** (dugme „Izmeni nalog“, za nezavršene naloge; administrator bilo koji, serviser samo svoj): uređaj, dijagnoza, delovi (dodavanje iz magacina, količina, uklanjanje), sati rada i plaćanje. Iznos prikazuje server (pregled cene), telefon ništa ne računa. Ako je neko drugi u međuvremenu izmenio nalog, server vraća sukob (409) i aplikacija traži ponovno otvaranje. Podaci o klijentu se menjaju samo na veb aplikaciji.
 - Novac se prikazuje isključivo kao string koji pošalje server — telefon nikada ne računa
 
 ## Istek sesije

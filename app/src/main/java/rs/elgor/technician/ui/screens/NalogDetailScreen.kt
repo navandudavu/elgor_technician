@@ -83,6 +83,8 @@ private fun nextStatuses(status: String): List<String> = when (status) {
     else -> emptyList()
 }
 
+private val EDITABLE_STATUSES = setOf("DRAFT", "DISPATCHED", "IN_PROGRESS", "AWAITING_PARTS")
+
 private fun startLabel(to: String) = when (to) {
     "DISPATCHED" -> "Dodeli"
     "IN_PROGRESS" -> "Počni / nastavi rad"
@@ -98,7 +100,8 @@ fun NalogDetailScreen(
     repository: NalogRepository,
     currentUserId: Long,
     isAdmin: Boolean,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onEdit: (() -> Unit)? = null
 ) {
     val nalog by viewModel.nalog.collectAsState()
     val history by viewModel.history.collectAsState()
@@ -165,6 +168,16 @@ fun NalogDetailScreen(
                     )
 
                     error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+
+                    // Only offered for unfinished nalozi, and only to the admin or the assigned technician;
+                    // the server enforces the same rules, this just avoids a dead button.
+                    if (onEdit != null && n.status in EDITABLE_STATUSES && (isAdmin || n.assignedToId == currentUserId)) {
+                        OutlinedButton(
+                            onClick = onEdit,
+                            enabled = !isBusy,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text("Izmeni nalog") }
+                    }
 
                     val next = nextStatuses(n.status)
                     if (next.isNotEmpty()) {

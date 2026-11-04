@@ -17,6 +17,10 @@ import rs.elgor.technician.model.NalogStatusRequest
 import rs.elgor.technician.model.ProblemDetail
 import rs.elgor.technician.model.CreateNoteRequest
 import rs.elgor.technician.model.NoteView
+import rs.elgor.technician.model.NalogPreview
+import rs.elgor.technician.model.PartPage
+import rs.elgor.technician.model.PreviewRequest
+import rs.elgor.technician.model.UpdateNalogRequest
 
 class NalogRepository(private val api: NalogApi) {
 
@@ -40,6 +44,7 @@ class NalogRepository(private val api: NalogApi) {
                     401 -> "Sesija je istekla. Prijavite se ponovo."
                     403 -> "Nemate dozvolu za ovu radnju."
                     404 -> "Radni nalog nije pronađen."
+                    409 -> problem?.detail ?: "Nalog je u međuvremenu izmenjen. Otvorite ga ponovo i probajte opet."
                     else -> fieldMsg ?: problem?.detail ?: "Zahtev nije uspeo (${response.code()})"
                 }
                 Result.failure(Exception(msg))
@@ -60,6 +65,12 @@ class NalogRepository(private val api: NalogApi) {
 
     suspend fun changeStatus(id: Long, status: String): Result<Nalog> =
         unwrap { api.changeStatus(id, NalogStatusRequest(status)) }
+
+    suspend fun update(id: Long, request: UpdateNalogRequest): Result<Nalog> = unwrap { api.update(id, request) }
+
+    suspend fun preview(request: PreviewRequest): Result<NalogPreview> = unwrap { api.preview(request) }
+
+    suspend fun searchParts(q: String?): Result<PartPage> = unwrap { api.parts(q = q) }
 
     suspend fun deleteNalog(id: Long): Result<Unit> = unwrap { api.delete(id) }
 
