@@ -41,10 +41,12 @@ class ElgorMessagingService : FirebaseMessagingService() {
         val body = message.notification?.body ?: message.data["body"] ?: ""
         val jobId = message.data["jobId"]
 
-        showNotification(title, body, jobId)
+        val nalogId = message.data["nalogId"]
+
+        showNotification(title, body, jobId, nalogId)
     }
 
-    private fun showNotification(title: String, body: String, jobId: String?) {
+    private fun showNotification(title: String, body: String, jobId: String?, nalogId: String?) {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "elgor_jobs"
 
@@ -62,11 +64,14 @@ class ElgorMessagingService : FirebaseMessagingService() {
             if (jobId != null) {
                 putExtra("jobId", jobId.toIntOrNull())
             }
+            if (nalogId != null) {
+                nalogId.toLongOrNull()?.let { putExtra("nalogId", it) }
+            }
         }
 
         val pendingIntent = PendingIntent.getActivity(
             this,
-            0,
+            System.currentTimeMillis().toInt(),  // unique, else a newer extras-update overwrites older notifications' targets
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

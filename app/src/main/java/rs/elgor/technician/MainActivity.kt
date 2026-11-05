@@ -14,9 +14,11 @@ class MainActivity : ComponentActivity() {
         
         val jobId = intent.getIntExtra("jobId", -1).takeIf { it != -1 }
         
+        val nalogId = intent.getLongExtra("nalogId", -1L).takeIf { it != -1L }
+
         setContent {
             ElgorTechnicianTheme {
-                ElgorTechnicianApp(initialJobId = jobId)
+                ElgorTechnicianApp(initialJobId = jobId, initialNalogId = nalogId)
             }
         }
     }

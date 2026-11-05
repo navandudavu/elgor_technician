@@ -49,7 +49,7 @@ import rs.elgor.technician.ui.screens.ServerSetupScreen
 // wrapper in App.jsx, just with an extra step since this app also needs
 // to know WHERE the server is before it can check WHO's logged in.
 @Composable
-fun ElgorTechnicianApp(initialJobId: Int? = null) {
+fun ElgorTechnicianApp(initialJobId: Int? = null, initialNalogId: Long? = null) {
     val context = LocalContext.current
     val sessionManager = remember { SessionManager(context) }
     val scope = rememberCoroutineScope()
@@ -92,7 +92,8 @@ fun ElgorTechnicianApp(initialJobId: Int? = null) {
         nalogRepository = nalogRepository,
         sessionManager = sessionManager,
         serverUrl = serverUrl!!,
-        initialJobId = initialJobId
+        initialJobId = initialJobId,
+        initialNalogId = initialNalogId
     )
 }
 
@@ -102,7 +103,8 @@ private fun MainNavHost(
     nalogRepository: NalogRepository,
     sessionManager: SessionManager,
     serverUrl: String,
-    initialJobId: Int?
+    initialJobId: Int?,
+    initialNalogId: Long?
 ) {
     val navController = rememberNavController()
     val authViewModel = viewModel<AuthViewModel>(
@@ -114,6 +116,13 @@ private fun MainNavHost(
     LaunchedEffect(authState) {
         if (authState is AuthState.LoggedIn && initialJobId != null) {
             navController.navigate(Destination.JobDetail.createRoute(initialJobId))
+        }
+    }
+
+    // Tapped a "nalog assigned" notification: open that nalog once logged in.
+    LaunchedEffect(authState) {
+        if (authState is AuthState.LoggedIn && initialNalogId != null) {
+            navController.navigate(Destination.NalogDetail.createRoute(initialNalogId))
         }
     }
 
