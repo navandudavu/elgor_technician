@@ -132,8 +132,7 @@ private fun MainNavHost(
                     NalogListScreen(
                         viewModel = nalogListViewModel,
                         authViewModel = authViewModel,
-                        onNalogClick = { id -> navController.navigate(Destination.NalogDetail.createRoute(id)) },
-                        onOpenOldJobs = { navController.navigate(Destination.JobList.route) }
+                        onNalogClick = { id -> navController.navigate(Destination.NalogDetail.createRoute(id)) }
                     )
                 }
                 composable(
