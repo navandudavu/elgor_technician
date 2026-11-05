@@ -32,6 +32,26 @@ To je prva stvar koju treba uraditi nakon otvaranja projekta u Android Studio-u.
   to da je aplikacija usmerena ka serveru koji još uvek nije trajno
   deplojvan (pogledajte ispod)
 
+## Radni nalozi (Java servis)
+
+Aplikacija se sada otvara na listi **radnih naloga** (`/api/nalozi`, Java servis),
+a stari ServiceHub zadaci su i dalje dostupni preko dugmeta „Stari poslovi".
+Telefon pamti samo jednu adresu (Node server); ako se završava na `:4000`,
+Java servis se u razvoju traži na istoj mašini, na portu `8081`
+(`NetworkConfig.nalogBaseUrl`). Iza reverse proxy-ja, gde postoji jedna adresa, ništa se ne menja.
+
+- Lista i detalj naloga, promena statusa, istorija statusa, fotografije
+- **Beleške**: lista i dodavanje (svi koji vide nalog); brisanje beleške samo administrator
+- **Brisanje naloga**: samo administrator, ne za završene naloge (server vraća rezervne delove na stanje)
+- **Izmena naloga** (dugme „Izmeni nalog“, za nezavršene naloge; administrator bilo koji, serviser samo svoj): uređaj, dijagnoza, delovi (dodavanje iz magacina, količina, uklanjanje), sati rada i plaćanje. Iznos prikazuje server (pregled cene), telefon ništa ne računa. Ako je neko drugi u međuvremenu izmenio nalog, server vraća sukob (409) i aplikacija traži ponovno otvaranje. Podaci o klijentu se menjaju samo na veb aplikaciji.
+- Novac se prikazuje isključivo kao string koji pošalje server — telefon nikada ne računa
+
+## Istek sesije
+
+Svaki odgovor 401 (istekao token, promenjena ili resetovana lozinka, deaktiviran nalog)
+briše sačuvani token i aplikacija se vraća na ekran za prijavu uz poruku
+„Sesija je istekla. Prijavite se ponovo." Adresa servera se pamti.
+
 ## Pre upotrebe: adresa servera
 
 Ova aplikacija nema unapred upisanu URL adresu pozadinskog servera (backend-a).

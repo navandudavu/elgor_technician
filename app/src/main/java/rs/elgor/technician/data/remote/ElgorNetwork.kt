@@ -26,7 +26,14 @@ private class AuthInterceptor(private val sessionManager: SessionManager) : Inte
                 addHeader("Authorization", "Bearer $token")
             }
         }.build()
-        return chain.proceed(request)
+        val response = chain.proceed(request)
+        // Token rejected by the server (expired, password changed, account deactivated): drop it.
+        // AuthViewModel watches the token and returns to the login screen. Only if the token we
+        // sent is still the saved one, so a late 401 can't log out a fresh login.
+        if (response.code == 401 && token != null && !request.url.encodedPath.endsWith("/auth/login")) {
+            runBlocking { if (sessionManager.getToken() == token) sessionManager.clearSession() }
+        }
+        return response
     }
 }
 
@@ -59,5 +66,23 @@ object ElgorNetwork {
             .build()
 
         return retrofit.create(ServiceHubApi::class.java)
+    }
+
+    // Same client/auth as create(); only the target (Java nalog-service) differs.
+    fun createNalogApi(serverUrl: String, sessionManager: SessionManager): NalogApi {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor(sessionManager))
+            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl(NetworkConfig.nalogBaseUrl(serverUrl))
+            .client(client)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+            .create(NalogApi::class.java)
     }
 }

@@ -20,6 +20,13 @@ import kotlinx.coroutines.launch
 import rs.elgor.technician.data.AuthState
 import rs.elgor.technician.data.AuthViewModel
 import rs.elgor.technician.data.AuthViewModelFactory
+import rs.elgor.technician.data.NalogEditViewModel
+import rs.elgor.technician.data.NalogEditViewModelFactory
+import rs.elgor.technician.data.NalogDetailViewModel
+import rs.elgor.technician.data.NalogDetailViewModelFactory
+import rs.elgor.technician.data.NalogListViewModel
+import rs.elgor.technician.data.NalogListViewModelFactory
+import rs.elgor.technician.data.NalogRepository
 import rs.elgor.technician.data.JobDetailViewModel
 import rs.elgor.technician.data.JobDetailViewModelFactory
 import rs.elgor.technician.data.JobRepository
@@ -31,6 +38,9 @@ import rs.elgor.technician.data.remote.ElgorNetwork
 import rs.elgor.technician.ui.screens.JobDetailScreen
 import rs.elgor.technician.ui.screens.JobListScreen
 import rs.elgor.technician.ui.screens.LoginScreen
+import rs.elgor.technician.ui.screens.NalogDetailScreen
+import rs.elgor.technician.ui.screens.NalogEditScreen
+import rs.elgor.technician.ui.screens.NalogListScreen
 import rs.elgor.technician.ui.screens.ServerSetupScreen
 
 // Top-level app composable. Decides between three states before showing
@@ -73,8 +83,13 @@ fun ElgorTechnicianApp(initialJobId: Int? = null) {
         )
     }
 
+    val nalogRepository = remember(serverUrl) {
+        NalogRepository(ElgorNetwork.createNalogApi(serverUrl!!, sessionManager))
+    }
+
     MainNavHost(
         repository = repository,
+        nalogRepository = nalogRepository,
         sessionManager = sessionManager,
         serverUrl = serverUrl!!,
         initialJobId = initialJobId
@@ -84,6 +99,7 @@ fun ElgorTechnicianApp(initialJobId: Int? = null) {
 @Composable
 private fun MainNavHost(
     repository: JobRepository,
+    nalogRepository: NalogRepository,
     sessionManager: SessionManager,
     serverUrl: String,
     initialJobId: Int?
@@ -107,7 +123,64 @@ private fun MainNavHost(
         is AuthState.CheckingSession -> Unit // nothing to render yet, avoids a flash of the login screen
         is AuthState.LoggedOut -> LoginScreen(authViewModel = authViewModel)
         is AuthState.LoggedIn -> {
-            NavHost(navController = navController, startDestination = Destination.JobList.route) {
+            NavHost(navController = navController, startDestination = Destination.NalogList.route) {
+                composable(Destination.NalogList.route) {
+                    val nalogListViewModel = viewModel<NalogListViewModel>(
+                        factory = NalogListViewModelFactory(nalogRepository),
+                        key = "nalozi_$serverUrl"
+                    )
+                    NalogListScreen(
+                        viewModel = nalogListViewModel,
+                        authViewModel = authViewModel,
+                        onNalogClick = { id -> navController.navigate(Destination.NalogDetail.createRoute(id)) }
+                    )
+                }
+                composable(
+                    route = Destination.NalogDetail.route,
+                    arguments = listOf(navArgument("nalogId") { type = NavType.LongType })
+                ) { backStackEntry ->
+                    val nalogId = backStackEntry.arguments?.getLong("nalogId") ?: return@composable
+                    val nalogDetailViewModel = viewModel<NalogDetailViewModel>(
+                        factory = NalogDetailViewModelFactory(nalogRepository, nalogId),
+                        key = "nalog_detail_$nalogId"
+                    )
+                    val me = (authState as? AuthState.LoggedIn)?.user
+                    // The edit screen sets this flag on its way back so the detail reloads the saved values.
+                    val needsRefresh by backStackEntry.savedStateHandle
+                        .getStateFlow("nalog_changed", false).collectAsState()
+                    LaunchedEffect(needsRefresh) {
+                        if (needsRefresh) {
+                            nalogDetailViewModel.load()
+                            backStackEntry.savedStateHandle["nalog_changed"] = false
+                        }
+                    }
+                    NalogDetailScreen(
+                        viewModel = nalogDetailViewModel,
+                        repository = nalogRepository,
+                        currentUserId = (me?.id ?: -1).toLong(),
+                        isAdmin = me?.role == "admin",
+                        onBack = { navController.popBackStack() },
+                        onEdit = { navController.navigate(Destination.NalogEdit.createRoute(nalogId)) }
+                    )
+                }
+                composable(
+                    route = Destination.NalogEdit.route,
+                    arguments = listOf(navArgument("nalogId") { type = NavType.LongType })
+                ) { backStackEntry ->
+                    val nalogId = backStackEntry.arguments?.getLong("nalogId") ?: return@composable
+                    val editViewModel = viewModel<NalogEditViewModel>(
+                        factory = NalogEditViewModelFactory(nalogRepository, nalogId),
+                        key = "nalog_edit_$nalogId"
+                    )
+                    NalogEditScreen(
+                        viewModel = editViewModel,
+                        onBack = { navController.popBackStack() },
+                        onSaved = {
+                            navController.previousBackStackEntry?.savedStateHandle?.set("nalog_changed", true)
+                            navController.popBackStack()
+                        }
+                    )
+                }
                 composable(Destination.JobList.route) {
                     val jobsViewModel = viewModel<JobsViewModel>(
                         factory = JobsViewModelFactory(repository),
