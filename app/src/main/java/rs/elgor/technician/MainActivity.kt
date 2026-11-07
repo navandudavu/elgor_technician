@@ -14,7 +14,9 @@ class MainActivity : ComponentActivity() {
         
         val jobId = intent.getIntExtra("jobId", -1).takeIf { it != -1 }
         
-        val nalogId = intent.getLongExtra("nalogId", -1L).takeIf { it != -1L }
+        // a notification tapped while the app was closed carries the id as a String, our own notification as a Long
+        val nalogId = (intent.extras?.get("nalogId") as? Number)?.toLong()
+            ?: intent.getStringExtra("nalogId")?.toLongOrNull()
 
         setContent {
             ElgorTechnicianTheme {

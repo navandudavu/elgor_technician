@@ -15,7 +15,7 @@ object NetworkConfig {
     /**
      * Port na kojem sluša Express backend.
      */
-    const val BACKEND_PORT = 4000
+    const val BACKEND_PORT = 8081
     
     /**
      * Pomoćna metoda za kreiranje osnovnog URL-a.
@@ -25,12 +25,15 @@ object NetworkConfig {
     /** Port of the Java nalog-service in development (behind a reverse proxy both share one address). */
     const val NALOG_PORT = 8081
 
+    /** The old Node backend is gone; a phone that still has :4000 saved is pointed at the Java service. */
+    private const val LEGACY_NODE_PORT = 4000
+
     /**
      * The phone stores ONE server address (the Node backend). In development the Java service lives
      * on the same machine at port 8081, so swap the port; without :4000 in the address nothing changes.
      */
     fun nalogBaseUrl(serverUrl: String): String {
         val url = serverUrl.toHttpUrlOrNull() ?: return serverUrl
-        return if (url.port == BACKEND_PORT) url.newBuilder().port(NALOG_PORT).build().toString() else serverUrl
+        return if (url.port == LEGACY_NODE_PORT) url.newBuilder().port(NALOG_PORT).build().toString() else serverUrl
     }
 }

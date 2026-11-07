@@ -34,17 +34,22 @@ To je prva stvar koju treba uraditi nakon otvaranja projekta u Android Studio-u.
 
 ## Radni nalozi (Java servis)
 
-Aplikacija se sada otvara na listi **radnih naloga** (`/api/nalozi`, Java servis),
-a stari ServiceHub zadaci su i dalje dostupni preko dugmeta „Stari poslovi".
-Telefon pamti samo jednu adresu (Node server); ako se završava na `:4000`,
-Java servis se u razvoju traži na istoj mašini, na portu `8081`
-(`NetworkConfig.nalogBaseUrl`). Iza reverse proxy-ja, gde postoji jedna adresa, ništa se ne menja.
+Aplikacija se otvara na listi **radnih naloga** (`/api/nalozi`). Postoji samo jedan server (Java servis):
+prijava, nalozi, fotografije i obaveštenja idu na istu adresu. Stari Node server više ne postoji, pa se
+„Stari poslovi" više ne koriste. Ako je na telefonu sačuvana adresa koja se završava na `:4000`,
+aplikacija je preusmerava na port `8081` (`NetworkConfig.nalogBaseUrl`).
 
 - Lista i detalj naloga, promena statusa, istorija statusa, fotografije
 - **Beleške**: lista i dodavanje (svi koji vide nalog); brisanje beleške samo administrator
 - **Brisanje naloga**: samo administrator, ne za završene naloge (server vraća rezervne delove na stanje)
 - **Izmena naloga** (dugme „Izmeni nalog“, za nezavršene naloge; administrator bilo koji, serviser samo svoj): uređaj, dijagnoza, delovi (dodavanje iz magacina, količina, uklanjanje), sati rada i plaćanje. Iznos prikazuje server (pregled cene), telefon ništa ne računa. Ako je neko drugi u međuvremenu izmenio nalog, server vraća sukob (409) i aplikacija traži ponovno otvaranje. Podaci o klijentu se menjaju samo na veb aplikaciji.
 - Novac se prikazuje isključivo kao string koji pošalje server — telefon nikada ne računa
+
+## Obaveštenja (push)
+
+Kada administrator dodeli nalog serviseru, telefon dobija obaveštenje „Novi radni nalog“; dodir otvara taj nalog.
+Server šalje samo „data“ poruke, pa aplikacija sama prikazuje obaveštenje (i u pozadini). Potreban je
+`firebase-service-account.json` na serveru (pogledajte `deploy/DEPLOY.md` u servicehub repozitorijumu).
 
 ## Istek sesije
 
@@ -56,7 +61,7 @@ briše sačuvani token i aplikacija se vraća na ekran za prijavu uz poruku
 
 Ova aplikacija nema unapred upisanu URL adresu pozadinskog servera (backend-a).
 Prilikom prvog pokretanja traži se unos adrese — tokom razvoja to je IP adresa
-vašeg računara u lokalnoj mreži i ServiceHub port, npr. `http://192.168.1.100:4000`
+vašeg računara u lokalnoj mreži i ServiceHub port, npr. `http://192.168.1.100:8081`
 (pronađite LAN IP adresu svog računara; nemojte koristiti `localhost` — to bi
 usmerilo telefon na samog sebe, a ne na vaš računar). Kada se ServiceHub postavi u stvarno okruženje, ta adresa postaje
 stalna javna URL adresa.
