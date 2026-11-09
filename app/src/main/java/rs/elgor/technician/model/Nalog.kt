@@ -198,7 +198,7 @@ data class NalogPreview(
 )
 
 // --- Create (POST /api/nalozi). Mirrors CreateNalogRequest.java. Still no money in the request: hours as a String,
-// parts as id + quantity. status / assignedToId are honoured for admins only; a technician always gets DRAFT and themselves.
+// parts as id + quantity. status / assignedToId are honoured for admins only; a technician always gets DISPATCHED and themselves.
 
 @JsonClass(generateAdapter = true)
 data class NewCustomerInput(

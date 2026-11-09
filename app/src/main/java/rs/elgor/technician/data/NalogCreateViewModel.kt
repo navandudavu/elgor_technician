@@ -44,7 +44,7 @@ data class CreateForm(
 
 // Creates a nalog, like the web form. Money is never computed here: the totals shown come from the server's
 // preview endpoint and the request carries only hours and part quantities. One Idempotency-Key per form, so a
-// retry after a timeout can never create two nalozi. A technician's nalog is always DRAFT and assigned to them
+// retry after a timeout can never create two nalozi. A technician's nalog is always DISPATCHED (Dodeljen) and assigned to them
 // (the server enforces it, the phone just does not offer the choice).
 class NalogCreateViewModel(
     private val repository: NalogRepository,
@@ -221,7 +221,7 @@ class NalogCreateViewModel(
             partLines = lineInputs(f),
             laborHours = validHours,
             paymentType = f.payment,
-            status = if (isAdmin) f.initialStatus else "DRAFT",
+            status = if (isAdmin) f.initialStatus else "DISPATCHED",
             scheduledAt = f.scheduledAtIso,
             assignedToId = if (isAdmin) f.assignedToId else null
         )
