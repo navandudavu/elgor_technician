@@ -79,7 +79,7 @@ object ElgorNetwork {
             .build()
 
         return Retrofit.Builder()
-            .baseUrl(NetworkConfig.nalogBaseUrl(serverUrl))
+            .baseUrl(serverUrl)
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
