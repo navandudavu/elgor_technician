@@ -9,7 +9,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Response
 import java.io.File
 import rs.elgor.technician.data.remote.NalogApi
+import rs.elgor.technician.model.CreateNalogRequest
 import rs.elgor.technician.model.Nalog
+import rs.elgor.technician.model.NalogCustomer
+import rs.elgor.technician.model.TechnicianView
 import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
@@ -60,6 +63,13 @@ class NalogRepository(private val api: NalogApi) {
         unwrap { api.list(status = status, page = page) }
 
     suspend fun get(id: Long): Result<Nalog> = unwrap { api.get(id) }
+
+    suspend fun create(request: CreateNalogRequest, idempotencyKey: String): Result<Nalog> =
+        unwrap { api.create(idempotencyKey, request) }
+
+    suspend fun searchCustomers(q: String): Result<List<NalogCustomer>> = unwrap { api.customers(q) }
+
+    suspend fun technicians(): Result<List<TechnicianView>> = unwrap { api.technicians() }
 
     suspend fun history(id: Long): Result<List<NalogHistoryEntry>> = unwrap { api.history(id) }
 

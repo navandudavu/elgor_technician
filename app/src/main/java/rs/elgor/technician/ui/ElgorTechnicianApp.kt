@@ -20,6 +20,8 @@ import kotlinx.coroutines.launch
 import rs.elgor.technician.data.AuthState
 import rs.elgor.technician.data.AuthViewModel
 import rs.elgor.technician.data.AuthViewModelFactory
+import rs.elgor.technician.data.NalogCreateViewModel
+import rs.elgor.technician.data.NalogCreateViewModelFactory
 import rs.elgor.technician.data.NalogEditViewModel
 import rs.elgor.technician.data.NalogEditViewModelFactory
 import rs.elgor.technician.data.NalogDetailViewModel
@@ -38,6 +40,7 @@ import rs.elgor.technician.data.remote.ElgorNetwork
 import rs.elgor.technician.ui.screens.JobDetailScreen
 import rs.elgor.technician.ui.screens.JobListScreen
 import rs.elgor.technician.ui.screens.LoginScreen
+import rs.elgor.technician.ui.screens.NalogCreateScreen
 import rs.elgor.technician.ui.screens.NalogDetailScreen
 import rs.elgor.technician.ui.screens.NalogEditScreen
 import rs.elgor.technician.ui.screens.NalogListScreen
@@ -141,7 +144,25 @@ private fun MainNavHost(
                     NalogListScreen(
                         viewModel = nalogListViewModel,
                         authViewModel = authViewModel,
-                        onNalogClick = { id -> navController.navigate(Destination.NalogDetail.createRoute(id)) }
+                        onNalogClick = { id -> navController.navigate(Destination.NalogDetail.createRoute(id)) },
+                        onCreateNalog = { navController.navigate(Destination.NalogCreate.route) }
+                    )
+                }
+                composable(Destination.NalogCreate.route) {
+                    val me = (authState as? AuthState.LoggedIn)?.user
+                    val createViewModel = viewModel<NalogCreateViewModel>(
+                        factory = NalogCreateViewModelFactory(nalogRepository, me?.role == "admin"),
+                        key = "nalog_create"
+                    )
+                    NalogCreateScreen(
+                        viewModel = createViewModel,
+                        onBack = { navController.popBackStack() },
+                        // open the new nalog; Back from there returns to the list, not to the finished form
+                        onCreated = { id ->
+                            navController.navigate(Destination.NalogDetail.createRoute(id)) {
+                                popUpTo(Destination.NalogCreate.route) { inclusive = true }
+                            }
+                        }
                     )
                 }
                 composable(

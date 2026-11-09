@@ -5,6 +5,7 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.DELETE
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -13,7 +14,10 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.Path
 import retrofit2.http.Query
+import rs.elgor.technician.model.CreateNalogRequest
 import rs.elgor.technician.model.Nalog
+import rs.elgor.technician.model.NalogCustomer
+import rs.elgor.technician.model.TechnicianView
 import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
@@ -36,6 +40,22 @@ interface NalogApi {
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 30
     ): Response<NalogPage>
+
+    // One Idempotency-Key per form: a retry after a timeout can never create a second nalog.
+    // A technician always becomes the assignee; status and assignee are honoured for admins only.
+    @POST("api/nalozi")
+    suspend fun create(
+        @Header("Idempotency-Key") idempotencyKey: String,
+        @Body body: CreateNalogRequest
+    ): Response<Nalog>
+
+    // Customer autocomplete (2+ characters), same endpoint the web form uses.
+    @GET("api/nalozi/customers")
+    suspend fun customers(@Query("q") q: String): Response<List<NalogCustomer>>
+
+    // Admin only (server enforces it): who a new nalog can be assigned to.
+    @GET("api/nalozi/technicians")
+    suspend fun technicians(): Response<List<TechnicianView>>
 
     @GET("api/nalozi/{id}")
     suspend fun get(@Path("id") id: Long): Response<Nalog>

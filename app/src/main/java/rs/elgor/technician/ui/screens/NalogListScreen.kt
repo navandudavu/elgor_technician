@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +48,7 @@ fun NalogListScreen(
     viewModel: NalogListViewModel,
     authViewModel: AuthViewModel,
     onNalogClick: (Long) -> Unit,
+    onCreateNalog: () -> Unit,
     onOpenOldJobs: (() -> Unit)? = null
 ) {
     val items by viewModel.items.collectAsState()
@@ -58,6 +61,13 @@ fun NalogListScreen(
     LaunchedEffect(Unit) { viewModel.load() }
 
     Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onCreateNalog,
+                icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                text = { Text("Novi nalog") }
+            )
+        },
         topBar = {
             TopAppBar(
                 title = {
