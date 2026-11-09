@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
-INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
-INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
-INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
+INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
+INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
+INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:2:1-57:12
 MERGED from [androidx.navigation:navigation-common:2.7.7] C:\Users\navandudavu\.gradle\caches\transforms-4\ec8ed637318141e26eaf040d709a808e\transformed\navigation-common-2.7.7\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-runtime:2.7.7] C:\Users\navandudavu\.gradle\caches\transforms-4\ac90404d6b9c4856275ee04b719cd543\transformed\navigation-runtime-2.7.7\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.navigation:navigation-common-ktx:2.7.7] C:\Users\navandudavu\.gradle\caches\transforms-4\97b4c8774bb75aa3fc18465e05df25ac\transformed\navigation-common-ktx-2.7.7\AndroidManifest.xml:2:1-7:12
@@ -111,15 +111,15 @@ MERGED from [androidx.documentfile:documentfile:1.0.0] C:\Users\navandudavu\.gra
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\a7e181f11fa09443f4119b6ee9b3ac53\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.print:print:1.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\9bf61dedfa9eb1f52e63180a843ab641\transformed\print-1.0.0\AndroidManifest.xml:17:1-22:12
 	package
-		INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
 	android:versionName
-		INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
 	android:versionCode
-		INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
 	xmlns:android
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:2:11-69
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:4:5-67
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:4:5-67
 MERGED from [com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:23:5-67
 MERGED from [com.google.android.gms:play-services-measurement-api:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\1d7510d697d6c871a2c4e0e2c4b2ede9\transformed\jetified-play-services-measurement-api-22.0.1\AndroidManifest.xml:22:5-67
@@ -135,30 +135,30 @@ MERGED from [com.google.android.gms:play-services-measurement-sdk-api:22.0.1] C:
 MERGED from [com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:25:5-67
 MERGED from [com.google.android.datatransport:transport-backend-cct:3.1.9] C:\Users\navandudavu\.gradle\caches\transforms-4\ce3e2bbe6357426748f6de6cf34dc51f\transformed\jetified-transport-backend-cct-3.1.9\AndroidManifest.xml:25:5-67
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:4:22-64
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:4:22-64
 uses-permission#android.permission.POST_NOTIFICATIONS
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:5:5-77
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:5:5-77
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:23:5-77
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:23:5-77
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:5:22-74
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:5:22-74
 uses-feature#android.hardware.camera
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:6:5-85
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:6:5-85
 	android:required
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:6:58-82
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:6:58-82
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:6:19-57
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:6:19-57
 queries
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:8:5-12:15
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:8:5-12:15
 intent#action:name:android.media.action.IMAGE_CAPTURE
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:9:9-11:18
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:9:9-11:18
 action#android.media.action.IMAGE_CAPTURE
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:10:13-73
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:10:13-73
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:10:21-70
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:10:21-70
 application
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:14:5-55:19
-INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:14:5-55:19
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:14:5-55:19
+INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:14:5-55:19
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:28:5-64:19
 MERGED from [com.google.android.gms:play-services-base:18.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\eece0af357b8b91c85961fe8dee60777\transformed\jetified-play-services-base-18.0.1\AndroidManifest.xml:19:5-23:19
@@ -220,83 +220,83 @@ MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\navandud
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\navandudavu\.gradle\caches\transforms-4\64236b2755df245628e9db3285aca3a2\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.startup:startup-runtime:1.1.1] C:\Users\navandudavu\.gradle\caches\transforms-4\64236b2755df245628e9db3285aca3a2\transformed\jetified-startup-runtime-1.1.1\AndroidManifest.xml:25:5-31:19
 	android:extractNativeLibs
-		INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.1] C:\Users\navandudavu\.gradle\caches\transforms-4\6304624fab0045c655a438afa9c6a214\transformed\core-1.13.1\AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:20:9-35
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:20:9-35
 	android:label
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:18:9-41
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:18:9-41
 	android:roundIcon
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:19:9-54
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:19:9-54
 	android:icon
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:17:9-43
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:17:9-43
 	android:allowBackup
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:16:9-35
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:16:9-35
 	android:theme
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:21:9-53
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:21:9-53
 	android:networkSecurityConfig
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:22:9-69
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:22:9-69
 	android:usesCleartextTraffic
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:23:9-44
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:23:9-44
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:15:9-41
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:15:9-41
 activity#rs.elgor.technician.MainActivity
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:25:9-33:20
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:25:9-33:20
 	android:exported
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:27:13-36
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:27:13-36
 	android:theme
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:28:13-57
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:28:13-57
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:26:13-41
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:26:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:29:13-32:29
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:29:13-32:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:30:17-69
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:30:17-69
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:30:25-66
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:30:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:31:17-77
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:31:17-77
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:31:27-74
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:31:27-74
 provider#androidx.core.content.FileProvider
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:35:9-46:20
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:35:9-46:20
 	android:grantUriPermissions
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:39:13-47
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:39:13-47
 	android:authorities
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:37:13-67
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:37:13-67
 	android:exported
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:38:13-37
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:38:13-37
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:36:13-62
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:36:13-62
 meta-data#android.support.FILE_PATHS
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:40:13-42:54
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:40:13-42:54
 	android:resource
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:42:17-51
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:42:17-51
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:41:17-58
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:41:17-58
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:43:13-45:54
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:43:13-45:54
 	android:resource
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:45:17-51
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:45:17-51
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:44:17-67
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:44:17-67
 service#rs.elgor.technician.service.ElgorMessagingService
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:48:9-54:19
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:48:9-54:19
 	android:exported
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:50:13-37
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:50:13-37
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:49:13-58
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:49:13-58
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:51:13-53:29
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:51:13-53:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:52:17-78
+ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:52:17-78
 	android:name
-		ADDED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml:52:25-75
+		ADDED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml:52:25-75
 uses-sdk
-INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
 MERGED from [androidx.navigation:navigation-common:2.7.7] C:\Users\navandudavu\.gradle\caches\transforms-4\ec8ed637318141e26eaf040d709a808e\transformed\navigation-common-2.7.7\AndroidManifest.xml:20:5-44
 MERGED from [androidx.navigation:navigation-common:2.7.7] C:\Users\navandudavu\.gradle\caches\transforms-4\ec8ed637318141e26eaf040d709a808e\transformed\navigation-common-2.7.7\AndroidManifest.xml:20:5-44
 MERGED from [androidx.navigation:navigation-runtime:2.7.7] C:\Users\navandudavu\.gradle\caches\transforms-4\ac90404d6b9c4856275ee04b719cd543\transformed\navigation-runtime-2.7.7\AndroidManifest.xml:20:5-44
@@ -510,9 +510,9 @@ MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\User
 MERGED from [androidx.print:print:1.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\9bf61dedfa9eb1f52e63180a843ab641\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.print:print:1.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\9bf61dedfa9eb1f52e63180a843ab641\transformed\print-1.0.0\AndroidManifest.xml:20:5-44
 	android:targetSdkVersion
-		INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.ACCESS_NETWORK_STATE
 ADDED from [com.google.firebase:firebase-messaging:24.0.0] C:\Users\navandudavu\.gradle\caches\transforms-4\79f4d99f0871f81ab81d6f2756d039ee\transformed\jetified-firebase-messaging-24.0.0\AndroidManifest.xml:22:5-79
 MERGED from [com.google.android.gms:play-services-measurement:22.0.1] C:\Users\navandudavu\.gradle\caches\transforms-4\be750f057d670dc7981051c4ac6db6ec\transformed\jetified-play-services-measurement-22.0.1\AndroidManifest.xml:24:5-79

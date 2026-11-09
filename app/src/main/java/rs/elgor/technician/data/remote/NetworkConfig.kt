@@ -11,16 +11,11 @@ object NetworkConfig {
      * Zamenite "192.168.1.50" vašom stvarnom IPv4 adresom (npr. iz komande ipconfig).
      */
     const val DEVELOPMENT_PC_IP = "192.168.1.30"
-    
+
     /**
-     * Port na kojem sluša Express backend.
+     * Docker: sve ide preko Caddy-ja na portu 80, pa adresa nema port.
      */
-    const val BACKEND_PORT = 8081
-    
-    /**
-     * Pomoćna metoda za kreiranje osnovnog URL-a.
-     */
-    fun getDefaultBaseUrl(): String = "http://$DEVELOPMENT_PC_IP:$BACKEND_PORT"
+    fun getDefaultBaseUrl(): String = "http://$DEVELOPMENT_PC_IP"
 
     /** Port of the Java nalog-service in development (behind a reverse proxy both share one address). */
     const val NALOG_PORT = 8081

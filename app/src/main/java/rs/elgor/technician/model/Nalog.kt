@@ -196,3 +196,33 @@ data class NalogPreview(
     val vatAmount: String,
     val total: String
 )
+
+// --- Create (POST /api/nalozi). Mirrors CreateNalogRequest.java. Still no money in the request: hours as a String,
+// parts as id + quantity. status / assignedToId are honoured for admins only; a technician always gets DISPATCHED and themselves.
+
+@JsonClass(generateAdapter = true)
+data class NewCustomerInput(
+    val fullName: String,
+    val address: String,
+    val city: String? = null,
+    val phone: String,
+    val email: String? = null,
+    val locationNotes: String? = null
+)
+
+@JsonClass(generateAdapter = true)
+data class CreateNalogRequest(
+    val customerId: Long? = null,
+    val newCustomer: NewCustomerInput? = null,
+    val appliance: ApplianceInput,
+    val diagnosis: String,
+    val partLines: List<PartLineInput>,
+    val laborHours: String,
+    val paymentType: String,
+    val status: String? = null,
+    val scheduledAt: String? = null,
+    val assignedToId: Long? = null
+)
+
+@JsonClass(generateAdapter = true)
+data class TechnicianView(val id: Long, val name: String)

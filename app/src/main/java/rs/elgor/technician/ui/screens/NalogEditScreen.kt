@@ -293,7 +293,7 @@ private fun PartPickerDialog(viewModel: NalogEditViewModel, onClose: () -> Unit)
 }
 
 @Composable
-private fun PickerField(label: String, value: String, options: List<Pair<String, String>>, onPick: (String) -> Unit) {
+internal fun PickerField(label: String, value: String, options: List<Pair<String, String>>, onPick: (String) -> Unit) {
     var open by remember { mutableStateOf(false) }
     Column {
         Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -309,7 +309,7 @@ private fun PickerField(label: String, value: String, options: List<Pair<String,
 }
 
 @Composable
-private fun EditCard(title: String, content: @Composable () -> Unit) {
+internal fun EditCard(title: String, content: @Composable () -> Unit) {
     Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(title, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -319,7 +319,7 @@ private fun EditCard(title: String, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun EditMoneyRow(label: String, value: String, bold: Boolean = false) {
+internal fun EditMoneyRow(label: String, value: String, bold: Boolean = false) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(label, fontWeight = if (bold) FontWeight.Bold else null, modifier = Modifier.weight(1f).padding(end = 8.dp))
         Text(value, fontWeight = if (bold) FontWeight.Bold else null)

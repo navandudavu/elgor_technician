@@ -63,10 +63,10 @@ rs.elgor.technician.app-jetified-play-services-base-18.0.1-61 C:\Users\navanduda
 rs.elgor.technician.app-jetified-ui-release-62 C:\Users\navandudavu\.gradle\caches\transforms-4\ef8f9655c9f3ae1eb18e4c2d1145f57e\transformed\jetified-ui-release\res
 rs.elgor.technician.app-jetified-ads-adservices-java-1.0.0-beta05-63 C:\Users\navandudavu\.gradle\caches\transforms-4\fddcc220c77dab01af44a50c633046c1\transformed\jetified-ads-adservices-java-1.0.0-beta05\res
 rs.elgor.technician.app-jetified-room-ktx-2.6.1-64 C:\Users\navandudavu\.gradle\caches\transforms-4\fe55f7c4d713aacf13648c77f1e7aff9\transformed\jetified-room-ktx-2.6.1\res
-rs.elgor.technician.app-res-65 C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\build\generated\res\processDebugGoogleServices
-rs.elgor.technician.app-resValues-66 C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\build\generated\res\resValues\debug
-rs.elgor.technician.app-packageDebugResources-67 C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-rs.elgor.technician.app-packageDebugResources-68 C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-rs.elgor.technician.app-debug-69 C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\build\intermediates\merged_res\debug\mergeDebugResources
-rs.elgor.technician.app-debug-70 C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\debug\res
-rs.elgor.technician.app-main-71 C:\Users\navandudavu\Downloads\elgor-servicehub-android\elgor_technician\app\src\main\res
+rs.elgor.technician.app-res-65 C:\Users\navandudavu\Desktop\elgor_technician\app\build\generated\res\processDebugGoogleServices
+rs.elgor.technician.app-resValues-66 C:\Users\navandudavu\Desktop\elgor_technician\app\build\generated\res\resValues\debug
+rs.elgor.technician.app-packageDebugResources-67 C:\Users\navandudavu\Desktop\elgor_technician\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+rs.elgor.technician.app-packageDebugResources-68 C:\Users\navandudavu\Desktop\elgor_technician\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+rs.elgor.technician.app-debug-69 C:\Users\navandudavu\Desktop\elgor_technician\app\build\intermediates\merged_res\debug\mergeDebugResources
+rs.elgor.technician.app-debug-70 C:\Users\navandudavu\Desktop\elgor_technician\app\src\debug\res
+rs.elgor.technician.app-main-71 C:\Users\navandudavu\Desktop\elgor_technician\app\src\main\res
