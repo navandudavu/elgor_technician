@@ -27,6 +27,7 @@ data class EditForm(
     val diagnosis: String = "",
     val workDone: String = "",
     val hours: String = "",
+    val price: String = "",
     val payment: String = "CASH",
     val lines: List<EditLine> = emptyList()
 )
@@ -38,6 +39,7 @@ data class EditForm(
 class NalogEditViewModel(private val repository: NalogRepository, private val id: Long) : ViewModel() {
 
     private val hoursRegex = Regex("^\\d{1,3}([.,]\\d{1,2})?$")
+    private val priceRegex = Regex("^\\d{1,8}([.,]\\d{1,2})?$")
 
     private val _original = MutableStateFlow<Nalog?>(null)
     val original: StateFlow<Nalog?> = _original.asStateFlow()
@@ -82,6 +84,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                         diagnosis = n.diagnosis ?: "",
                         workDone = n.workDone ?: "",
                         hours = n.laborHours,
+                        price = n.total,
                         payment = n.paymentType ?: "CASH",
                         lines = n.partLines.map { EditLine(it.partId, it.sku, it.name, it.quantity) }
                     )
@@ -105,6 +108,10 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
     }
 
     fun hoursValid(raw: String): Boolean = normalizedHours(raw) != null
+
+    // The price is typed by hand and travels as a String, never through a Double. Blank = leave the price as it is.
+    private fun priceOk(raw: String): Boolean = raw.isBlank() || priceRegex.matches(raw.trim())
+    private fun normalizedPrice(raw: String): String? = raw.trim().replace(',', '.').ifBlank { null }
 
     private fun lineInputs(f: EditForm) = f.lines.map { PartLineInput(it.partId, it.quantity) }
 
@@ -155,6 +162,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
             f.brand.isBlank() -> "Unesite marku uređaja."
             f.diagnosis.isBlank() -> "Unesite dijagnozu / opis kvara."
             hours == null -> "Sati rada: broj do 999,99 (najviše 2 decimale)."
+            !priceOk(f.price) -> "Cena: broj do 99.999.999,99 (najviše 2 decimale)."
             version == null -> "Server nije poslao verziju naloga. Ažurirajte servis."
             else -> null
         }
@@ -177,6 +185,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                 workDone = f.workDone.trim().ifBlank { null },
                 partLines = lineInputs(f),
                 laborHours = hours!!,
+                price = normalizedPrice(f.price),
                 paymentType = f.payment,
                 expectedVersion = version!!
             )

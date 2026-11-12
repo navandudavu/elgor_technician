@@ -23,7 +23,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -215,17 +217,15 @@ fun NalogEditScreen(
                         )
                     }
 
-                    EditCard("IZNOS (računa server)") {
-                        val p = preview
-                        if (p == null) {
-                            Text("Izračunavanje…", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        } else {
-                            EditMoneyRow("Rad (${p.laborHours} h × ${formatMoney(p.laborRate)})", formatMoney(p.laborTotal))
-                            EditMoneyRow("Delovi", formatMoney(p.partsTotal))
-                            EditMoneyRow("Međuzbir", formatMoney(p.subtotal))
-                            EditMoneyRow("PDV", formatMoney(p.vatAmount))
-                            EditMoneyRow("UKUPNO", formatMoney(p.total), bold = true)
-                        }
+                    EditCard("CENA") {
+                        OutlinedTextField(
+                            value = form.price,
+                            onValueChange = { v -> if (v.length <= 12) viewModel.edit { it.copy(price = v) } },
+                            label = { Text("Cena (RSD)") },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                            modifier = Modifier.fillMaxWidth()
+                        )
                     }
 
                     error?.let { Text(it, color = MaterialTheme.colorScheme.error) }

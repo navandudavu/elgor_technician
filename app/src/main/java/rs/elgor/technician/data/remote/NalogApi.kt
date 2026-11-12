@@ -22,6 +22,8 @@ import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
+import rs.elgor.technician.model.CarriedItem
+import rs.elgor.technician.model.CarriedRequest
 import rs.elgor.technician.model.NalogPreview
 import rs.elgor.technician.model.PartPage
 import rs.elgor.technician.model.PreviewRequest
@@ -79,6 +81,19 @@ interface NalogApi {
     // Admin only (server enforces it); not allowed for COMPLETED.
     @DELETE("api/nalozi/{id}")
     suspend fun delete(@Path("id") id: Long): Response<Unit>
+
+    // Zaduzivanje: a technician only ever sees and changes his own list; admins say whose (technicianId).
+    @GET("api/carried")
+    suspend fun carried(@Query("technicianId") technicianId: Long? = null): Response<List<CarriedItem>>
+
+    @POST("api/carried")
+    suspend fun addCarried(@Body body: CarriedRequest): Response<CarriedItem>
+
+    @PUT("api/carried/{id}")
+    suspend fun updateCarried(@Path("id") id: Long, @Body body: CarriedRequest): Response<CarriedItem>
+
+    @DELETE("api/carried/{id}")
+    suspend fun deleteCarried(@Path("id") id: Long): Response<Unit>
 
     @GET("api/nalozi/{id}/notes")
     suspend fun notes(@Path("id") id: Long): Response<List<NoteView>>

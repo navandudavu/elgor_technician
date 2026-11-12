@@ -38,6 +38,7 @@ import rs.elgor.technician.data.AuthState
 import rs.elgor.technician.data.AuthViewModel
 import rs.elgor.technician.data.NalogListViewModel
 import rs.elgor.technician.model.NalogSummary
+import rs.elgor.technician.model.isAdminLevel
 import rs.elgor.technician.ui.components.NalogStatusChip
 import rs.elgor.technician.ui.components.applianceLabel
 import rs.elgor.technician.ui.components.formatMoney
@@ -49,7 +50,8 @@ fun NalogListScreen(
     authViewModel: AuthViewModel,
     onNalogClick: (Long) -> Unit,
     onCreateNalog: () -> Unit,
-    onOpenOldJobs: (() -> Unit)? = null
+    onOpenOldJobs: (() -> Unit)? = null,
+    onOpenCarried: (() -> Unit)? = null
 ) {
     val items by viewModel.items.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -57,7 +59,7 @@ fun NalogListScreen(
     val hasMore by viewModel.hasMore.collectAsState()
     val authState by authViewModel.authState.collectAsState()
     val userName = (authState as? AuthState.LoggedIn)?.user?.name ?: ""
-    val isAdmin = (authState as? AuthState.LoggedIn)?.user?.role == "admin"
+    val isAdmin = isAdminLevel((authState as? AuthState.LoggedIn)?.user?.role)
 
     LaunchedEffect(Unit) { viewModel.load() }
 
@@ -81,6 +83,9 @@ fun NalogListScreen(
                     }
                 },
                 actions = {
+                    onOpenCarried?.let { open ->
+                        androidx.compose.material3.TextButton(onClick = open) { Text("Zaduživanje") }
+                    }
                     onOpenOldJobs?.let { open ->
                         androidx.compose.material3.TextButton(onClick = open) { Text("Stari poslovi") }
                     }

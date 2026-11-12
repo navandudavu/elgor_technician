@@ -34,6 +34,7 @@ data class CreateForm(
     val serial: String = "",
     val diagnosis: String = "",
     val hours: String = "",
+    val price: String = "",
     val payment: String = "CASH",
     val initialStatus: String = "DRAFT",        // admin only
     val scheduledAtIso: String? = null,         // UTC instant sent to the server
@@ -52,6 +53,7 @@ class NalogCreateViewModel(
 ) : ViewModel() {
 
     private val hoursRegex = Regex("^\\d{1,3}([.,]\\d{1,2})?$")
+    private val priceRegex = Regex("^\\d{1,8}([.,]\\d{1,2})?$")
     private var idempotencyKey = UUID.randomUUID().toString()
 
     private val _form = MutableStateFlow(CreateForm())
@@ -195,6 +197,7 @@ class NalogCreateViewModel(
             f.brand.isBlank() -> "Unesite marku uređaja."
             f.diagnosis.isBlank() -> "Unesite opis kvara / dijagnozu."
             hours == null -> "Sati rada: broj do 999,99 (najviše 2 decimale)."
+            f.price.isNotBlank() && !priceRegex.matches(f.price.trim()) -> "Cena: broj do 99.999.999,99 (najviše 2 decimale)."
             else -> null
         }
         if (problem != null) {
@@ -220,6 +223,7 @@ class NalogCreateViewModel(
             diagnosis = f.diagnosis.trim(),
             partLines = lineInputs(f),
             laborHours = validHours,
+            price = f.price.trim().replace(',', '.').ifBlank { null },   // typed by hand, a String all the way
             paymentType = f.payment,
             status = if (isAdmin) f.initialStatus else "DISPATCHED",
             scheduledAt = f.scheduledAtIso,

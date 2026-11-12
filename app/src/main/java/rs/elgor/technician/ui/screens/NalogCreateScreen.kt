@@ -262,16 +262,17 @@ fun NalogCreateScreen(
                 HoursPicker(value = form.hours, onChange = { v -> viewModel.edit { it.copy(hours = v) } })
 
                 previewError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                val p = preview
-                if (p == null) {
-                    if (previewError == null) Text("Server računa cenu…", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                } else {
-                    EditMoneyRow("Rad (${p.laborHours} h × ${formatMoney(p.laborRate)})", formatMoney(p.laborTotal))
-                    p.partLines.forEach { EditMoneyRow("${it.name} × ${it.quantity}", formatMoney(it.lineTotal)) }
-                    EditMoneyRow("Osnovica", formatMoney(p.subtotal))
-                    EditMoneyRow("PDV", formatMoney(p.vatAmount))
-                    EditMoneyRow("Ukupno", formatMoney(p.total), bold = true)
-                }
+            }
+
+            EditCard("CENA") {
+                OutlinedTextField(
+                    value = form.price,
+                    onValueChange = { v -> if (v.length <= 12) viewModel.edit { it.copy(price = v) } },
+                    label = { Text("Cena (RSD)") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
             EditCard("PLAĆANJE") {

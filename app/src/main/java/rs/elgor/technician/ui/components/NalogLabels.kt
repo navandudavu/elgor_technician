@@ -22,6 +22,10 @@ fun nalogStatusLabel(s: String) = when (s) {
     "DISPATCHED" -> "Dodeljen"
     "IN_PROGRESS" -> "U toku"
     "AWAITING_PARTS" -> "Čeka delove"
+    "RECEIVED" -> "Preuzet u servis"
+    "TESTING" -> "Testira se"
+    "DRIVING" -> "Vozi se"
+    "NEEDS_ELECTRICIAN" -> "Potreban elektroničar"
     "COMPLETED" -> "Završen"
     "CANCELLED" -> "Otkazan"
     else -> s
@@ -32,6 +36,10 @@ fun nalogStatusColor(s: String): Color = when (s) {
     "DISPATCHED" -> StatusAssigned
     "IN_PROGRESS" -> StatusInProgress
     "AWAITING_PARTS" -> Color(0xFF8A3F12)
+    "RECEIVED" -> Color(0xFF1F3F66)
+    "TESTING" -> Color(0xFF5A3E85)
+    "DRIVING" -> Color(0xFF0F6B6B)
+    "NEEDS_ELECTRICIAN" -> Color(0xFF9A2B2B)
     "COMPLETED" -> StatusFinished
     "CANCELLED" -> StatusCancelled
     else -> StatusPending
