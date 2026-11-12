@@ -250,9 +250,9 @@ private fun NalogNotesSection(
     var text by rememberSaveable { mutableStateOf("") }
     var deleting by remember { mutableStateOf<NoteView?>(null) }
 
-    SectionCard("BELEŠKE") {
+    SectionCard("KONSTATACIJA") {
         if (notes.isEmpty()) {
-            Text("Još nema beleški.", style = MaterialTheme.typography.bodySmall)
+            Text("Još nema konstatacija.", style = MaterialTheme.typography.bodySmall)
         }
         notes.forEach { note ->
             Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
@@ -271,20 +271,20 @@ private fun NalogNotesSection(
         OutlinedTextField(
             value = text,
             onValueChange = { if (it.length <= 2000) text = it },
-            label = { Text("Nova beleška") },
+            label = { Text("Nova konstatacija") },
             modifier = Modifier.fillMaxWidth()
         )
         Button(
             onClick = { onAdd(text) { text = "" } },
             enabled = !isBusy && text.isNotBlank(),
             modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-        ) { Text("Dodaj belešku") }
+        ) { Text("Dodaj konstataciju") }
     }
 
     deleting?.let { note ->
         AlertDialog(
             onDismissRequest = { deleting = null },
-            title = { Text("Obrisati belešku?") },
+            title = { Text("Obrisati konstataciju?") },
             text = { Text(note.body) },
             confirmButton = { TextButton(onClick = { deleting = null; onDelete(note.id) }) { Text("Obriši") } },
             dismissButton = { TextButton(onClick = { deleting = null }) { Text("Otkaži") } }
@@ -324,6 +324,9 @@ private fun NalogBody(n: Nalog, context: Context) {
 
     if (!n.diagnosis.isNullOrBlank()) {
         SectionCard("DIJAGNOZA / OPIS") { Text(n.diagnosis) }
+    }
+    if (!n.workDone.isNullOrBlank()) {
+        SectionCard("IZVRŠENI RADOVI") { Text(n.workDone) }
     }
     n.scheduledAt?.let { SectionCard("ZAKAZANO") { Text(formatInstant(it)) } }
 
@@ -384,7 +387,8 @@ private fun navigate(context: Context, address: String) {
 private fun categoryLabel(c: String) = when (c) {
     "before" -> "Pre"
     "after" -> "Posle"
-    "label" -> "Nalepnica"
+    "label" -> "Nalepnica / SN"
+    "workorder" -> "Radni nalog"
     else -> "Ostalo"
 }
 
@@ -517,7 +521,7 @@ private fun NalogPhotoSection(
             title = { Text("Vrsta fotografije") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    listOf("before", "after", "label", "other").forEach { c ->
+                    listOf("before", "after", "label", "workorder", "other").forEach { c ->
                         OutlinedButton(
                             onClick = { pending = null; onUpload(file, c) },
                             modifier = Modifier.fillMaxWidth()

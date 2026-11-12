@@ -57,16 +57,20 @@ fun NalogListScreen(
     val hasMore by viewModel.hasMore.collectAsState()
     val authState by authViewModel.authState.collectAsState()
     val userName = (authState as? AuthState.LoggedIn)?.user?.name ?: ""
+    val isAdmin = (authState as? AuthState.LoggedIn)?.user?.role == "admin"
 
     LaunchedEffect(Unit) { viewModel.load() }
 
     Scaffold(
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = onCreateNalog,
-                icon = { Icon(Icons.Default.Add, contentDescription = null) },
-                text = { Text("Novi nalog") }
-            )
+            // Only admins make nalozi; technicians work the ones they are given.
+            if (isAdmin) {
+                ExtendedFloatingActionButton(
+                    onClick = onCreateNalog,
+                    icon = { Icon(Icons.Default.Add, contentDescription = null) },
+                    text = { Text("Novi nalog") }
+                )
+            }
         },
         topBar = {
             TopAppBar(
