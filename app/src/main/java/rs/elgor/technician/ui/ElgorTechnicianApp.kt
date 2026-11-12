@@ -41,6 +41,10 @@ import rs.elgor.technician.ui.screens.JobDetailScreen
 import rs.elgor.technician.ui.screens.JobListScreen
 import rs.elgor.technician.ui.screens.LoginScreen
 import rs.elgor.technician.ui.screens.NalogCreateScreen
+import rs.elgor.technician.data.CarriedViewModel
+import rs.elgor.technician.data.CarriedViewModelFactory
+import rs.elgor.technician.model.isAdminLevel
+import rs.elgor.technician.ui.screens.CarriedScreen
 import rs.elgor.technician.ui.screens.NalogDetailScreen
 import rs.elgor.technician.ui.screens.NalogEditScreen
 import rs.elgor.technician.ui.screens.NalogListScreen
@@ -145,13 +149,26 @@ private fun MainNavHost(
                         viewModel = nalogListViewModel,
                         authViewModel = authViewModel,
                         onNalogClick = { id -> navController.navigate(Destination.NalogDetail.createRoute(id)) },
-                        onCreateNalog = { navController.navigate(Destination.NalogCreate.route) }
+                        onCreateNalog = { navController.navigate(Destination.NalogCreate.route) },
+                        onOpenCarried = { navController.navigate(Destination.Carried.route) }
+                    )
+                }
+                composable(Destination.Carried.route) {
+                    val me = (authState as? AuthState.LoggedIn)?.user
+                    val carriedViewModel = viewModel<CarriedViewModel>(
+                        factory = CarriedViewModelFactory(nalogRepository, isAdminLevel(me?.role), (me?.id ?: -1).toLong()),
+                        key = "carried_${me?.id}"
+                    )
+                    CarriedScreen(
+                        viewModel = carriedViewModel,
+                        isAdmin = isAdminLevel(me?.role),
+                        onBack = { navController.popBackStack() }
                     )
                 }
                 composable(Destination.NalogCreate.route) {
                     val me = (authState as? AuthState.LoggedIn)?.user
                     val createViewModel = viewModel<NalogCreateViewModel>(
-                        factory = NalogCreateViewModelFactory(nalogRepository, me?.role == "admin"),
+                        factory = NalogCreateViewModelFactory(nalogRepository, isAdminLevel(me?.role)),
                         key = "nalog_create"
                     )
                     NalogCreateScreen(
@@ -188,7 +205,7 @@ private fun MainNavHost(
                         viewModel = nalogDetailViewModel,
                         repository = nalogRepository,
                         currentUserId = (me?.id ?: -1).toLong(),
-                        isAdmin = me?.role == "admin",
+                        isAdmin = isAdminLevel(me?.role),
                         onBack = { navController.popBackStack() },
                         onEdit = { navController.navigate(Destination.NalogEdit.createRoute(nalogId)) }
                     )

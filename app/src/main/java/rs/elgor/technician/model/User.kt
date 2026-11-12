@@ -19,6 +19,9 @@ data class User(
     val phone: String? = null
 )
 
+/** Admin-level powers: administrators and managers (a manager is an admin without the Tim tab). */
+fun isAdminLevel(role: String?): Boolean = role == "admin" || role == "manager"
+
 // The API returns { "error": "message" } on failure responses - used to
 // surface a real server message instead of a generic "something went wrong".
 @JsonClass(generateAdapter = true)

@@ -20,6 +20,8 @@ import rs.elgor.technician.model.NalogStatusRequest
 import rs.elgor.technician.model.ProblemDetail
 import rs.elgor.technician.model.CreateNoteRequest
 import rs.elgor.technician.model.NoteView
+import rs.elgor.technician.model.CarriedItem
+import rs.elgor.technician.model.CarriedRequest
 import rs.elgor.technician.model.NalogPreview
 import rs.elgor.technician.model.PartPage
 import rs.elgor.technician.model.PreviewRequest
@@ -83,6 +85,14 @@ class NalogRepository(private val api: NalogApi) {
     suspend fun searchParts(q: String?): Result<PartPage> = unwrap { api.parts(q = q) }
 
     suspend fun deleteNalog(id: Long): Result<Unit> = unwrap { api.delete(id) }
+
+    suspend fun carried(technicianId: Long?): Result<List<CarriedItem>> = unwrap { api.carried(technicianId) }
+
+    suspend fun addCarried(request: CarriedRequest): Result<CarriedItem> = unwrap { api.addCarried(request) }
+
+    suspend fun updateCarried(id: Long, request: CarriedRequest): Result<CarriedItem> = unwrap { api.updateCarried(id, request) }
+
+    suspend fun deleteCarried(id: Long): Result<Unit> = unwrap { api.deleteCarried(id) }
 
     suspend fun notes(id: Long): Result<List<NoteView>> = unwrap { api.notes(id) }
 

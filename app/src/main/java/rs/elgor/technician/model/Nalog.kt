@@ -175,6 +175,7 @@ data class UpdateNalogRequest(
     val workDone: String? = null,
     val partLines: List<PartLineInput>,
     val laborHours: String,
+    val price: String? = null,
     val paymentType: String,
     val expectedVersion: Long
 )
@@ -183,7 +184,8 @@ data class UpdateNalogRequest(
 data class PreviewRequest(
     val partLines: List<PartLineInput>,
     val laborHours: String,
-    val nalogId: Long? = null
+    val nalogId: Long? = null,
+    val price: String? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -220,6 +222,7 @@ data class CreateNalogRequest(
     val diagnosis: String,
     val partLines: List<PartLineInput>,
     val laborHours: String,
+    val price: String? = null,
     val paymentType: String,
     val status: String? = null,
     val scheduledAt: String? = null,

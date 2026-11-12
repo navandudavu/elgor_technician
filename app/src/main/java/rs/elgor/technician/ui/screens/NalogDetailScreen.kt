@@ -75,20 +75,25 @@ import rs.elgor.technician.ui.components.paymentLabel
 
 // What a technician may do next. Mirrors NalogStatusRules.java; CANCELLED is admin-only, so it is
 // never offered here (the server enforces all of this anyway - this only avoids dead buttons).
+private val WORKING_STATUSES = listOf("IN_PROGRESS", "AWAITING_PARTS", "RECEIVED", "TESTING", "DRIVING", "NEEDS_ELECTRICIAN")
+
 private fun nextStatuses(status: String): List<String> = when (status) {
     "DRAFT" -> listOf("DISPATCHED")
-    "DISPATCHED" -> listOf("IN_PROGRESS")
-    "IN_PROGRESS" -> listOf("AWAITING_PARTS", "COMPLETED")
-    "AWAITING_PARTS" -> listOf("IN_PROGRESS")
+    "DISPATCHED" -> WORKING_STATUSES
+    in WORKING_STATUSES -> WORKING_STATUSES.filter { it != status } + "COMPLETED"
     else -> emptyList()
 }
 
-private val EDITABLE_STATUSES = setOf("DRAFT", "DISPATCHED", "IN_PROGRESS", "AWAITING_PARTS")
+private val EDITABLE_STATUSES = setOf("DRAFT", "DISPATCHED") + WORKING_STATUSES
 
 private fun startLabel(to: String) = when (to) {
     "DISPATCHED" -> "Dodeli"
     "IN_PROGRESS" -> "Počni / nastavi rad"
     "AWAITING_PARTS" -> "Čeka delove"
+    "RECEIVED" -> "Preuzet u servis"
+    "TESTING" -> "Testira se"
+    "DRIVING" -> "Vozi se"
+    "NEEDS_ELECTRICIAN" -> "Potreban elektroničar"
     "COMPLETED" -> "Završi nalog"
     else -> nalogStatusLabel(to)
 }
@@ -183,7 +188,7 @@ fun NalogDetailScreen(
                     if (next.isNotEmpty()) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             next.forEach { s ->
-                                if (s == "COMPLETED" || next.size == 1) {
+                                if (s == "COMPLETED") {
                                     Button(
                                         onClick = { viewModel.changeStatus(s) },
                                         enabled = !isBusy,
@@ -332,13 +337,9 @@ private fun NalogBody(n: Nalog, context: Context) {
 
     SectionCard("DELOVI I RAD") {
         if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        n.partLines.forEach { l ->
-            MoneyRow("${l.name} × ${l.quantity}", formatMoney(l.lineTotal))
-        }
-        MoneyRow("Rad (${n.laborHours} h × ${formatMoney(n.laborRate)})", formatMoney(n.laborTotal))
-        MoneyRow("Međuzbir", formatMoney(n.subtotal))
-        MoneyRow("PDV", formatMoney(n.vatAmount))
-        MoneyRow("UKUPNO", formatMoney(n.total), bold = true)
+        n.partLines.forEach { l -> Text("${l.name} × ${l.quantity}") }
+        Text("Sati rada: ${n.laborHours} h", style = MaterialTheme.typography.bodySmall)
+        MoneyRow("CENA", formatMoney(n.total), bold = true)
         Text("Plaćanje: ${paymentLabel(n.paymentType)}", style = MaterialTheme.typography.bodySmall)
     }
 }
