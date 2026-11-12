@@ -25,6 +25,7 @@ data class EditForm(
     val model: String = "",
     val serial: String = "",
     val diagnosis: String = "",
+    val workDone: String = "",
     val hours: String = "",
     val payment: String = "CASH",
     val lines: List<EditLine> = emptyList()
@@ -79,6 +80,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                         model = n.appliance.model ?: "",
                         serial = n.appliance.serialNumber ?: "",
                         diagnosis = n.diagnosis ?: "",
+                        workDone = n.workDone ?: "",
                         hours = n.laborHours,
                         payment = n.paymentType ?: "CASH",
                         lines = n.partLines.map { EditLine(it.partId, it.sku, it.name, it.quantity) }
@@ -172,6 +174,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                     serialNumber = f.serial.trim().ifBlank { null }
                 ),
                 diagnosis = f.diagnosis.trim(),
+                workDone = f.workDone.trim().ifBlank { null },
                 partLines = lineInputs(f),
                 laborHours = hours!!,
                 paymentType = f.payment,

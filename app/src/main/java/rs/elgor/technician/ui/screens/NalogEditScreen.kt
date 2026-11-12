@@ -142,6 +142,15 @@ fun NalogEditScreen(
                         )
                     }
 
+                    EditCard("IZVRŠENI RADOVI") {
+                        OutlinedTextField(
+                            value = form.workDone,
+                            onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(workDone = v) } },
+                            minLines = 3,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+
                     EditCard("DELOVI") {
                         if (form.lines.isEmpty()) {
                             Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
