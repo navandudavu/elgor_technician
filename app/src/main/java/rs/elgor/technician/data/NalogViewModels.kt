@@ -110,6 +110,19 @@ class NalogDetailViewModel(private val repository: NalogRepository, private val 
         }
     }
 
+    fun saveWorkDone(text: String, onDone: () -> Unit) {
+        if (_isBusy.value) return
+        viewModelScope.launch {
+            _isBusy.value = true
+            _error.value = null
+            repository.setWorkDone(id, text.trim().ifBlank { null }).fold(
+                onSuccess = { _nalog.value = it; onDone() },
+                onFailure = { _error.value = it.message }
+            )
+            _isBusy.value = false
+        }
+    }
+
     fun addNote(text: String, onDone: () -> Unit) {
         val body = text.trim()
         if (body.isEmpty() || _isBusy.value) return

@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Print
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -37,16 +38,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import rs.elgor.technician.data.CarriedViewModel
 import rs.elgor.technician.model.CarriedItem
+import rs.elgor.technician.ui.components.printCarried
 
 // Zaduzivanje / razduzivanje: what the technician carries. Tap a line to change it, the bin removes it.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CarriedScreen(viewModel: CarriedViewModel, isAdmin: Boolean, onBack: () -> Unit) {
+fun CarriedScreen(viewModel: CarriedViewModel, isAdmin: Boolean, myName: String, onBack: () -> Unit) {
+    val context = LocalContext.current
     val items by viewModel.items.collectAsState()
     val technicians by viewModel.technicians.collectAsState()
     val technicianId by viewModel.technicianId.collectAsState()
@@ -65,6 +69,14 @@ fun CarriedScreen(viewModel: CarriedViewModel, isAdmin: Boolean, onBack: () -> U
                 title = { Text("Zaduživanje", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Nazad") }
+                },
+                actions = {
+                    if (items.isNotEmpty()) {
+                        IconButton(onClick = {
+                            val who = if (isAdmin) technicians.firstOrNull { it.id == technicianId }?.name ?: "" else myName
+                            printCarried(context, who, items)
+                        }) { Icon(Icons.Default.Print, contentDescription = "Štampaj") }
+                    }
                 }
             )
         },

@@ -81,6 +81,19 @@ fun formatMoney(amount: String?): String {
 }
 
 /** "2026-10-25T12:30:00.123Z" (UTC instant) -> "25.10.2026. 14:30" in the phone's timezone. minSdk 24: no java.time. */
+/** Date only ("dd.MM.yyyy.") in the phone's timezone, for the planned visit day. */
+fun formatInstantDate(iso: String?): String {
+    if (iso.isNullOrBlank() || iso.length < 19) return iso ?: ""
+    return try {
+        val inFmt = java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", java.util.Locale.US)
+        inFmt.timeZone = java.util.TimeZone.getTimeZone("UTC")
+        val d = inFmt.parse(iso.substring(0, 19)) ?: return iso
+        java.text.SimpleDateFormat("dd.MM.yyyy.", java.util.Locale.US).format(d)
+    } catch (e: Exception) {
+        iso
+    }
+}
+
 fun formatInstant(iso: String?): String {
     if (iso.isNullOrBlank() || iso.length < 19) return iso ?: ""
     return try {

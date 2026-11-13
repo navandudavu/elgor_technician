@@ -145,11 +145,11 @@ fun NalogEditScreen(
                     }
 
                     EditCard("IZVRŠENI RADOVI") {
-                        OutlinedTextField(
-                            value = form.workDone,
-                            onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(workDone = v) } },
-                            minLines = 3,
-                            modifier = Modifier.fillMaxWidth()
+                        Text(form.workDone.ifBlank { "—" })
+                        Text(
+                            "Menja se na ekranu naloga (otvorite nalog).",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 

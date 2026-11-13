@@ -69,6 +69,7 @@ import rs.elgor.technician.model.Nalog
 import rs.elgor.technician.ui.components.NalogStatusChip
 import rs.elgor.technician.ui.components.applianceLabel
 import rs.elgor.technician.ui.components.formatInstant
+import rs.elgor.technician.ui.components.formatInstantDate
 import rs.elgor.technician.ui.components.formatMoney
 import rs.elgor.technician.ui.components.nalogStatusLabel
 import rs.elgor.technician.ui.components.paymentLabel
@@ -150,7 +151,13 @@ fun NalogDetailScreen(
                     Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    NalogBody(n, context)
+                    NalogBody(
+                        n = n,
+                        context = context,
+                        canEditWorkDone = n.status != "CANCELLED" && (n.status != "COMPLETED" || isAdmin),
+                        isBusy = isBusy,
+                        onSaveWorkDone = { text, done -> viewModel.saveWorkDone(text, done) }
+                    )
 
                     NalogPhotoSection(
                         nalogId = n.id,
@@ -298,7 +305,16 @@ private fun NalogNotesSection(
 }
 
 @Composable
-private fun NalogBody(n: Nalog, context: Context) {
+private fun NalogBody(
+    n: Nalog,
+    context: Context,
+    canEditWorkDone: Boolean,
+    isBusy: Boolean,
+    onSaveWorkDone: (String, () -> Unit) -> Unit
+) {
+    var editingWorkDone by rememberSaveable { mutableStateOf(false) }
+    var workDoneDraft by rememberSaveable { mutableStateOf("") }
+
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         NalogStatusChip(n.status)
         n.assignedToName?.let { Text("Serviser: $it", style = MaterialTheme.typography.labelMedium) }
@@ -330,10 +346,39 @@ private fun NalogBody(n: Nalog, context: Context) {
     if (!n.diagnosis.isNullOrBlank()) {
         SectionCard("DIJAGNOZA / OPIS") { Text(n.diagnosis) }
     }
-    if (!n.workDone.isNullOrBlank()) {
-        SectionCard("IZVRŠENI RADOVI") { Text(n.workDone) }
+    SectionCard("IZVRŠENI RADOVI") {
+        Text(if (n.workDone.isNullOrBlank()) "—" else n.workDone)
+        if (canEditWorkDone) {
+            OutlinedButton(
+                onClick = { workDoneDraft = n.workDone ?: ""; editingWorkDone = true },
+                modifier = Modifier.padding(top = 4.dp)
+            ) { Text("Izmeni") }
+        }
     }
-    n.scheduledAt?.let { SectionCard("ZAKAZANO") { Text(formatInstant(it)) } }
+    if (editingWorkDone) {
+        AlertDialog(
+            onDismissRequest = { if (!isBusy) editingWorkDone = false },
+            title = { Text("Izvršeni radovi") },
+            text = {
+                OutlinedTextField(
+                    value = workDoneDraft,
+                    onValueChange = { v -> if (v.length <= 4000) workDoneDraft = v },
+                    minLines = 4,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = !isBusy,
+                    onClick = { onSaveWorkDone(workDoneDraft) { editingWorkDone = false } }
+                ) { Text("Sačuvaj") }
+            },
+            dismissButton = {
+                TextButton(enabled = !isBusy, onClick = { editingWorkDone = false }) { Text("Otkaži") }
+            }
+        )
+    }
+    n.scheduledAt?.let { SectionCard("ZAKAZANO") { Text(formatInstantDate(it)) } }
 
     SectionCard("DELOVI I RAD") {
         if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)

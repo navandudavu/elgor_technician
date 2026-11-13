@@ -1,7 +1,6 @@
 package rs.elgor.technician.ui.screens
 
 import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -319,7 +318,7 @@ fun NalogCreateScreen(
     }
 }
 
-// "Planirani dolazak": the phone's date and time pickers. The server gets the moment as a UTC instant.
+// "Planirani dolazak": date only (no hour). The server gets local noon of that day as a UTC instant, so the day never flips.
 @Composable
 private fun ScheduleField(label: String?, onPicked: (String, String) -> Unit, onClear: () -> Unit) {
     val context = LocalContext.current
@@ -332,20 +331,14 @@ private fun ScheduleField(label: String?, onPicked: (String, String) -> Unit, on
                     DatePickerDialog(
                         context,
                         { _, year, month, day ->
-                            TimePickerDialog(
-                                context,
-                                { _, hour, minute ->
-                                    val picked = Calendar.getInstance().apply {
-                                        set(year, month, day, hour, minute, 0)
-                                        set(Calendar.MILLISECOND, 0)
-                                    }
-                                    val utc = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
-                                        .apply { timeZone = TimeZone.getTimeZone("UTC") }
-                                    val shown = SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.US)
-                                    onPicked(utc.format(picked.time), shown.format(picked.time))
-                                },
-                                9, 0, true
-                            ).show()
+                            val picked = Calendar.getInstance().apply {
+                                set(year, month, day, 12, 0, 0)
+                                set(Calendar.MILLISECOND, 0)
+                            }
+                            val utc = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US)
+                                .apply { timeZone = TimeZone.getTimeZone("UTC") }
+                            val shown = SimpleDateFormat("dd.MM.yyyy.", Locale.US)
+                            onPicked(utc.format(picked.time), shown.format(picked.time))
                         },
                         now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH)
                     ).show()
