@@ -22,6 +22,7 @@ import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
+import rs.elgor.technician.model.WorkDoneRequest
 import rs.elgor.technician.model.CarriedItem
 import rs.elgor.technician.model.CarriedRequest
 import rs.elgor.technician.model.NalogPreview
@@ -110,6 +111,9 @@ interface NalogApi {
 
     @PATCH("api/nalozi/{id}/status")
     suspend fun changeStatus(@Path("id") id: Long, @Body body: NalogStatusRequest): Response<Nalog>
+
+    @PATCH("api/nalozi/{id}/work-done")
+    suspend fun setWorkDone(@Path("id") id: Long, @Body body: WorkDoneRequest): Response<Nalog>
 
     @GET("api/nalozi/{id}/photos")
     suspend fun photos(@Path("id") id: Long): Response<List<NalogPhotoView>>

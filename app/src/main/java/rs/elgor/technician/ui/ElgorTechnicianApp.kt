@@ -162,6 +162,7 @@ private fun MainNavHost(
                     CarriedScreen(
                         viewModel = carriedViewModel,
                         isAdmin = isAdminLevel(me?.role),
+                        myName = me?.name ?: "",
                         onBack = { navController.popBackStack() }
                     )
                 }

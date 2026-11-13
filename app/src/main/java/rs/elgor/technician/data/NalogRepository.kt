@@ -17,6 +17,7 @@ import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
+import rs.elgor.technician.model.WorkDoneRequest
 import rs.elgor.technician.model.ProblemDetail
 import rs.elgor.technician.model.CreateNoteRequest
 import rs.elgor.technician.model.NoteView
@@ -77,6 +78,9 @@ class NalogRepository(private val api: NalogApi) {
 
     suspend fun changeStatus(id: Long, status: String): Result<Nalog> =
         unwrap { api.changeStatus(id, NalogStatusRequest(status)) }
+
+    suspend fun setWorkDone(id: Long, workDone: String?): Result<Nalog> =
+        unwrap { api.setWorkDone(id, WorkDoneRequest(workDone)) }
 
     suspend fun update(id: Long, request: UpdateNalogRequest): Result<Nalog> = unwrap { api.update(id, request) }
 

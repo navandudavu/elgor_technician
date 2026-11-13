@@ -99,6 +99,9 @@ data class NalogHistoryEntry(
 @JsonClass(generateAdapter = true)
 data class NalogStatusRequest(val status: String)
 
+/** PATCH /api/nalozi/{id}/work-done; blank or null clears "Izvrsene radove". */
+data class WorkDoneRequest(val workDone: String?)
+
 // Spring's RFC 7807 error body: {"title":..., "detail":..., "errors": {"field": "msg"}}
 @JsonClass(generateAdapter = true)
 data class ProblemDetail(
