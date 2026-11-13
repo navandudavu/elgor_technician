@@ -1,8 +1,71 @@
-# Build / IDE / lokalno
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+
+# Files for the ART/DALVIK Virtual Machine
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+bin/
+gen/
+out/
+build/
+.gradle/
+
+# Android Studio / IntelliJ IDEA files
+.idea/
+!.idea/copyright/
+!.idea/icon.theme.xml
+*.iml
+*.iws
+*.ipr
+.idea/caches/
+.idea/libraries/
+
+# Android Studio Gradle plugin generated files
+.navigation/
+captures/
+default.generated.xml
+
+# Local configuration file (sdk path, etc.)
+local.properties
+
+# Log Files
+*.log
+
+# Android profiling & trace tools
+*.hprof
+*.trace
+
+# NDK / C++ build files
+.externalNativeBuild/
+.cxx/
+cmake/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Key files / Keystores (NEVER commit signing keys)
+*.jks
+*.keystore
+*.pepk
+
+# Version control
+vcs.xml
+
+# Kotlin specific
+.kotlin/
+/app/build/
+/app/release/
+
 .gradle/
 .idea/
-build/
-*/build/
 local.properties
-*.iml
-.DS_Store
+/app/build/
+/app/release/
