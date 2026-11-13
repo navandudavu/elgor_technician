@@ -1,116 +1,81 @@
 # ELGOR Technician — Android aplikacija
 
-Nativna Android aplikacija namenjena ELGOR tehničarima za rad na dodeljenim
-ServiceHub zadacima: pregled zadataka, promena statusa, evidentiranje sati rada,
-dodavanje beleški i otpremanje fotografija. Ovo je aplikacija odvojena od
-ELGOR aplikacije za korisnike (elgor1999) — ona je namenjena klijentima za
-pregledanje i kupovinu, dok je ova alat za internu upotrebu servisera i
-komunicira sa istom ServiceHub pozadinom koju koristi i veb-kontrolna tabla.
+Nativna Android aplikacija (Kotlin + Jetpack Compose) za ELGOR servisere, administratore i menadžere, koja radi sa **ServiceHub Java serverom** (repozitorijum `servicehub`): radni nalozi, statusi, izvršeni radovi, konstatacije, fotografije, zaduživanje materijala i obaveštenja o novim nalozima. Odvojena je od ELGOR aplikacije za korisnike (elgor1999), koja služi klijentima za pregled i kupovinu; ova je alat za internu upotrebu.
 
-## Status: verzija v1.0
+## Status: verzija 1.0 (`versionCode 1`)
 
-Važi ista napomena kao i za originalnu ELGOR aplikaciju za korisnike:
-u okruženju u kojem je ova aplikacija kreirana nisu bili dostupni Android SDK
-ni emulator, tako da ona **nikada nije kompajlirana**. Svaki fajl je ručno
-proveren — deklaracije paketa odgovaraju fasciklama, zagrade su pravilno
-uparene, nema oštećenih karaktera (jedan takav je otkriven i ispravljen tokom
-razvoja, videti ispod), a Material3 API-ji su provereni u odnosu na
-specifičnu verziju `compose-bom`-a koju ovaj projekat koristi — ali ništa
-od toga ne može zameniti stvarno izvršavanje komande `./gradlew assembleDebug`.
-To je prva stvar koju treba uraditi nakon otvaranja projekta u Android Studio-u.
+Aplikacija se kompajlira i radi na uređaju (potvrdio razvojni tim). Poslednja serija izmena — izvršeni radovi koji se menjaju na ekranu naloga, zakazivanje samo datumom i štampa zaduženja — još **nije isprobana u Android Studiju**. Prva stvar posle `git pull`: **Build → Make Project**, pa prođite kroz tok iz odeljka **Šta proveriti posle izmena**.
 
 ## Funkcionalnosti
 
-- Prijavljivanje pomoću ServiceHub naloga (prihvataju se akreditivi i
-  tehničara i administratora, ali je aplikacija ograničena isključivo na
-  aktivnosti tehničara)
-- Pregled dodeljenih zadataka
-- Rad na zadatku: promena statusa (na čekanju → dodeljeno → u toku →
-  završeno), evidentiranje sati rada, dodavanje beleški, snimanje ili izbor
-  fotografije i njeno otpremanje, brisanje otpremljenih fotografija
-- Ekran za prvo pokretanje radi unosa adrese ServiceHub servera, s obzirom na
-  to da je aplikacija usmerena ka serveru koji još uvek nije trajno
-  deplojvan (pogledajte ispod)
+Prijava (ServiceHub nalog: serviser, menadžer ili administrator), pa lista **radnih naloga** (`/api/nalozi`). Postoji samo jedan server (Java); stari Node server više ne postoji. Ako je na telefonu sačuvana adresa koja se završava na `:4000`, aplikacija je preusmerava na port `8081` (`NetworkConfig.nalogBaseUrl`).
 
-## Radni nalozi (Java servis)
+**Uloge u aplikaciji:** serviser vidi samo naloge dodeljene njemu i ne pravi nove; **administrator** i **menadžer** imaju ista prava (menadžer nema karticu *Tim*, a ona ni nije u aplikaciji).
 
-Aplikacija se otvara na listi **radnih naloga** (`/api/nalozi`). Postoji samo jedan server (Java servis):
-prijava, nalozi, fotografije i obaveštenja idu na istu adresu. Stari Node server više ne postoji, pa se
-„Stari poslovi" više ne koriste. Ako je na telefonu sačuvana adresa koja se završava na `:4000`,
-aplikacija je preusmerava na port `8081` (`NetworkConfig.nalogBaseUrl`).
+- **Lista i detalj naloga:** status, istorija statusa, klijent (poziv i navigacija), uređaj, dijagnoza, **izvršeni radovi**, zakazani datum, delovi, sati rada, cena i način plaćanja.
+- **Statusi:** *Dodeljen* → radni statusi *U toku*, *Čeka delove*, *Preuzet u servis*, *Testira se*, *Vozi se*, *Potreban elektroničar* (između njih se prelazi slobodno) → *Završen*. Otkazivanje samo administrator.
+- **Zatvaranje naloga:** server ne dozvoljava *Završen* bez bar jedne fotografije „Pre“, bar jedne „Posle“ i opisa izvršenih radova; aplikacija prikazuje poruku servera.
+- **Izvršeni radovi:** prikazani na svakom ekranu naloga (detalj i izmena), a **menjaju se samo na ekranu naloga** dugmetom „Izmeni“ (dijalog; `PATCH /api/nalozi/{id}/work-done`). Dodeljeni serviser i administrator mogu; na završenom nalogu samo administrator; na otkazanom niko. Na ekranu „Izmeni nalog“ su samo prikazani.
+- **Konstatacije** (ranije beleške): lista i dodavanje (svi koji vide nalog); brisanje samo administrator.
+- **Fotografije:** snimanje ili izbor iz galerije, kategorije *Pre*, *Posle*, *Nalepnica / SN*, *Radni nalog*, *Ostalo*. Pre slanja se slika smanjuje (najviše 1920 px, JPEG; `util/ImagePrep.kt`). Brisanje: administrator ili ko je poslao.
+- **Novi nalog** (samo administrator i menadžer): klijent (pretraga postojećeg ili novi), uređaj, opis kvara, delovi i rad, **cena** (jedan ručno upisan iznos), plaćanje, planirani dolazak (**samo datum**, bez sata), izbor servisera i početnog statusa. Vreme rada se bira dugmadima Sati i Minuti (korak 15 minuta), telefon samo pretvara u „1.50“ za server. Jedan `Idempotency-Key` po formi, pa ponovni pokušaj posle prekida ne pravi dupli nalog.
+- **Izmena naloga** (nezavršeni nalozi; administrator bilo koji, serviser samo svoj): uređaj, dijagnoza, delovi (dodavanje iz magacina, količina, uklanjanje), sati, cena, plaćanje. Ako je neko drugi u međuvremenu izmenio nalog, server vraća 409 i aplikacija traži ponovno otvaranje. Podaci o klijentu se menjaju samo na vebu.
+- **Brisanje naloga:** samo administrator, ne za završene (server vraća delove na stanje).
+- **Zaduživanje** (dugme „Zaduživanje“ na listi): lista materijala koji serviser nosi (šifra nije obavezna, naziv, količina; najviše 50 stavki). Serviser vodi svoju listu, administrator i menadžer biraju servisera. Nije povezano sa magacinom. Ikonica štampača otvara **sistemski dijalog za štampu** (A4 ili „Sačuvaj kao PDF“).
+- **Novac** se prikazuje isključivo kao string koji pošalje server — telefon nikada ne računa.
 
-- Lista i detalj naloga, promena statusa, istorija statusa, fotografije
-- **Konstatacija** (ranije beleške): lista i dodavanje (svi koji vide nalog); brisanje samo administrator. **Izvršeni radovi** se menjaju samo na ekranu naloga (dugme „Izmeni“; na ekranu „Izmeni nalog“ su samo prikazani), a nalog se ne može završiti bez bar jedne fotografije „Pre“, bar jedne „Posle“ i opisa izvršenih radova (server odbija). Zakazivanje je samo datum, bez sata. Fotografije: Pre, Posle, Nalepnica / SN, Radni nalog, Ostalo
-- **Brisanje naloga**: samo administrator, ne za završene naloge (server vraća rezervne delove na stanje)
-- **Novi nalog** (dugme „Novi nalog“ na listi, samo za administratora i menadžera; serviseri ne prave naloge): isti odeljci kao na vebu – korisnik (pretraga postojećeg ili novi), uređaj, opis kvara, delovi i rad, plaćanje i planirani dolazak. Administrator još bira servisera i početni status; serviseru je nalog uvek *Dodeljen* njemu, pa ga odmah može da započne (dodelu garantuje server). Vreme rada se bira dugmadima Sati i Minuti (korak 15 minuta), bez kucanja decimala; telefon samo pretvara u „1.50“ za server. Cena je jedan ručno upisan iznos (polje „Cena“), nema obračuna sati, PDV-a ni zbira delova. Jedan Idempotency-Key po formi, pa ponovni pokušaj posle prekida ne pravi dupli nalog.
-- **Izmena naloga** (dugme „Izmeni nalog“, za nezavršene naloge; administrator bilo koji, serviser samo svoj): uređaj, dijagnoza, delovi (dodavanje iz magacina, količina, uklanjanje), sati rada, cena (ručni unos) i plaćanje. Ako je neko drugi u međuvremenu izmenio nalog, server vraća sukob (409) i aplikacija traži ponovno otvaranje. Podaci o klijentu se menjaju samo na veb aplikaciji.
-- **Statusi**: pored *Dodeljen / U toku / Čeka delove / Završen* postoje *Preuzet u servis*, *Testira se*, *Vozi se* i *Potreban elektroničar*; između radnih statusa se prelazi slobodno. Štampa reversa i Bluetooth štampa još nisu u aplikaciji.
-- **Zaduživanje** (dugme „Zaduživanje“ na listi): lista materijala koji serviser nosi (šifra, naziv, količina; najviše 50 stavki). Serviser vodi svoju listu, administrator i menadžer biraju servisera. Nije povezano sa magacinom. Ikonica štampača otvara sistemski dijalog za štampu (A4 ili PDF).
-- **Menadžer** ima ista prava kao administrator u aplikaciji
-- Novac se prikazuje isključivo kao string koji pošalje server — telefon nikada ne računa
+**Još nema:** štampa naloga i reversa sa telefona i Bluetooth A4 štampa (radi se poslednja, kad se zna model štampača).
+
+**Zaostatak:** dugme „Stari poslovi“ na listi i ekrani za stare poslove (`JobListScreen`, `JobDetailScreen`, Room baza u `data/local`) ostali su u kodu, ali njihovi endpointi (`/api/jobs`) više ne postoje na Java serveru, pa ne rade. Mogu se ukloniti.
 
 ## Obaveštenja (push)
 
-Kada administrator dodeli nalog serviseru, telefon dobija obaveštenje „Novi radni nalog“; dodir otvara taj nalog.
-Server šalje samo „data“ poruke, pa aplikacija sama prikazuje obaveštenje (i u pozadini). Potreban je
-`firebase-service-account.json` na serveru (pogledajte `deploy/DEPLOY.md` u servicehub repozitorijumu).
+Kada administrator dodeli nalog serviseru, telefon dobija obaveštenje „Novi radni nalog“; dodir otvara taj nalog. Server šalje samo „data“ poruke, pa aplikacija sama prikazuje obaveštenje (i u pozadini). Server svakog punog sata od 08:00 do 19:00 (pon–sub) šalje i podsetnik serviserima koji imaju otvorene naloge: „Izaberite trenutni status svakog naloga“.
+
+Potrebno je da `app/google-services.json` pripada istom Firebase projektu kao i `firebase-service-account.json` na serveru (pogledajte `deploy/DEPLOY.md` u repozitorijumu `servicehub`).
 
 ## Istek sesije
 
-Svaki odgovor 401 (istekao token, promenjena ili resetovana lozinka, deaktiviran nalog)
-briše sačuvani token i aplikacija se vraća na ekran za prijavu uz poruku
-„Sesija je istekla. Prijavite se ponovo." Adresa servera se pamti.
+Svaki odgovor 401 (istekao token, promenjena ili resetovana lozinka, deaktiviran nalog) briše sačuvani token i aplikacija se vraća na ekran za prijavu uz poruku „Sesija je istekla. Prijavite se ponovo.“ Adresa servera se pamti.
 
 ## Pre upotrebe: adresa servera
 
-Ova aplikacija nema unapred upisanu URL adresu pozadinskog servera (backend-a).
-Prilikom prvog pokretanja traži se unos adrese — tokom razvoja to je IP adresa
-vašeg računara u lokalnoj mreži i ServiceHub port, npr. `http://192.168.1.100:8081`
-(pronađite LAN IP adresu svog računara; nemojte koristiti `localhost` — to bi
-usmerilo telefon na samog sebe, a ne na vaš računar). Kada se ServiceHub postavi u stvarno okruženje, ta adresa postaje
-stalna javna URL adresa.
-
-Adresa se čuva na telefonu (u DataStore-u), tako da je ovaj korak potreban samo jednom
-prilikom instalacije.
+Aplikacija nema unapred upisanu adresu servera. Pri prvom pokretanju traži se unos — tokom razvoja to je IP adresa računara u lokalnoj mreži i ServiceHub port, npr. `http://192.168.1.100:8081` (nemojte koristiti `localhost` — to bi usmerilo telefon na samog sebe; na emulatoru koristite `10.0.2.2`). Kada se ServiceHub postavi na server, to je njegova stalna adresa (preko Caddy-ja nema porta). Adresa se čuva na telefonu (DataStore), pa je ovaj korak potreban samo jednom po instalaciji.
 
 ## Dozvoljen je HTTP bez enkripcije (za sada)
 
-Fajl `app/src/main/res/xml/network_security_config.xml` dozvoljava obične `http://`
-veze, za razliku od ELGOR aplikacije za korisnike koja ih blokira. Ovo je
-namerno i neophodno dok ServiceHub radi preko lokalnog HTTP-a bez
-sertifikata — ali bi bezbednosna pravila trebalo pooštriti kada ServiceHub
-pređe na pravi HTTPS. U fajlu postoji komentar koji tačno objašnjava šta treba izmeniti.
+`app/src/main/res/xml/network_security_config.xml` dozvoljava obične `http://` veze, za razliku od ELGOR aplikacije za korisnike koja ih blokira. To je namerno dok ServiceHub radi preko lokalnog HTTP-a bez sertifikata; kad pređe na pravi HTTPS, pravila treba pooštriti. U fajlu postoji komentar koji tačno objašnjava šta treba izmeniti.
 
 ## Tehnološki stek
 
-Prati izbore napravljene za postojeću ELGOR aplikaciju za korisnike tamo gde je
-imalo smisla ponovo ih upotrebiti: Kotlin, Jetpack Compose + Material3, Navigation Compose,
-Retrofit + Moshi za API, Coil (dostupan, mada se ovde za učitavanje fotografija
-koristi ručni pristup sa autentifikacijom — videti ispod),
-korutine (coroutines) + ViewModel za upravljanje stanjem. DataStore je dodat radi
-čuvanja JWT-a i URL-a servera između pokretanja aplikacije (aplikaciji za korisnike
-to nije bilo potrebno jer nema prijavljivanje).
+Kotlin, Jetpack Compose + Material3 (`compose-bom 2024.06.00`), Navigation Compose, Retrofit + Moshi, korutine + ViewModel, DataStore (JWT i adresa servera između pokretanja), Firebase Cloud Messaging (push), Room (samo za stare poslove, vidi **Zaostatak**), Coil (dostupan; fotografije naloga se učitavaju ručno, vidi dole). `compileSdk` 34, `minSdk` 24.
 
-Verzija `compose-bom` je fiksirana na `2024.06.00` kako bi se poklopila sa verzijom
-u aplikaciji za korisnike. Jedan Material3 API (`PullToRefreshBox`) zahtevao je
-Material3 1.3.0+ i nije dostupan u ovoj BOM verziji — stoga lista poslova
-koristi dugme za ručno osvežavanje umesto da se menja BOM verzija (što bi
-zahtevalo i povećanje `compileSdk` verzije, a to nije vredno truda zbog jedne
-funkcije koja je samo poželjna, a ne i neophodna).
+`compose-bom` je fiksiran na `2024.06.00`. `PullToRefreshBox` traži Material3 1.3.0+ i nije dostupan u toj verziji, pa se lista osvežava dugmetom umesto da se menja BOM (što bi tražilo i veći `compileSdk` zbog jedne poželjne funkcije).
 
 ## Zašto se za fotografije ne koristi standardno učitavanje putem Coil-a
 
-Endpoint za fotografije u ServiceHub-u zahteva JWT u Authorization zaglavlju
-(`GET /api/jobs/photos/:filename`, videti `requireAuth`
-midlver na bekendu) — standardni mehanizam za učitavanje slika nema način da
-doda to zaglavlje, tako da bi običan Coil `AsyncImage` usmeren ka tom URL-u
-jednostavno dobio grešku 401. To je isti osnovni problem sa kojim se suočila
-i veb aplikacija i rešila ga na isti način: `JobPhoto.kt`
-preuzima sirove bajtove putem istog Retrofit klijenta sa autentifikacijom
-koji se koristi za sve ostale zahteve, a zatim ih ručno dekodira u bitmapu. ## Podešavanje u Android Studio-u
+Endpoint za fotografije (`GET /api/nalozi/{id}/photos/{photoId}/file`) traži JWT u `Authorization` zaglavlju, a običan Coil `AsyncImage` ne može da ga doda, pa bi dobio 401. Zato `NalogPhotoImage` (u `ui/screens/NalogDetailScreen.kt`) preuzima sirove bajtove preko istog autentifikovanog Retrofit klijenta kao i svi ostali zahtevi i ručno ih dekodira u bitmapu. Veb aplikacija radi na isti način.
 
-1. Otvorite ovu fasciklu kao projekat u Android Studio-u (automatski će se ponovo generisati *Gradle wrapper* JAR datoteka prilikom sinhronizacije – ta binarna datoteka se ne može generisati u ovom okruženju jer ne postoji mrežna veza ka *Gradle* serverima; to je isto ograničenje koje je postojalo prilikom izgradnje aplikacije za klijenta).
-2. Sačekajte da *Gradle* završi sinhronizaciju i razreši zavisnosti.
-3. Izaberite **Build → Make Project**. Ovo je pravi prvi test – do sada ništa nije kompajlirano.
-4. Pokrenite aplikaciju na uređaju ili emulatoru koji se nalazi na istoj mreži kao i vaš *ServiceHub* bekend (ili koristite `10.0.2.2` umesto `localhost` ako testirate bekend koji radi na istom računaru kao i *Android* emulator – to je poseban alijas emulatora za računar domaćina).
-5. 5. Unesite adresu servera i prijavite se pomoću naloga tehničara koji je unet u *ServiceHub* (pogledajte skriptu za inicijalno popunjavanje podataka u *ServiceHub* README datoteci).
+## Podešavanje u Android Studiju
+
+1. Otvorite ovu fasciklu kao projekat. Android Studio sam pravi *Gradle wrapper* JAR pri sinhronizaciji (binarna datoteka nije u repozitorijumu).
+2. Sačekajte da Gradle završi sinhronizaciju.
+3. **Build → Make Project**.
+4. Pokrenite na uređaju ili emulatoru koji vidi ServiceHub server.
+5. Unesite adresu servera i prijavite se nalogom koji postoji u ServiceHub-u. Prvog administratora pravi server pri prvom pokretanju (lozinka se jednom ispisuje u logu, vidi README u `servicehub`); servisere i menadžere dodaje administrator na kartici *Tim* u veb aplikaciji.
+
+Unit test: `HoursPickerTest` (`./gradlew test`).
+
+## Šta proveriti posle izmena
+
+Na pravom uređaju, sa serverom na grani koja ima novi endpoint `work-done` (`servicehub`, grana `claude/closing-and-small` ili `master` posle spajanja):
+
+1. Nalog → „Izmeni“ pod *Izvršeni radovi* → upis, čuvanje; na ekranu „Izmeni nalog“ polje je samo prikazano.
+2. Završetak naloga bez fotografije „Posle“ mora biti odbijen porukom servera.
+3. Novi nalog (administrator): izbor datuma bez sata; na detalju piše samo datum.
+4. Zaduživanje → štampač → dijalog za štampu / PDF.
+5. Cena i novi statusi na detalju i izmeni naloga.
+
+## Izdanje za produkciju
+
+Potpisan APK sa stalnim ključem (keystore se čuva i pravi rezervna kopija), uvećan `versionCode` pri svakom izdanju, pooštrena mrežna pravila (bez `http://`) i prava adresa servera umesto razvojne IP adrese (`NetworkConfig`).
