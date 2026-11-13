@@ -63,3 +63,9 @@ vcs.xml
 .kotlin/
 /app/build/
 /app/release/
+
+.gradle/
+.idea/
+local.properties
+/app/build/
+/app/release/
