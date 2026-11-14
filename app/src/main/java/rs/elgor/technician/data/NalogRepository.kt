@@ -18,6 +18,9 @@ import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
 import rs.elgor.technician.model.WorkDoneRequest
+import rs.elgor.technician.model.PartView
+import rs.elgor.technician.model.StockAdjustRequest
+import rs.elgor.technician.model.StockMovement
 import rs.elgor.technician.model.ProblemDetail
 import rs.elgor.technician.model.CreateNoteRequest
 import rs.elgor.technician.model.NoteView
@@ -86,7 +89,12 @@ class NalogRepository(private val api: NalogApi) {
 
     suspend fun preview(request: PreviewRequest): Result<NalogPreview> = unwrap { api.preview(request) }
 
-    suspend fun searchParts(q: String?): Result<PartPage> = unwrap { api.parts(q = q) }
+    suspend fun searchParts(q: String?, onlyActive: Boolean = true, page: Int = 0, size: Int = 20): Result<PartPage> =
+        unwrap { api.parts(q = q, onlyActive = onlyActive, page = page, size = size) }
+
+    suspend fun adjustStock(id: Long, request: StockAdjustRequest): Result<PartView> = unwrap { api.adjustStock(id, request) }
+
+    suspend fun movements(id: Long): Result<List<StockMovement>> = unwrap { api.movements(id) }
 
     suspend fun deleteNalog(id: Long): Result<Unit> = unwrap { api.delete(id) }
 

@@ -43,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import rs.elgor.technician.data.NalogEditViewModel
-import rs.elgor.technician.ui.components.HoursPicker
 import rs.elgor.technician.ui.components.applianceLabel
 import rs.elgor.technician.ui.components.formatMoney
 import rs.elgor.technician.ui.components.paymentLabel
@@ -207,8 +206,7 @@ fun NalogEditScreen(
                         ) { Text("+ Dodaj deo") }
                     }
 
-                    EditCard("RAD I PLAĆANJE") {
-                        HoursPicker(value = form.hours, onChange = { v -> viewModel.edit { it.copy(hours = v) } })
+                    EditCard("PLAĆANJE") {
                         PickerField(
                             label = "Plaćanje",
                             value = paymentLabel(form.payment).ifBlank { form.payment },
@@ -221,7 +219,7 @@ fun NalogEditScreen(
                         OutlinedTextField(
                             value = form.price,
                             onValueChange = { v -> if (v.length <= 12) viewModel.edit { it.copy(price = v) } },
-                            label = { Text("Cena (RSD)") },
+                            label = { Text("Cena (RSD, nije obavezno)") },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             modifier = Modifier.fillMaxWidth()

@@ -51,7 +51,8 @@ fun NalogListScreen(
     onNalogClick: (Long) -> Unit,
     onCreateNalog: () -> Unit,
     onOpenOldJobs: (() -> Unit)? = null,
-    onOpenCarried: (() -> Unit)? = null
+    onOpenCarried: (() -> Unit)? = null,
+    onOpenMagacin: (() -> Unit)? = null
 ) {
     val items by viewModel.items.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -83,6 +84,9 @@ fun NalogListScreen(
                     }
                 },
                 actions = {
+                    onOpenMagacin?.let { open ->
+                        androidx.compose.material3.TextButton(onClick = open) { Text("Magacin") }
+                    }
                     onOpenCarried?.let { open ->
                         androidx.compose.material3.TextButton(onClick = open) { Text("Zaduživanje") }
                     }

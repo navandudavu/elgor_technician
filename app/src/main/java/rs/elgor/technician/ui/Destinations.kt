@@ -7,6 +7,7 @@ sealed class Destination(val route: String) {
     data object NalogList : Destination("nalog_list")
     data object NalogCreate : Destination("nalog_new")
     data object Carried : Destination("carried")
+    data object Magacin : Destination("magacin")
     data object NalogDetail : Destination("nalog/{nalogId}") {
         fun createRoute(nalogId: Long) = "nalog/$nalogId"
     }

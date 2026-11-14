@@ -27,6 +27,9 @@ import rs.elgor.technician.model.CarriedItem
 import rs.elgor.technician.model.CarriedRequest
 import rs.elgor.technician.model.NalogPreview
 import rs.elgor.technician.model.PartPage
+import rs.elgor.technician.model.PartView
+import rs.elgor.technician.model.StockAdjustRequest
+import rs.elgor.technician.model.StockMovement
 import rs.elgor.technician.model.PreviewRequest
 import rs.elgor.technician.model.UpdateNalogRequest
 import retrofit2.http.PUT
@@ -71,13 +74,20 @@ interface NalogApi {
     @POST("api/nalozi/preview")
     suspend fun preview(@Body body: PreviewRequest): Response<NalogPreview>
 
-    // Inventory lookup. Technicians may search, not edit.
+    // Magacin. Everybody signed in reads it and may correct the stock; creating/editing parts is admin-level (web).
     @GET("api/parts")
     suspend fun parts(
         @Query("q") q: String? = null,
+        @Query("onlyActive") onlyActive: Boolean = true,
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 20
     ): Response<PartPage>
+
+    @POST("api/parts/{id}/stock")
+    suspend fun adjustStock(@Path("id") id: Long, @Body body: StockAdjustRequest): Response<PartView>
+
+    @GET("api/parts/{id}/movements")
+    suspend fun movements(@Path("id") id: Long): Response<List<StockMovement>>
 
     // Admin only (server enforces it); not allowed for COMPLETED.
     @DELETE("api/nalozi/{id}")
