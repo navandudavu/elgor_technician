@@ -65,6 +65,12 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
     private val _partsLoading = MutableStateFlow(false)
     val partsLoading: StateFlow<Boolean> = _partsLoading.asStateFlow()
 
+    // The form as last loaded or saved, so the screen knows whether there is anything unsaved.
+    private var baseline = EditForm()
+
+    private val _dirty = MutableStateFlow(false)
+    val dirty: StateFlow<Boolean> = _dirty.asStateFlow()
+
     private var previewJob: Job? = null
     private var searchJob: Job? = null
 
@@ -76,7 +82,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
             repository.get(id).fold(
                 onSuccess = { n ->
                     _original.value = n
-                    _form.value = EditForm(
+                    val loaded = EditForm(
                         applianceType = n.appliance.type ?: "OTHER",
                         brand = n.appliance.brand ?: "",
                         model = n.appliance.model ?: "",
@@ -88,6 +94,9 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                         payment = n.paymentType ?: "CASH",
                         lines = n.partLines.map { EditLine(it.partId, it.sku, it.name, it.quantity) }
                     )
+                    baseline = loaded
+                    _form.value = loaded
+                    _dirty.value = false
                     _error.value = null
                     schedulePreview()
                 },
@@ -99,6 +108,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
 
     fun edit(transform: (EditForm) -> EditForm) {
         _form.value = transform(_form.value)
+        _dirty.value = _form.value != baseline
         schedulePreview()
     }
 
@@ -150,6 +160,11 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                 f.copy(lines = f.lines + EditLine(p.id, p.sku, p.name, 1))
             }
         }
+    }
+
+    // Used before a status change: nothing to save means go straight on.
+    fun saveIfDirty(onDone: () -> Unit) {
+        if (_dirty.value) save(onDone) else onDone()
     }
 
     fun save(onSaved: () -> Unit) {
