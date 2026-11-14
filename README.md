@@ -22,6 +22,7 @@ Prijava (ServiceHub nalog: serviser, menadžer ili administrator), pa lista **ra
 - **Izmena naloga** (nezavršeni nalozi; administrator bilo koji, serviser samo svoj): uređaj, dijagnoza, delovi (dodavanje iz magacina, količina, uklanjanje), sati, cena, plaćanje. Ako je neko drugi u međuvremenu izmenio nalog, server vraća 409 i aplikacija traži ponovno otvaranje. Podaci o klijentu se menjaju samo na vebu.
 - **Brisanje naloga:** samo administrator, ne za završene (server vraća delove na stanje).
 - **Zaduživanje** (dugme „Zaduživanje“ na listi): lista materijala koji serviser nosi (šifra nije obavezna, naziv, količina; najviše 50 stavki). Serviser vodi svoju listu, administrator i menadžer biraju servisera. Stavku možete izabrati iz **magacina** (pretraga po nazivu ili šifri; kopiraju se šifra i naziv, zaliha se **ne menja**) ili upisati slobodno. Ikonica štampača otvara **sistemski dijalog za štampu** (A4 ili „Sačuvaj kao PDF“).
+- **Magacin** (dugme „Magacin“ na listi; svi prijavljeni): svi delovi sa cenom i stanjem, pretraga po nazivu ili šifri, opcija „Prikaži i ukinute delove“. **Korekcija stanja** (dodaj/skini, količina, napomena) i **istorija** su dostupni i serviserima; server beleži ko je šta promenio, a stanje ne može ispod 0. Novi delovi i izmena cena ostaju samo na vebu (administrator/menadžer).
 - **Novac** se prikazuje isključivo kao string koji pošalje server — telefon nikada ne računa.
 
 **Još nema:** štampa naloga i reversa sa telefona i Bluetooth A4 štampa (radi se poslednja, kad se zna model štampača).
@@ -74,6 +75,7 @@ Na pravom uređaju, sa serverom na grani koja ima novi endpoint `work-done` (`se
 2. Završetak naloga bez fotografije „Posle“ mora biti odbijen porukom servera.
 3. Novi nalog (administrator): izbor datuma bez sata; na detalju piše samo datum.
 4. Zaduživanje → štampač → dijalog za štampu / PDF.
+   Magacin (kao serviser) → korekcija +/- i istorija; server na grani `claude/magacin-technicians` ili `master` posle spajanja.
 5. Cena i novi statusi na detalju i izmeni naloga.
 
 ## Izdanje za produkciju
