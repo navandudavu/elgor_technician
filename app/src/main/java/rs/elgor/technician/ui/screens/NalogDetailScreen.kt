@@ -176,7 +176,16 @@ fun NalogDetailScreen(
                     )
 
                     if (editable) {
-                        NalogEditFields(viewModel = editViewModel, onSaved = { viewModel.load() })
+                        NalogEditFields(viewModel = editViewModel, afterDiagnosis = {
+                            NalogNotesSection(
+                                notes = notes,
+                                isBusy = isBusy,
+                                isAdmin = isAdmin,
+                                locked = n.status == "COMPLETED",
+                                onAdd = { text, done -> viewModel.addNote(text, done) },
+                                onDelete = { viewModel.deleteNote(it) }
+                            )
+                        })
                     }
 
                     NalogPhotoSection(
@@ -191,14 +200,18 @@ fun NalogDetailScreen(
                         onDelete = { id -> viewModel.deletePhoto(id) }
                     )
 
-                    NalogNotesSection(
-                        notes = notes,
-                        isBusy = isBusy,
-                        isAdmin = isAdmin,
-                        locked = n.status == "COMPLETED",
-                        onAdd = { text, done -> viewModel.addNote(text, done) },
-                        onDelete = { viewModel.deleteNote(it) }
-                    )
+                    if (editable) {
+                        NalogWorkDoneAndSave(viewModel = editViewModel, onSaved = { viewModel.load() })
+                    } else {
+                        NalogNotesSection(
+                            notes = notes,
+                            isBusy = isBusy,
+                            isAdmin = isAdmin,
+                            locked = n.status == "COMPLETED",
+                            onAdd = { text, done -> viewModel.addNote(text, done) },
+                            onDelete = { viewModel.deleteNote(it) }
+                        )
+                    }
 
                     error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
 

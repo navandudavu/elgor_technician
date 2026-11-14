@@ -57,11 +57,9 @@ private val PAYMENT_TYPES = listOf("CASH", "CARD", "INVOICE")
 // The customer is not editable on the phone (the web app does that). Every amount shown comes from the
 // server's preview: the phone never calculates money.
 @Composable
-fun NalogEditFields(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
+fun NalogEditFields(viewModel: NalogEditViewModel, afterDiagnosis: @Composable () -> Unit) {
     val form by viewModel.form.collectAsState()
     val preview by viewModel.preview.collectAsState()
-    val isSaving by viewModel.isSaving.collectAsState()
-    val error by viewModel.error.collectAsState()
     var pickingPart by rememberSaveable { mutableStateOf(false) }
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -104,14 +102,7 @@ fun NalogEditFields(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
             )
         }
 
-        EditCard("IZVRŠENI RADOVI") {
-            OutlinedTextField(
-                value = form.workDone,
-                onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(workDone = v) } },
-                minLines = 3,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        afterDiagnosis()
 
         EditCard("DELOVI") {
             if (form.lines.isEmpty()) {
@@ -186,6 +177,29 @@ fun NalogEditFields(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             )
         }
+    }
+
+    if (pickingPart) {
+        PartPickerDialog(viewModel = viewModel, onClose = { pickingPart = false })
+    }
+}
+
+// Izvršeni radovi and the save button sit at the bottom, right above the status buttons.
+@Composable
+fun NalogWorkDoneAndSave(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
+    val form by viewModel.form.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        EditCard("IZVRŠENI RADOVI") {
+            OutlinedTextField(
+                value = form.workDone,
+                onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(workDone = v) } },
+                minLines = 3,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
 
@@ -194,10 +208,6 @@ fun NalogEditFields(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
             enabled = !isSaving,
             modifier = Modifier.fillMaxWidth()
         ) { Text(if (isSaving) "Čuvanje…" else "Sačuvaj izmene") }
-    }
-
-    if (pickingPart) {
-        PartPickerDialog(viewModel = viewModel, onClose = { pickingPart = false })
     }
 }
 
