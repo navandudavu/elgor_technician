@@ -57,6 +57,7 @@ fun CarriedScreen(viewModel: CarriedViewModel, isAdmin: Boolean, myName: String,
     val isLoading by viewModel.isLoading.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
     val error by viewModel.error.collectAsState()
+    val magResults by viewModel.magResults.collectAsState()
 
     // adding = the "new line" dialog is open; dialogFor = the line being changed (null when none)
     var dialogFor by remember { mutableStateOf<CarriedItem?>(null) }
@@ -139,12 +140,32 @@ fun CarriedScreen(viewModel: CarriedViewModel, isAdmin: Boolean, myName: String,
         var sku by remember(editing) { mutableStateOf(editing?.sku ?: "") }
         var name by remember(editing) { mutableStateOf(editing?.name ?: "") }
         var qty by remember(editing) { mutableStateOf(editing?.quantity?.toString() ?: "1") }
-        val close = { adding = false; dialogFor = null }
+        var magQuery by remember(editing) { mutableStateOf("") }
+        val close = { viewModel.clearMagacin(); adding = false; dialogFor = null }
         AlertDialog(
             onDismissRequest = close,
             title = { Text(if (editing == null) "Dodaj stavku" else "Izmeni stavku") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(value = magQuery, onValueChange = { magQuery = it; viewModel.searchMagacin(it) },
+                        label = { Text("Izaberi iz magacina (nije obavezno)") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                    magResults.forEach { p ->
+                        Column(
+                            Modifier.fillMaxWidth().clickable {
+                                sku = p.sku ?: ""
+                                name = p.name
+                                magQuery = ""
+                                viewModel.clearMagacin()
+                            }.padding(vertical = 4.dp)
+                        ) {
+                            Text(p.name, style = MaterialTheme.typography.bodyMedium)
+                            Text(
+                                "${p.sku ?: "-"} · na stanju: ${p.stockQty}",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                     OutlinedTextField(value = sku, onValueChange = { if (it.length <= 60) sku = it },
                         label = { Text("Šifra (nije obavezna)") }, singleLine = true, modifier = Modifier.fillMaxWidth())
                     OutlinedTextField(value = name, onValueChange = { if (it.length <= 200) name = it },

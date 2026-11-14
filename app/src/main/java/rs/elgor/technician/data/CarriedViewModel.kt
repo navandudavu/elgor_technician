@@ -6,13 +6,17 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import rs.elgor.technician.model.CarriedItem
 import rs.elgor.technician.model.CarriedRequest
+import rs.elgor.technician.model.PartView
 import rs.elgor.technician.model.TechnicianView
 
 // Zaduzivanje / razduzivanje. A technician manages his own list (at most 50 items, enforced by the server);
-// an admin or manager picks whose list to manage. Not connected to the warehouse.
+// an admin or manager picks whose list to manage. Items can be picked from Magacin (read only lookup: code and name
+// are copied, stock is never changed) or typed freely.
 class CarriedViewModel(
     private val repository: NalogRepository,
     private val isAdmin: Boolean,
@@ -38,6 +42,28 @@ class CarriedViewModel(
 
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
+
+    private val _magResults = MutableStateFlow<List<PartView>>(emptyList())
+    val magResults: StateFlow<List<PartView>> = _magResults.asStateFlow()
+    private var magJob: Job? = null
+
+    // Debounced Magacin lookup for the add dialog (active parts only, at most 8 shown).
+    fun searchMagacin(query: String) {
+        magJob?.cancel()
+        if (query.trim().length < 2) { _magResults.value = emptyList(); return }
+        magJob = viewModelScope.launch {
+            delay(300)
+            repository.searchParts(query.trim()).fold(
+                onSuccess = { page -> _magResults.value = page.items.filter { it.active }.take(8) },
+                onFailure = { _magResults.value = emptyList() }
+            )
+        }
+    }
+
+    fun clearMagacin() {
+        magJob?.cancel()
+        _magResults.value = emptyList()
+    }
 
     init {
         if (isAdmin) {
