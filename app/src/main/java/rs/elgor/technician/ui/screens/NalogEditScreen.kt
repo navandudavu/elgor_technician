@@ -221,7 +221,7 @@ fun NalogEditScreen(
                         OutlinedTextField(
                             value = form.price,
                             onValueChange = { v -> if (v.length <= 12) viewModel.edit { it.copy(price = v) } },
-                            label = { Text("Cena (RSD)") },
+                            label = { Text("Cena (RSD, nije obavezno)") },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                             modifier = Modifier.fillMaxWidth()
