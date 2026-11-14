@@ -41,7 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import rs.elgor.technician.data.NalogCreateViewModel
-import rs.elgor.technician.ui.components.HoursPicker
 import rs.elgor.technician.ui.components.applianceLabel
 import rs.elgor.technician.ui.components.formatMoney
 import rs.elgor.technician.ui.components.nalogStatusLabel
@@ -258,7 +257,6 @@ fun NalogCreateScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) { Text("+ Dodaj deo") }
 
-                HoursPicker(value = form.hours, onChange = { v -> viewModel.edit { it.copy(hours = v) } })
 
                 previewError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }

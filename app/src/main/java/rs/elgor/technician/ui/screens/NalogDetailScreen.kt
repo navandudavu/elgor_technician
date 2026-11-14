@@ -393,7 +393,6 @@ private fun NalogBody(
     SectionCard("DELOVI I RAD") {
         if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         n.partLines.forEach { l -> Text("${l.name} × ${l.quantity}") }
-        Text("Sati rada: ${n.laborHours} h", style = MaterialTheme.typography.bodySmall)
         MoneyRow("CENA", formatMoney(n.total), bold = true)
         Text("Plaćanje: ${paymentLabel(n.paymentType)}", style = MaterialTheme.typography.bodySmall)
     }
