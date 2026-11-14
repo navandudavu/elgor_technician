@@ -175,6 +175,7 @@ fun NalogDetailScreen(
                         notes = notes,
                         isBusy = isBusy,
                         isAdmin = isAdmin,
+                        locked = n.status == "COMPLETED",
                         onAdd = { text, done -> viewModel.addNote(text, done) },
                         onDelete = { viewModel.deleteNote(it) }
                     )
@@ -256,6 +257,7 @@ private fun NalogNotesSection(
     notes: List<NoteView>,
     isBusy: Boolean,
     isAdmin: Boolean,
+    locked: Boolean,
     onAdd: (String, () -> Unit) -> Unit,
     onDelete: (Long) -> Unit
 ) {
@@ -274,23 +276,31 @@ private fun NalogNotesSection(
                         (note.authorName?.let { "$it · " } ?: "") + formatInstant(note.createdAt),
                         style = MaterialTheme.typography.labelSmall
                     )
-                    if (isAdmin) {
+                    if (isAdmin && !locked) {
                         TextButton(onClick = { deleting = note }, enabled = !isBusy) { Text("Obriši") }
                     }
                 }
             }
         }
-        OutlinedTextField(
-            value = text,
-            onValueChange = { if (it.length <= 2000) text = it },
-            label = { Text("Nova konstatacija") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Button(
-            onClick = { onAdd(text) { text = "" } },
-            enabled = !isBusy && text.isNotBlank(),
-            modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-        ) { Text("Dodaj konstataciju") }
+        if (locked) {
+            Text(
+                "Nalog je završen, konstatacije se ne mogu menjati.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            OutlinedTextField(
+                value = text,
+                onValueChange = { if (it.length <= 2000) text = it },
+                label = { Text("Nova konstatacija") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Button(
+                onClick = { onAdd(text) { text = "" } },
+                enabled = !isBusy && text.isNotBlank(),
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            ) { Text("Dodaj konstataciju") }
+        }
     }
 
     deleting?.let { note ->
