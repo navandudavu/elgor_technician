@@ -52,6 +52,9 @@ class JobRepository(
                 }
                 Result.failure(Exception(message ?: "Zahtev nije uspeo (${response.code()})"))
             }
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            // A cancelled request (typing went on, screen closed) is not an error: never turn it into a message.
+            throw e
         } catch (e: java.io.IOException) {
             // Network-level failure (no connection, server unreachable, timeout) -
             // distinct from a server error response, worth a clearer message
