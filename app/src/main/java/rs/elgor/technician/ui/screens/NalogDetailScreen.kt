@@ -227,22 +227,15 @@ fun NalogDetailScreen(
                     }
 
                     val next = nextStatuses(n.status)
-                    if (next.isNotEmpty()) {
+                    val otherSteps = next.filter { it != "COMPLETED" }
+                    if (otherSteps.isNotEmpty()) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            next.forEach { s ->
-                                if (s == "COMPLETED") {
-                                    Button(
-                                        onClick = { changeStatusKeepingEdits(s) },
-                                        enabled = !isBusy,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) { Text(startLabel(s)) }
-                                } else {
-                                    OutlinedButton(
-                                        onClick = { changeStatusKeepingEdits(s) },
-                                        enabled = !isBusy,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) { Text(startLabel(s)) }
-                                }
+                            otherSteps.forEach { s ->
+                                OutlinedButton(
+                                    onClick = { changeStatusKeepingEdits(s) },
+                                    enabled = !isBusy,
+                                    modifier = Modifier.fillMaxWidth()
+                                ) { Text(startLabel(s)) }
                             }
                         }
                     }
@@ -263,6 +256,15 @@ fun NalogDetailScreen(
                     if (editDirty) {
                         Text("Sačuvajte izmene pre štampe.", style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+
+                    // "Završi nalog" comes last, below the print buttons.
+                    if ("COMPLETED" in next) {
+                        Button(
+                            onClick = { changeStatusKeepingEdits("COMPLETED") },
+                            enabled = !isBusy,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text(startLabel("COMPLETED")) }
                     }
 
                     if (isAdmin && n.status != "COMPLETED") {
