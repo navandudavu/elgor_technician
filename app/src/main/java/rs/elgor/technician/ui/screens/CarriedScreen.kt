@@ -30,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -142,28 +145,38 @@ fun CarriedScreen(viewModel: CarriedViewModel, isAdmin: Boolean, myName: String,
         var qty by remember(editing) { mutableStateOf(editing?.quantity?.toString() ?: "1") }
         var magQuery by remember(editing) { mutableStateOf("") }
         val close = { viewModel.clearMagacin(); adding = false; dialogFor = null }
+        // The whole Magacin is listed straight away; typing only narrows it down.
+        LaunchedEffect(Unit) { viewModel.searchMagacin("") }
         AlertDialog(
             onDismissRequest = close,
             title = { Text(if (editing == null) "Dodaj stavku" else "Izmeni stavku") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(value = magQuery, onValueChange = { magQuery = it; viewModel.searchMagacin(it) },
-                        label = { Text("Izaberi iz magacina (nije obavezno)") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                    magResults.forEach { p ->
-                        Column(
-                            Modifier.fillMaxWidth().clickable {
-                                sku = p.sku ?: ""
-                                name = p.name
-                                magQuery = ""
-                                viewModel.clearMagacin()
-                            }.padding(vertical = 4.dp)
-                        ) {
-                            Text(p.name, style = MaterialTheme.typography.bodyMedium)
-                            Text(
-                                "${p.sku ?: "-"} · na stanju: ${p.stockQty}",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                        label = { Text("Magacin: dodirnite deo ili pretražite") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                    Column(
+                        Modifier.fillMaxWidth().heightIn(max = 200.dp).verticalScroll(rememberScrollState())
+                    ) {
+                        magResults.forEach { p ->
+                            Column(
+                                Modifier.fillMaxWidth().clickable {
+                                    sku = p.sku ?: ""
+                                    name = p.name
+                                    magQuery = ""
+                                    viewModel.searchMagacin("")
+                                }.padding(vertical = 4.dp)
+                            ) {
+                                Text(p.name, style = MaterialTheme.typography.bodyMedium)
+                                Text(
+                                    "${p.sku ?: "-"} · na stanju: ${p.stockQty}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                        if (magResults.isEmpty()) {
+                            Text("Nema delova u magacinu.", style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                     OutlinedTextField(value = sku, onValueChange = { if (it.length <= 60) sku = it },
