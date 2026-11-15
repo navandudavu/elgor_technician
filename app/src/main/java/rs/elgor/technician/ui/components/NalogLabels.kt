@@ -109,8 +109,8 @@ fun formatInstant(iso: String?): String {
 @Composable
 fun NalogStatusChip(status: String, modifier: Modifier = Modifier) {
     Surface(
-        color = nalogStatusColor(status).copy(alpha = 0.15f),
-        contentColor = nalogStatusColor(status),
+        color = nalogStatusColor(status),
+        contentColor = Color.White,
         shape = RoundedCornerShape(6.dp),
         modifier = modifier
     ) {

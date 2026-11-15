@@ -58,6 +58,9 @@ class NalogRepository(private val api: NalogApi) {
                 }
                 Result.failure(Exception(msg))
             }
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            // A cancelled request (typing went on, screen closed) is not an error: never turn it into a message.
+            throw e
         } catch (e: java.io.IOException) {
             Result.failure(Exception("Nije moguće pristupiti servisu za radne naloge. Proverite vezu i da li je servis pokrenut.", e))
         } catch (e: Exception) {
@@ -133,6 +136,9 @@ class NalogRepository(private val api: NalogApi) {
             val bytes = if (r.isSuccessful) r.body()?.bytes() else null
             if (bytes != null) Result.success(bytes)
             else Result.failure(Exception("Učitavanje fotografije nije uspelo (${r.code()})"))
+        } catch (e: kotlinx.coroutines.CancellationException) {
+            // A cancelled request (typing went on, screen closed) is not an error: never turn it into a message.
+            throw e
         } catch (e: Exception) {
             Result.failure(e)
         }

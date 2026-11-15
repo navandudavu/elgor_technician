@@ -50,11 +50,10 @@ class CarriedViewModel(
     // Debounced Magacin lookup for the add dialog (active parts only, at most 8 shown).
     fun searchMagacin(query: String) {
         magJob?.cancel()
-        if (query.trim().length < 2) { _magResults.value = emptyList(); return }
         magJob = viewModelScope.launch {
             delay(300)
-            repository.searchParts(query.trim()).fold(
-                onSuccess = { page -> _magResults.value = page.items.filter { it.active }.take(8) },
+            repository.searchParts(query.trim().ifBlank { null }, size = 30).fold(
+                onSuccess = { page -> _magResults.value = page.items.filter { it.active } },
                 onFailure = { _magResults.value = emptyList() }
             )
         }

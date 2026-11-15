@@ -53,193 +53,161 @@ private val APPLIANCE_TYPES = listOf(
 )
 private val PAYMENT_TYPES = listOf("CASH", "CARD", "INVOICE")
 
-// Edit an unfinished nalog from the phone. Customer data is read-only here (web app edits it).
-// Every amount shown comes from the server's preview: the phone never calculates money.
-@OptIn(ExperimentalMaterial3Api::class)
+// The editable part of an unfinished nalog, shown straight on the nalog screen (there is no separate edit screen).
+// The customer is not editable on the phone (the web app does that). Every amount shown comes from the
+// server's preview: the phone never calculates money.
 @Composable
-fun NalogEditScreen(
-    viewModel: NalogEditViewModel,
-    onBack: () -> Unit,
-    onSaved: () -> Unit
-) {
+fun NalogEditFields(viewModel: NalogEditViewModel, afterDiagnosis: @Composable () -> Unit) {
     val form by viewModel.form.collectAsState()
-    val original by viewModel.original.collectAsState()
     val preview by viewModel.preview.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val isSaving by viewModel.isSaving.collectAsState()
-    val error by viewModel.error.collectAsState()
     var pickingPart by rememberSaveable { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Izmena naloga", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Nazad")
-                    }
-                }
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        EditCard("UREĐAJ") {
+            PickerField(
+                label = "Vrsta",
+                value = applianceLabel(form.applianceType).ifBlank { form.applianceType },
+                options = APPLIANCE_TYPES.map { it to applianceLabel(it) },
+                onPick = { code -> viewModel.edit { it.copy(applianceType = code) } }
+            )
+            OutlinedTextField(
+                value = form.brand,
+                onValueChange = { v -> if (v.length <= 100) viewModel.edit { it.copy(brand = v) } },
+                label = { Text("Marka") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = form.model,
+                onValueChange = { v -> if (v.length <= 100) viewModel.edit { it.copy(model = v) } },
+                label = { Text("Model") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = form.serial,
+                onValueChange = { v -> if (v.length <= 100) viewModel.edit { it.copy(serial = v) } },
+                label = { Text("Serijski broj") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
             )
         }
-    ) { padding ->
-        val n = original
-        Box(Modifier.padding(padding).fillMaxSize()) {
-            when {
-                n == null && isLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-                n == null -> Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center) {
-                    Text(error ?: "Nalog nije učitan.", color = MaterialTheme.colorScheme.error)
-                    OutlinedButton(onClick = { viewModel.load() }, modifier = Modifier.padding(top = 12.dp)) {
-                        Text("Pokušaj ponovo")
-                    }
-                }
-                else -> Column(
-                    Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    EditCard("KLIJENT (menja se na veb aplikaciji)") {
-                        Text(n.customer.fullName, fontWeight = FontWeight.SemiBold)
-                        val addr = listOfNotNull(n.customer.address, n.customer.city).filter { it.isNotBlank() }.joinToString(", ")
-                        if (addr.isNotBlank()) Text(addr)
-                    }
 
-                    EditCard("UREĐAJ") {
-                        PickerField(
-                            label = "Vrsta",
-                            value = applianceLabel(form.applianceType).ifBlank { form.applianceType },
-                            options = APPLIANCE_TYPES.map { it to applianceLabel(it) },
-                            onPick = { code -> viewModel.edit { it.copy(applianceType = code) } }
-                        )
-                        OutlinedTextField(
-                            value = form.brand,
-                            onValueChange = { v -> if (v.length <= 100) viewModel.edit { it.copy(brand = v) } },
-                            label = { Text("Marka") },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        OutlinedTextField(
-                            value = form.model,
-                            onValueChange = { v -> if (v.length <= 100) viewModel.edit { it.copy(model = v) } },
-                            label = { Text("Model") },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        OutlinedTextField(
-                            value = form.serial,
-                            onValueChange = { v -> if (v.length <= 100) viewModel.edit { it.copy(serial = v) } },
-                            label = { Text("Serijski broj") },
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+        EditCard("DIJAGNOZA / OPIS") {
+            OutlinedTextField(
+                value = form.diagnosis,
+                onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(diagnosis = v) } },
+                minLines = 3,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
-                    EditCard("DIJAGNOZA / OPIS") {
-                        OutlinedTextField(
-                            value = form.diagnosis,
-                            onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(diagnosis = v) } },
-                            minLines = 3,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
+        afterDiagnosis()
 
-                    EditCard("IZVRŠENI RADOVI") {
-                        Text(form.workDone.ifBlank { "—" })
-                        Text(
-                            "Menja se na ekranu naloga (otvorite nalog).",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+        EditCard("DELOVI") {
+            if (form.lines.isEmpty()) {
+                Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+            form.lines.forEach { line ->
+                Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+                    Text(line.name, fontWeight = FontWeight.SemiBold)
+                    line.sku?.takeIf { it.isNotBlank() }?.let {
+                        Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
-
-                    EditCard("DELOVI") {
-                        if (form.lines.isEmpty()) {
-                            Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                        form.lines.forEach { line ->
-                            Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                                Text(line.name, fontWeight = FontWeight.SemiBold)
-                                line.sku?.takeIf { it.isNotBlank() }?.let {
-                                    Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                        OutlinedButton(
-                                            onClick = {
-                                                viewModel.edit { f ->
-                                                    f.copy(lines = f.lines.map {
-                                                        if (it.partId == line.partId) it.copy(quantity = maxOf(1, it.quantity - 1)) else it
-                                                    })
-                                                }
-                                            },
-                                            enabled = line.quantity > 1
-                                        ) { Text("−") }
-                                        Text("${line.quantity}", fontWeight = FontWeight.Bold)
-                                        OutlinedButton(
-                                            onClick = {
-                                                viewModel.edit { f ->
-                                                    f.copy(lines = f.lines.map {
-                                                        if (it.partId == line.partId) it.copy(quantity = minOf(999, it.quantity + 1)) else it
-                                                    })
-                                                }
-                                            },
-                                            enabled = line.quantity < 999
-                                        ) { Text("+") }
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedButton(
+                                onClick = {
+                                    viewModel.edit { f ->
+                                        f.copy(lines = f.lines.map {
+                                            if (it.partId == line.partId) it.copy(quantity = maxOf(1, it.quantity - 1)) else it
+                                        })
                                     }
-                                    preview?.partLines?.firstOrNull { it.partId == line.partId }?.let {
-                                        Text(formatMoney(it.lineTotal))
+                                },
+                                enabled = line.quantity > 1
+                            ) { Text("−") }
+                            Text("${line.quantity}", fontWeight = FontWeight.Bold)
+                            OutlinedButton(
+                                onClick = {
+                                    viewModel.edit { f ->
+                                        f.copy(lines = f.lines.map {
+                                            if (it.partId == line.partId) it.copy(quantity = minOf(999, it.quantity + 1)) else it
+                                        })
                                     }
-                                    TextButton(onClick = {
-                                        viewModel.edit { f -> f.copy(lines = f.lines.filter { it.partId != line.partId }) }
-                                    }) { Text("Ukloni") }
-                                }
-                            }
+                                },
+                                enabled = line.quantity < 999
+                            ) { Text("+") }
                         }
-                        OutlinedButton(
-                            onClick = { pickingPart = true },
-                            enabled = form.lines.size < 50,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { Text("+ Dodaj deo") }
+                        preview?.partLines?.firstOrNull { it.partId == line.partId }?.let {
+                            Text(formatMoney(it.lineTotal))
+                        }
+                        TextButton(onClick = {
+                            viewModel.edit { f -> f.copy(lines = f.lines.filter { it.partId != line.partId }) }
+                        }) { Text("Ukloni") }
                     }
-
-                    EditCard("PLAĆANJE") {
-                        PickerField(
-                            label = "Plaćanje",
-                            value = paymentLabel(form.payment).ifBlank { form.payment },
-                            options = PAYMENT_TYPES.map { it to paymentLabel(it) },
-                            onPick = { code -> viewModel.edit { it.copy(payment = code) } }
-                        )
-                    }
-
-                    EditCard("CENA") {
-                        OutlinedTextField(
-                            value = form.price,
-                            onValueChange = { v -> if (v.length <= 12) viewModel.edit { it.copy(price = v) } },
-                            label = { Text("Cena (RSD, nije obavezno)") },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-
-                    error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-
-                    Button(
-                        onClick = { viewModel.save(onSaved) },
-                        enabled = !isSaving,
-                        modifier = Modifier.fillMaxWidth()
-                    ) { Text(if (isSaving) "Čuvanje…" else "Sačuvaj izmene") }
                 }
             }
+            OutlinedButton(
+                onClick = { pickingPart = true },
+                enabled = form.lines.size < 50,
+                modifier = Modifier.fillMaxWidth()
+            ) { Text("+ Dodaj deo") }
+        }
+
+        EditCard("PLAĆANJE") {
+            PickerField(
+                label = "Plaćanje",
+                value = paymentLabel(form.payment).ifBlank { form.payment },
+                options = PAYMENT_TYPES.map { it to paymentLabel(it) },
+                onPick = { code -> viewModel.edit { it.copy(payment = code) } }
+            )
+        }
+
+        EditCard("CENA") {
+            OutlinedTextField(
+                value = form.price,
+                onValueChange = { v -> if (v.length <= 12) viewModel.edit { it.copy(price = v) } },
+                label = { Text("Cena (RSD, nije obavezno)") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 
     if (pickingPart) {
         PartPickerDialog(viewModel = viewModel, onClose = { pickingPart = false })
+    }
+}
+
+// Izvršeni radovi and the save button sit at the bottom, right above the status buttons.
+@Composable
+fun NalogWorkDoneAndSave(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
+    val form by viewModel.form.collectAsState()
+    val isSaving by viewModel.isSaving.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        EditCard("IZVRŠENI RADOVI") {
+            OutlinedTextField(
+                value = form.workDone,
+                onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(workDone = v) } },
+                minLines = 3,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+
+        Button(
+            onClick = { viewModel.save(onSaved) },
+            enabled = !isSaving,
+            modifier = Modifier.fillMaxWidth()
+        ) { Text(if (isSaving) "Čuvanje…" else "Sačuvaj izmene") }
     }
 }
 

@@ -29,12 +29,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.core.content.FileProvider
 import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.launch
+import rs.elgor.technician.data.NalogEditViewModel
 import rs.elgor.technician.data.NalogRepository
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.util.prepareJpeg
 import java.io.File
 import java.io.FileOutputStream
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -106,8 +108,8 @@ fun NalogDetailScreen(
     repository: NalogRepository,
     currentUserId: Long,
     isAdmin: Boolean,
-    onBack: () -> Unit,
-    onEdit: (() -> Unit)? = null
+    editViewModel: NalogEditViewModel,
+    onBack: () -> Unit
 ) {
     val nalog by viewModel.nalog.collectAsState()
     val history by viewModel.history.collectAsState()
@@ -118,13 +120,23 @@ fun NalogDetailScreen(
     val isBusy by viewModel.isBusy.collectAsState()
     val error by viewModel.error.collectAsState()
     val context = LocalContext.current
+    val editDirty by editViewModel.dirty.collectAsState()
+    var confirmDiscard by rememberSaveable { mutableStateOf(false) }
+    val requestBack = { if (editDirty) confirmDiscard = true else onBack() }
+    BackHandler(enabled = editDirty) { confirmDiscard = true }
+
+    // Whenever the server-side nalog changes (saved, status changed), the form is reloaded so its version matches.
+    val versionKey = nalog?.version
+    LaunchedEffect(versionKey) {
+        if (versionKey != null && editViewModel.original.value?.version != versionKey) editViewModel.load()
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(nalog?.nalogNumber ?: "Radni nalog", fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = requestBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Nazad")
                     }
                 }
@@ -151,13 +163,30 @@ fun NalogDetailScreen(
                     Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    // Unfinished nalog the person may change: everything is editable right here.
+                    // Otherwise (finished, cancelled, someone else's) it is the read-only view.
+                    val editable = n.status in EDITABLE_STATUSES && (isAdmin || n.assignedToId == currentUserId)
                     NalogBody(
                         n = n,
                         context = context,
+                        showDetails = !editable,
                         canEditWorkDone = n.status != "CANCELLED" && (n.status != "COMPLETED" || isAdmin),
                         isBusy = isBusy,
                         onSaveWorkDone = { text, done -> viewModel.saveWorkDone(text, done) }
                     )
+
+                    if (editable) {
+                        NalogEditFields(viewModel = editViewModel, afterDiagnosis = {
+                            NalogNotesSection(
+                                notes = notes,
+                                isBusy = isBusy,
+                                isAdmin = isAdmin,
+                                locked = n.status == "COMPLETED",
+                                onAdd = { text, done -> viewModel.addNote(text, done) },
+                                onDelete = { viewModel.deleteNote(it) }
+                            )
+                        })
+                    }
 
                     NalogPhotoSection(
                         nalogId = n.id,
@@ -171,25 +200,24 @@ fun NalogDetailScreen(
                         onDelete = { id -> viewModel.deletePhoto(id) }
                     )
 
-                    NalogNotesSection(
-                        notes = notes,
-                        isBusy = isBusy,
-                        isAdmin = isAdmin,
-                        locked = n.status == "COMPLETED",
-                        onAdd = { text, done -> viewModel.addNote(text, done) },
-                        onDelete = { viewModel.deleteNote(it) }
-                    )
+                    if (editable) {
+                        NalogWorkDoneAndSave(viewModel = editViewModel, onSaved = { viewModel.load() })
+                    } else {
+                        NalogNotesSection(
+                            notes = notes,
+                            isBusy = isBusy,
+                            isAdmin = isAdmin,
+                            locked = n.status == "COMPLETED",
+                            onAdd = { text, done -> viewModel.addNote(text, done) },
+                            onDelete = { viewModel.deleteNote(it) }
+                        )
+                    }
 
                     error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
 
-                    // Only offered for unfinished nalozi, and only to the admin or the assigned technician;
-                    // the server enforces the same rules, this just avoids a dead button.
-                    if (onEdit != null && n.status in EDITABLE_STATUSES && (isAdmin || n.assignedToId == currentUserId)) {
-                        OutlinedButton(
-                            onClick = onEdit,
-                            enabled = !isBusy,
-                            modifier = Modifier.fillMaxWidth()
-                        ) { Text("Izmeni nalog") }
+                    // Unsaved edits are saved first, so e.g. "Završi nalog" sees the izvršeni radovi just typed.
+                    fun changeStatusKeepingEdits(to: String) {
+                        if (editable) editViewModel.saveIfDirty { viewModel.changeStatus(to) } else viewModel.changeStatus(to)
                     }
 
                     val next = nextStatuses(n.status)
@@ -198,13 +226,13 @@ fun NalogDetailScreen(
                             next.forEach { s ->
                                 if (s == "COMPLETED") {
                                     Button(
-                                        onClick = { viewModel.changeStatus(s) },
+                                        onClick = { changeStatusKeepingEdits(s) },
                                         enabled = !isBusy,
                                         modifier = Modifier.fillMaxWidth()
                                     ) { Text(startLabel(s)) }
                                 } else {
                                     OutlinedButton(
-                                        onClick = { viewModel.changeStatus(s) },
+                                        onClick = { changeStatusKeepingEdits(s) },
                                         enabled = !isBusy,
                                         modifier = Modifier.fillMaxWidth()
                                     ) { Text(startLabel(s)) }
@@ -237,6 +265,16 @@ fun NalogDetailScreen(
                 }
             }
         }
+    }
+
+    if (confirmDiscard) {
+        AlertDialog(
+            onDismissRequest = { confirmDiscard = false },
+            title = { Text("Odbaciti izmene?") },
+            text = { Text("Imate nesačuvane izmene na ovom nalogu.") },
+            confirmButton = { TextButton(onClick = { confirmDiscard = false; onBack() }) { Text("Odbaci") } },
+            dismissButton = { TextButton(onClick = { confirmDiscard = false }) { Text("Ostani") } }
+        )
     }
 
     if (confirmDelete) {
@@ -318,6 +356,7 @@ private fun NalogNotesSection(
 private fun NalogBody(
     n: Nalog,
     context: Context,
+    showDetails: Boolean,
     canEditWorkDone: Boolean,
     isBusy: Boolean,
     onSaveWorkDone: (String, () -> Unit) -> Unit
@@ -348,21 +387,23 @@ private fun NalogBody(
         }
     }
 
-    SectionCard("UREĐAJ") {
-        Text(listOfNotNull(applianceLabel(n.appliance.type).ifBlank { null }, n.appliance.brand, n.appliance.model).joinToString(" · "))
-        n.appliance.serialNumber?.takeIf { it.isNotBlank() }?.let { Text("S/N: $it") }
-    }
+    if (showDetails) {
+        SectionCard("UREĐAJ") {
+            Text(listOfNotNull(applianceLabel(n.appliance.type).ifBlank { null }, n.appliance.brand, n.appliance.model).joinToString(" · "))
+            n.appliance.serialNumber?.takeIf { it.isNotBlank() }?.let { Text("S/N: $it") }
+        }
 
-    if (!n.diagnosis.isNullOrBlank()) {
-        SectionCard("DIJAGNOZA / OPIS") { Text(n.diagnosis) }
-    }
-    SectionCard("IZVRŠENI RADOVI") {
-        Text(if (n.workDone.isNullOrBlank()) "—" else n.workDone)
-        if (canEditWorkDone) {
-            OutlinedButton(
-                onClick = { workDoneDraft = n.workDone ?: ""; editingWorkDone = true },
-                modifier = Modifier.padding(top = 4.dp)
-            ) { Text("Izmeni") }
+        if (!n.diagnosis.isNullOrBlank()) {
+            SectionCard("DIJAGNOZA / OPIS") { Text(n.diagnosis) }
+        }
+        SectionCard("IZVRŠENI RADOVI") {
+            Text(if (n.workDone.isNullOrBlank()) "—" else n.workDone)
+            if (canEditWorkDone) {
+                OutlinedButton(
+                    onClick = { workDoneDraft = n.workDone ?: ""; editingWorkDone = true },
+                    modifier = Modifier.padding(top = 4.dp)
+                ) { Text("Izmeni") }
+            }
         }
     }
     if (editingWorkDone) {
@@ -390,11 +431,13 @@ private fun NalogBody(
     }
     n.scheduledAt?.let { SectionCard("ZAKAZANO") { Text(formatInstantDate(it)) } }
 
-    SectionCard("DELOVI I RAD") {
-        if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-        n.partLines.forEach { l -> Text("${l.name} × ${l.quantity}") }
-        MoneyRow("CENA", formatMoney(n.total), bold = true)
-        Text("Plaćanje: ${paymentLabel(n.paymentType)}", style = MaterialTheme.typography.bodySmall)
+    if (showDetails) {
+        SectionCard("DELOVI I RAD") {
+            if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            n.partLines.forEach { l -> Text("${l.name} × ${l.quantity}") }
+            MoneyRow("CENA", formatMoney(n.total), bold = true)
+            Text("Plaćanje: ${paymentLabel(n.paymentType)}", style = MaterialTheme.typography.bodySmall)
+        }
     }
 }
 
