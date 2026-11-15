@@ -73,6 +73,7 @@ import rs.elgor.technician.ui.components.applianceLabel
 import rs.elgor.technician.ui.components.formatInstant
 import rs.elgor.technician.ui.components.formatInstantDate
 import rs.elgor.technician.ui.components.formatMoney
+import rs.elgor.technician.ui.components.printNalog
 import rs.elgor.technician.ui.components.nalogStatusLabel
 import rs.elgor.technician.ui.components.paymentLabel
 
@@ -244,6 +245,24 @@ fun NalogDetailScreen(
                                 }
                             }
                         }
+                    }
+
+                    // Printing uses the saved nalog, so unsaved edits must be saved first.
+                    OutlinedButton(
+                        onClick = { printNalog(context, n, revers = false) },
+                        enabled = !editDirty,
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text("Štampaj nalog") }
+                    if (n.status == "RECEIVED") {
+                        OutlinedButton(
+                            onClick = { printNalog(context, n, revers = true) },
+                            enabled = !editDirty,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text("Štampaj revers") }
+                    }
+                    if (editDirty) {
+                        Text("Sačuvajte izmene pre štampe.", style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
 
                     if (isAdmin && n.status != "COMPLETED") {
