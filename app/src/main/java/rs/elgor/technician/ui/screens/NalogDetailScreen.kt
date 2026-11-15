@@ -170,9 +170,16 @@ fun NalogDetailScreen(
                         n = n,
                         context = context,
                         showDetails = !editable,
-                        canEditWorkDone = n.status != "CANCELLED" && (n.status != "COMPLETED" || isAdmin),
-                        isBusy = isBusy,
-                        onSaveWorkDone = { text, done -> viewModel.saveWorkDone(text, done) }
+                        afterDiagnosis = {
+                            NalogNotesSection(
+                                notes = notes,
+                                isBusy = isBusy,
+                                isAdmin = isAdmin,
+                                locked = n.status == "COMPLETED",
+                                onAdd = { text, done -> viewModel.addNote(text, done) },
+                                onDelete = { viewModel.deleteNote(it) }
+                            )
+                        }
                     )
 
                     if (editable) {
@@ -203,13 +210,11 @@ fun NalogDetailScreen(
                     if (editable) {
                         NalogWorkDoneAndSave(viewModel = editViewModel, onSaved = { viewModel.load() })
                     } else {
-                        NalogNotesSection(
-                            notes = notes,
+                        NalogWorkDoneReadOnly(
+                            n = n,
+                            canEdit = n.status != "CANCELLED" && (n.status != "COMPLETED" || isAdmin),
                             isBusy = isBusy,
-                            isAdmin = isAdmin,
-                            locked = n.status == "COMPLETED",
-                            onAdd = { text, done -> viewModel.addNote(text, done) },
-                            onDelete = { viewModel.deleteNote(it) }
+                            onSave = { text, done -> viewModel.saveWorkDone(text, done) }
                         )
                     }
 
@@ -357,13 +362,8 @@ private fun NalogBody(
     n: Nalog,
     context: Context,
     showDetails: Boolean,
-    canEditWorkDone: Boolean,
-    isBusy: Boolean,
-    onSaveWorkDone: (String, () -> Unit) -> Unit
+    afterDiagnosis: @Composable () -> Unit
 ) {
-    var editingWorkDone by rememberSaveable { mutableStateOf(false) }
-    var workDoneDraft by rememberSaveable { mutableStateOf("") }
-
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         NalogStatusChip(n.status)
         n.assignedToName?.let { Text("Serviser: $it", style = MaterialTheme.typography.labelMedium) }
@@ -387,6 +387,10 @@ private fun NalogBody(
         }
     }
 
+    n.scheduledAt?.let { SectionCard("ZAKAZANO") { Text(formatInstantDate(it)) } }
+
+    // Read-only view (finished, cancelled, someone else's nalog), in the same order as the editable one:
+    // uređaj, dijagnoza, konstatacije, delovi; photos and izvršeni radovi follow below.
     if (showDetails) {
         SectionCard("UREĐAJ") {
             Text(listOfNotNull(applianceLabel(n.appliance.type).ifBlank { null }, n.appliance.brand, n.appliance.model).joinToString(" · "))
@@ -396,14 +400,30 @@ private fun NalogBody(
         if (!n.diagnosis.isNullOrBlank()) {
             SectionCard("DIJAGNOZA / OPIS") { Text(n.diagnosis) }
         }
-        SectionCard("IZVRŠENI RADOVI") {
-            Text(if (n.workDone.isNullOrBlank()) "—" else n.workDone)
-            if (canEditWorkDone) {
-                OutlinedButton(
-                    onClick = { workDoneDraft = n.workDone ?: ""; editingWorkDone = true },
-                    modifier = Modifier.padding(top = 4.dp)
-                ) { Text("Izmeni") }
-            }
+
+        afterDiagnosis()
+
+        SectionCard("DELOVI I RAD") {
+            if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            n.partLines.forEach { l -> Text("${l.name} × ${l.quantity}") }
+            MoneyRow("CENA", formatMoney(n.total), bold = true)
+            Text("Plaćanje: ${paymentLabel(n.paymentType)}", style = MaterialTheme.typography.bodySmall)
+        }
+    }
+}
+
+@Composable
+private fun NalogWorkDoneReadOnly(n: Nalog, canEdit: Boolean, isBusy: Boolean, onSave: (String, () -> Unit) -> Unit) {
+    var editingWorkDone by rememberSaveable { mutableStateOf(false) }
+    var workDoneDraft by rememberSaveable { mutableStateOf("") }
+
+    SectionCard("IZVRŠENI RADOVI") {
+        Text(if (n.workDone.isNullOrBlank()) "—" else n.workDone)
+        if (canEdit) {
+            OutlinedButton(
+                onClick = { workDoneDraft = n.workDone ?: ""; editingWorkDone = true },
+                modifier = Modifier.padding(top = 4.dp)
+            ) { Text("Izmeni") }
         }
     }
     if (editingWorkDone) {
@@ -421,23 +441,13 @@ private fun NalogBody(
             confirmButton = {
                 TextButton(
                     enabled = !isBusy,
-                    onClick = { onSaveWorkDone(workDoneDraft) { editingWorkDone = false } }
+                    onClick = { onSave(workDoneDraft) { editingWorkDone = false } }
                 ) { Text("Sačuvaj") }
             },
             dismissButton = {
                 TextButton(enabled = !isBusy, onClick = { editingWorkDone = false }) { Text("Otkaži") }
             }
         )
-    }
-    n.scheduledAt?.let { SectionCard("ZAKAZANO") { Text(formatInstantDate(it)) } }
-
-    if (showDetails) {
-        SectionCard("DELOVI I RAD") {
-            if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            n.partLines.forEach { l -> Text("${l.name} × ${l.quantity}") }
-            MoneyRow("CENA", formatMoney(n.total), bold = true)
-            Text("Plaćanje: ${paymentLabel(n.paymentType)}", style = MaterialTheme.typography.bodySmall)
-        }
     }
 }
 
