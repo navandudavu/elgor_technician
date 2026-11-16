@@ -19,6 +19,7 @@ class SessionManager(private val context: Context) {
 
     private object Keys {
         val TOKEN = stringPreferencesKey("auth_token")
+        val REFRESH_TOKEN = stringPreferencesKey("refresh_token")
         val SERVER_URL = stringPreferencesKey("server_url")
     }
 
@@ -26,10 +27,24 @@ class SessionManager(private val context: Context) {
     val serverUrlFlow: Flow<String?> = context.dataStore.data.map { it[Keys.SERVER_URL] }
 
     suspend fun getToken(): String? = context.dataStore.data.first()[Keys.TOKEN]
+    suspend fun getRefreshToken(): String? = context.dataStore.data.first()[Keys.REFRESH_TOKEN]
     suspend fun getServerUrl(): String? = context.dataStore.data.first()[Keys.SERVER_URL]
 
     suspend fun saveToken(token: String) {
         context.dataStore.edit { it[Keys.TOKEN] = token }
+    }
+
+    // Login token and refresh token together; the refresh token (30 days, single use) keeps the phone logged in.
+    suspend fun saveTokens(token: String, refreshToken: String?) {
+        context.dataStore.edit {
+            it[Keys.TOKEN] = token
+            if (refreshToken != null) it[Keys.REFRESH_TOKEN] = refreshToken else it.remove(Keys.REFRESH_TOKEN)
+        }
+    }
+
+    // The server refused the refresh token: it is useless from now on.
+    suspend fun clearRefreshToken() {
+        context.dataStore.edit { it.remove(Keys.REFRESH_TOKEN) }
     }
 
     suspend fun saveServerUrl(url: String) {
@@ -43,6 +58,7 @@ class SessionManager(private val context: Context) {
     suspend fun clearSession() {
         context.dataStore.edit {
             it.remove(Keys.TOKEN)
+            it.remove(Keys.REFRESH_TOKEN)
             // Deliberately keep SERVER_URL on logout - it's a deployment
             // setting, not a credential, so re-logging in shouldn't require
             // re-entering the server address every time.

@@ -38,7 +38,9 @@ Potrebno je da `app/google-services.json` pripada istom Firebase projektu kao i 
 
 ## Istek sesije
 
-Svaki odgovor 401 (istekao token, promenjena ili resetovana lozinka, deaktiviran nalog) briše sačuvani token i aplikacija se vraća na ekran za prijavu uz poruku „Sesija je istekla. Prijavite se ponovo.“ Adresa servera se pamti.
+**Ostajanje prijavljen:** pri prijavi server vraća i refresh token (30 dana, jednokratan) koji se čuva u DataStore. Na 401 aplikacija (`RefreshAuthenticator` u `ElgorNetwork.kt`) menja refresh token za novi par i ponavlja zahtev, uz jedno obnavljanje u isto vreme za ceo klijent. Ko koristi aplikaciju bar jednom mesečno ne mora ponovo da se prijavi. Ako se server ne može dosegnuti, sesija se ne briše. Odjava poništava refresh token na serveru. Za ovo treba server sa `claude/refresh-token` (ili `master` posle spajanja).
+
+Kad ni obnavljanje ne uspe (refresh token odbijen, promenjena ili resetovana lozinka, deaktiviran nalog), odgovor 401 (istekao token, promenjena ili resetovana lozinka, deaktiviran nalog) briše sačuvani token i aplikacija se vraća na ekran za prijavu uz poruku „Sesija je istekla. Prijavite se ponovo.“ Adresa servera se pamti.
 
 ## Pre upotrebe: adresa servera
 
