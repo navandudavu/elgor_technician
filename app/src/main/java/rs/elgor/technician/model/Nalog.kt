@@ -67,7 +67,7 @@ data class Nalog(
     val customer: NalogCustomer,
     val appliance: NalogAppliance,
     val diagnosis: String?,
-    val workDone: String? = null,
+    val cancelReason: String? = null,
     val laborHours: String,
     val laborRate: String,
     val laborTotal: String,
@@ -97,10 +97,7 @@ data class NalogHistoryEntry(
 )
 
 @JsonClass(generateAdapter = true)
-data class NalogStatusRequest(val status: String)
-
-/** PATCH /api/nalozi/{id}/work-done; blank or null clears "Izvrsene radove". */
-data class WorkDoneRequest(val workDone: String?)
+data class NalogStatusRequest(val status: String, val reason: String? = null)   // reason: mandatory for CANCELLED, ignored otherwise
 
 // Spring's RFC 7807 error body: {"title":..., "detail":..., "errors": {"field": "msg"}}
 @JsonClass(generateAdapter = true)
@@ -138,29 +135,7 @@ data class NoteView(
 data class CreateNoteRequest(val body: String)
 
 // --- Edit (PUT /api/nalozi/{id}) and the server-side price preview. No money is ever sent: only
-// quantities and hours. Hours travel as a String ("2.50"), never through a Double.
-
-@JsonClass(generateAdapter = true)
-data class PartView(
-    val id: Long,
-    val sku: String?,
-    val name: String,
-    val unitPrice: String,
-    val stockQty: Int,
-    val active: Boolean
-)
-
-@JsonClass(generateAdapter = true)
-data class PartPage(
-    val items: List<PartView>,
-    val page: Int,
-    val size: Int,
-    val totalItems: Long,
-    val totalPages: Int
-)
-
-@JsonClass(generateAdapter = true)
-data class PartLineInput(val partId: Long, val quantity: Int)
+// hours and the typed price. Hours travel as a String ("2.50"), never through a Double.
 
 @JsonClass(generateAdapter = true)
 data class ApplianceInput(
@@ -175,8 +150,6 @@ data class UpdateNalogRequest(
     val customerId: Long,
     val appliance: ApplianceInput,
     val diagnosis: String,
-    val workDone: String? = null,
-    val partLines: List<PartLineInput>,
     val laborHours: String,
     val price: String? = null,
     val paymentType: String,
@@ -185,7 +158,6 @@ data class UpdateNalogRequest(
 
 @JsonClass(generateAdapter = true)
 data class PreviewRequest(
-    val partLines: List<PartLineInput>,
     val laborHours: String,
     val nalogId: Long? = null,
     val price: String? = null
@@ -196,7 +168,6 @@ data class NalogPreview(
     val laborHours: String,
     val laborRate: String,
     val laborTotal: String,
-    val partLines: List<NalogPartLine> = emptyList(),
     val partsTotal: String,
     val subtotal: String,
     val vatRate: String,
@@ -205,7 +176,7 @@ data class NalogPreview(
 )
 
 // --- Create (POST /api/nalozi). Mirrors CreateNalogRequest.java. Still no money in the request: hours as a String,
-// parts as id + quantity. status / assignedToId are honoured for admins only; a technician always gets DISPATCHED and themselves.
+// the typed price. status / assignedToId are honoured for admins only; a technician always gets DISPATCHED and themselves.
 
 @JsonClass(generateAdapter = true)
 data class NewCustomerInput(
@@ -223,7 +194,6 @@ data class CreateNalogRequest(
     val newCustomer: NewCustomerInput? = null,
     val appliance: ApplianceInput,
     val diagnosis: String,
-    val partLines: List<PartLineInput>,
     val laborHours: String,
     val price: String? = null,
     val paymentType: String,

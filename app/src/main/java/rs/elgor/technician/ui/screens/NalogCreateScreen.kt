@@ -50,14 +50,10 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
 
-private val CREATE_APPLIANCE_TYPES = listOf(
-    "AIR_CONDITIONER", "REFRIGERATOR", "FREEZER", "WASHING_MACHINE", "DRYER", "DISHWASHER",
-    "OVEN", "STOVE", "WATER_HEATER", "BOILER", "OTHER"
-)
 private val CREATE_PAYMENT_TYPES = listOf("CASH", "CARD", "INVOICE")
 
 // New radni nalog, same sections and wording as the web form (NalogForm.tsx): Korisnik, Uređaj, Opis kvara,
-// Delovi i rad, Plaćanje. Every amount shown is the server's preview: the phone never calculates money.
+// Cena (typed by hand), Plaćanje. The phone never calculates money.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NalogCreateScreen(
@@ -66,14 +62,12 @@ fun NalogCreateScreen(
     onCreated: (Long) -> Unit
 ) {
     val form by viewModel.form.collectAsState()
-    val preview by viewModel.preview.collectAsState()
-    val previewError by viewModel.previewError.collectAsState()
+    val applianceTypes by viewModel.applianceTypes.collectAsState()
     val isSaving by viewModel.isSaving.collectAsState()
     val error by viewModel.error.collectAsState()
     val customerResults by viewModel.customerResults.collectAsState()
     val technicians by viewModel.technicians.collectAsState()
     val techniciansError by viewModel.techniciansError.collectAsState()
-    var pickingPart by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -169,7 +163,7 @@ fun NalogCreateScreen(
                 PickerField(
                     label = "Vrsta",
                     value = applianceLabel(form.applianceType).ifBlank { form.applianceType },
-                    options = CREATE_APPLIANCE_TYPES.map { it to applianceLabel(it) },
+                    options = applianceTypes.map { it to applianceLabel(it) },
                     onPick = { code -> viewModel.edit { it.copy(applianceType = code) } }
                 )
                 OutlinedTextField(
@@ -202,63 +196,6 @@ fun NalogCreateScreen(
                     minLines = 3,
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
-
-            EditCard("DELOVI I RAD") {
-                if (form.lines.isEmpty()) {
-                    Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                }
-                form.lines.forEach { line ->
-                    Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                        Text(line.name, fontWeight = FontWeight.SemiBold)
-                        line.sku?.takeIf { it.isNotBlank() }?.let {
-                            Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        }
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                OutlinedButton(
-                                    onClick = {
-                                        viewModel.edit { f ->
-                                            f.copy(lines = f.lines.map {
-                                                if (it.partId == line.partId) it.copy(quantity = maxOf(1, it.quantity - 1)) else it
-                                            })
-                                        }
-                                    },
-                                    enabled = line.quantity > 1
-                                ) { Text("−") }
-                                Text("${line.quantity}", fontWeight = FontWeight.Bold)
-                                OutlinedButton(
-                                    onClick = {
-                                        viewModel.edit { f ->
-                                            f.copy(lines = f.lines.map {
-                                                if (it.partId == line.partId) it.copy(quantity = minOf(999, it.quantity + 1)) else it
-                                            })
-                                        }
-                                    },
-                                    enabled = line.quantity < 999
-                                ) { Text("+") }
-                            }
-                            preview?.partLines?.firstOrNull { it.partId == line.partId }?.let {
-                                Text(formatMoney(it.lineTotal))
-                            }
-                            TextButton(onClick = {
-                                viewModel.edit { f -> f.copy(lines = f.lines.filter { it.partId != line.partId }) }
-                            }) { Text("Ukloni") }
-                        }
-                    }
-                }
-                OutlinedButton(
-                    onClick = { pickingPart = true },
-                    enabled = form.lines.size < 50,
-                    modifier = Modifier.fillMaxWidth()
-                ) { Text("+ Dodaj deo") }
-
-
-                previewError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
             }
 
             EditCard("CENA") {
@@ -310,10 +247,6 @@ fun NalogCreateScreen(
             ) { Text(if (isSaving) "Čuvanje…" else "Kreiraj nalog") }
         }
     }
-
-    if (pickingPart) {
-        CreatePartPickerDialog(viewModel = viewModel, onClose = { pickingPart = false })
-    }
 }
 
 // "Planirani dolazak": date only (no hour). The server gets local noon of that day as a UTC instant, so the day never flips.
@@ -346,54 +279,4 @@ private fun ScheduleField(label: String?, onPicked: (String, String) -> Unit, on
             if (label != null) TextButton(onClick = onClear) { Text("Ukloni") }
         }
     }
-}
-
-@Composable
-private fun CreatePartPickerDialog(viewModel: NalogCreateViewModel, onClose: () -> Unit) {
-    val results by viewModel.partResults.collectAsState()
-    val loading by viewModel.partsLoading.collectAsState()
-    var query by rememberSaveable { mutableStateOf("") }
-
-    LaunchedEffect(query) { viewModel.searchParts(query) }
-
-    AlertDialog(
-        onDismissRequest = onClose,
-        title = { Text("Dodaj deo") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = query,
-                    onValueChange = { query = it },
-                    label = { Text("Naziv ili šifra") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (loading) Text("Pretraga…", style = MaterialTheme.typography.bodySmall)
-                Column(Modifier.heightIn(max = 320.dp).verticalScroll(rememberScrollState())) {
-                    if (!loading && results.isEmpty()) {
-                        Text("Nema rezultata.", style = MaterialTheme.typography.bodySmall)
-                    }
-                    results.forEach { p ->
-                        val inStock = p.stockQty > 0
-                        TextButton(
-                            onClick = { viewModel.addPart(p); onClose() },
-                            enabled = inStock,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Column(Modifier.fillMaxWidth()) {
-                                Text(p.name)
-                                Text(
-                                    (p.sku?.let { "$it · " } ?: "") + formatMoney(p.unitPrice) +
-                                        " · " + (if (inStock) "na stanju: ${p.stockQty}" else "nema na stanju"),
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-        dismissButton = { TextButton(onClick = onClose) { Text("Zatvori") } }
-    )
 }

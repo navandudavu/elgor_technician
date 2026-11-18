@@ -61,6 +61,12 @@ fun applianceLabel(t: String?) = when (t) {
     else -> t
 }
 
+/** Shown until the server's list (built-ins + types added on the web) arrives, or when it cannot be fetched. */
+val DEFAULT_APPLIANCE_TYPES = listOf(
+    "AIR_CONDITIONER", "REFRIGERATOR", "FREEZER", "WASHING_MACHINE", "DRYER", "DISHWASHER",
+    "OVEN", "STOVE", "WATER_HEATER", "BOILER"
+)
+
 fun paymentLabel(p: String?) = when (p) {
     "CASH" -> "Gotovina"
     "CARD" -> "Kartica"

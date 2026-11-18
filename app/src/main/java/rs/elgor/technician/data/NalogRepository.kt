@@ -17,17 +17,12 @@ import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
-import rs.elgor.technician.model.WorkDoneRequest
-import rs.elgor.technician.model.PartView
-import rs.elgor.technician.model.StockAdjustRequest
-import rs.elgor.technician.model.StockMovement
+import rs.elgor.technician.model.StockDoc
+import rs.elgor.technician.model.StockDocPage
 import rs.elgor.technician.model.ProblemDetail
 import rs.elgor.technician.model.CreateNoteRequest
 import rs.elgor.technician.model.NoteView
-import rs.elgor.technician.model.CarriedItem
-import rs.elgor.technician.model.CarriedRequest
 import rs.elgor.technician.model.NalogPreview
-import rs.elgor.technician.model.PartPage
 import rs.elgor.technician.model.PreviewRequest
 import rs.elgor.technician.model.UpdateNalogRequest
 
@@ -82,32 +77,21 @@ class NalogRepository(private val api: NalogApi) {
 
     suspend fun history(id: Long): Result<List<NalogHistoryEntry>> = unwrap { api.history(id) }
 
-    suspend fun changeStatus(id: Long, status: String): Result<Nalog> =
-        unwrap { api.changeStatus(id, NalogStatusRequest(status)) }
+    suspend fun changeStatus(id: Long, status: String, reason: String? = null): Result<Nalog> =
+        unwrap { api.changeStatus(id, NalogStatusRequest(status, reason)) }
 
-    suspend fun setWorkDone(id: Long, workDone: String?): Result<Nalog> =
-        unwrap { api.setWorkDone(id, WorkDoneRequest(workDone)) }
 
     suspend fun update(id: Long, request: UpdateNalogRequest): Result<Nalog> = unwrap { api.update(id, request) }
 
     suspend fun preview(request: PreviewRequest): Result<NalogPreview> = unwrap { api.preview(request) }
 
-    suspend fun searchParts(q: String?, onlyActive: Boolean = true, page: Int = 0, size: Int = 20): Result<PartPage> =
-        unwrap { api.parts(q = q, onlyActive = onlyActive, page = page, size = size) }
-
-    suspend fun adjustStock(id: Long, request: StockAdjustRequest): Result<PartView> = unwrap { api.adjustStock(id, request) }
-
-    suspend fun movements(id: Long): Result<List<StockMovement>> = unwrap { api.movements(id) }
+    suspend fun applianceTypes(): Result<List<String>> = unwrap { api.applianceTypes() }
 
     suspend fun deleteNalog(id: Long): Result<Unit> = unwrap { api.delete(id) }
 
-    suspend fun carried(technicianId: Long?): Result<List<CarriedItem>> = unwrap { api.carried(technicianId) }
+    suspend fun stockDocs(page: Int = 0): Result<StockDocPage> = unwrap { api.stockDocs(page = page) }
 
-    suspend fun addCarried(request: CarriedRequest): Result<CarriedItem> = unwrap { api.addCarried(request) }
-
-    suspend fun updateCarried(id: Long, request: CarriedRequest): Result<CarriedItem> = unwrap { api.updateCarried(id, request) }
-
-    suspend fun deleteCarried(id: Long): Result<Unit> = unwrap { api.deleteCarried(id) }
+    suspend fun stockDoc(id: Long): Result<StockDoc> = unwrap { api.stockDoc(id) }
 
     suspend fun notes(id: Long): Result<List<NoteView>> = unwrap { api.notes(id) }
 

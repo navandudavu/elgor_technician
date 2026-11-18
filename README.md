@@ -1,10 +1,10 @@
 # ELGOR Technician — Android aplikacija
 
-Nativna Android aplikacija (Kotlin + Jetpack Compose) za ELGOR servisere, administratore i menadžere, koja radi sa **ServiceHub Java serverom** (repozitorijum `servicehub`): radni nalozi, statusi, izvršeni radovi, konstatacije, fotografije, zaduživanje materijala i obaveštenja o novim nalozima. Odvojena je od ELGOR aplikacije za korisnike (elgor1999), koja služi klijentima za pregled i kupovinu; ova je alat za internu upotrebu.
+Nativna Android aplikacija (Kotlin + Jetpack Compose) za ELGOR servisere, administratore i menadžere, koja radi sa **ServiceHub Java serverom** (repozitorijum `servicehub`): radni nalozi, statusi, konstatacije / izvršeni radovi, otkazivanje, fotografije, pregled zaduženja (Magacin) i obaveštenja o novim nalozima. Odvojena je od ELGOR aplikacije za korisnike (elgor1999), koja služi klijentima za pregled i kupovinu; ova je alat za internu upotrebu.
 
 ## Status: verzija 1.0 (`versionCode 1`)
 
-Aplikacija se kompajlira i radi na uređaju (potvrdio razvojni tim). Poslednja serija izmena — izvršeni radovi koji se menjaju na ekranu naloga, zakazivanje samo datumom i štampa zaduženja — još **nije isprobana u Android Studiju**. Prva stvar posle `git pull`: **Build → Make Project**, pa prođite kroz tok iz odeljka **Šta proveriti posle izmena**.
+Aplikacija se kompajlira i radi na uređaju (potvrdio razvojni tim). Poslednja serija izmena — kartica Magacin (samo čitanje), otkazivanje naloga, spojene konstatacije/izvršeni radovi i štampa u dva primerka — još **nije isprobana u Android Studiju**. Prva stvar posle `git pull`: **Build → Make Project**, pa prođite kroz tok iz odeljka **Šta proveriti posle izmena**.
 
 ## Funkcionalnosti
 
@@ -12,18 +12,17 @@ Prijava (ServiceHub nalog: serviser, menadžer ili administrator), pa lista **ra
 
 **Uloge u aplikaciji:** serviser vidi samo naloge dodeljene njemu i ne pravi nove; **administrator** i **menadžer** imaju ista prava (menadžer nema karticu *Tim*, a ona ni nije u aplikaciji).
 
-- **Lista i detalj naloga:** status, istorija statusa, klijent (poziv i navigacija), uređaj, dijagnoza, **izvršeni radovi**, zakazani datum, delovi, sati rada, cena i način plaćanja.
+- **Lista i detalj naloga:** status, istorija statusa, klijent (poziv i navigacija), uređaj, dijagnoza, konstatacije / izvršeni radovi, razlog otkazivanja, zakazani datum, cena i način plaćanja.
 - **Statusi:** *Dodeljen* → radni statusi *U toku*, *Čeka delove*, *Preuzet u servis*, *Testira se*, *Vozi se*, *Potreban elektroničar* (između njih se prelazi slobodno) → *Završen*. Otkazivanje samo administrator.
-- **Zatvaranje naloga:** server ne dozvoljava *Završen* bez bar jedne fotografije „Pre“, bar jedne „Posle“ i opisa izvršenih radova; aplikacija prikazuje poruku servera.
-- **Izvršeni radovi:** na nezavršenom nalogu koji smeš da menjaš (administrator bilo koji, serviser samo svoj) to je polje u formi na ekranu naloga i čuva se istim dugmetom „Sačuvaj izmene“. Na završenom nalogu samo administrator, dugmetom „Izmeni“ (`PATCH /api/nalozi/{id}/work-done`); na otkazanom niko.
+- **Zatvaranje naloga:** server ne dozvoljava *Završen* bez bar jedne fotografije „Pre“, bar jedne „Posle“ i bar jedne konstatacije (konstatacije i izvršeni radovi su jedno polje); aplikacija prikazuje poruku servera.
 - **Konstatacije** (ranije beleške): lista i dodavanje (svi koji vide nalog); brisanje samo administrator. Na **završenom** nalogu su samo za čitanje (ni dodavanje ni brisanje, ni administratoru).
 - **Fotografije:** snimanje ili izbor iz galerije, kategorije *Pre*, *Posle*, *Nalepnica / SN*, *Radni nalog*, *Ostalo*. Pre slanja se slika smanjuje (najviše 1920 px, JPEG; `util/ImagePrep.kt`). Brisanje: administrator ili ko je poslao.
 - **Novi nalog** (samo administrator i menadžer): klijent (pretraga postojećeg ili novi), uređaj, opis kvara, delovi i rad, **cena** (jedan ručno upisan iznos), plaćanje, planirani dolazak (**samo datum**, bez sata), izbor servisera i početnog statusa. Vreme rada se bira dugmadima Sati i Minuti (korak 15 minuta), telefon samo pretvara u „1.50“ za server. Jedan `Idempotency-Key` po formi, pa ponovni pokušaj posle prekida ne pravi dupli nalog.
 - **Štampa:** na ekranu naloga „Štampaj nalog“ (radni nalog, A4) i, kad je nalog u statusu „Preuzet u servis“, „Štampaj revers“. Otvara se sistemski dijalog za štampu (bilo koji instaliran štampač ili „Sačuvaj kao PDF“); sadržaj je isti kao na vebu, iznos je string sa servera. Podaci firme u zaglavlju su u `PrintCompany` (`NalogPrint.kt`) i treba ih uskladiti sa `frontend/src/print/company.ts`. Štampa je moguća tek kad su izmene sačuvane.
-- **Izmena naloga** nema poseban ekran: kad serviser (ili administrator) otvori nezavršen nalog, na istom ekranu su odmah izmenjivi uređaj, dijagnoza, konstatacije, delovi (dodavanje iz magacina, količina, uklanjanje), plaćanje i cena, zatim fotografije, **izvršeni radovi** sa „Sačuvaj izmene“ i, odmah ispod, dugmad za statuse (Vozi se, Potreban elektroničar…). Dugme statusa prvo sačuva nesačuvane izmene (pa „Završi nalog“ vidi upravo upisane izvršene radove); nazad sa nesačuvanim izmenama traži potvrdu. Ako je neko drugi u međuvremenu izmenio nalog, server vraća 409. Podaci o klijentu se menjaju samo na vebu.
+- **Izmena naloga** nema poseban ekran: kad serviser (ili administrator) otvori nezavršen nalog, na istom ekranu su odmah izmenjivi uređaj, dijagnoza, konstatacije / izvršeni radovi, plaćanje i cena, zatim fotografije, „Sačuvaj izmene“ i, odmah ispod, dugmad za statuse (Vozi se, Potreban elektroničar…). Dugme statusa prvo sačuva nesačuvane izmene (pa „Završi nalog“ vidi upravo upisane konstatacije); nazad sa nesačuvanim izmenama traži potvrdu. Ako je neko drugi u međuvremenu izmenio nalog, server vraća 409. Podaci o klijentu se menjaju samo na vebu.
 - **Brisanje naloga:** samo administrator, ne za završene (server vraća delove na stanje).
-- **Zaduživanje** (dugme „Zaduživanje“ na listi): lista materijala koji serviser nosi (šifra nije obavezna, naziv, količina; najviše 50 stavki). Serviser vodi svoju listu, administrator i menadžer biraju servisera. Stavku možete izabrati iz **magacina** (pretraga po nazivu ili šifri; kopiraju se šifra i naziv, zaliha se **ne menja**) ili upisati slobodno. Ikonica štampača otvara **sistemski dijalog za štampu** (A4 ili „Sačuvaj kao PDF“).
-- **Magacin** (dugme „Magacin“ na listi; svi prijavljeni): svi delovi sa cenom i stanjem, pretraga po nazivu ili šifri, opcija „Prikaži i ukinute delove“. **Korekcija stanja** (dodaj/skini, količina, napomena) i **istorija** su dostupni i serviserima; server beleži ko je šta promenio, a stanje ne može ispod 0. Novi delovi i izmena cena ostaju samo na vebu (administrator/menadžer).
+- **Magacin** (dugme „Magacin“ na listi): samo za čitanje. Serviser vidi svoja zaduženja i razduženja (broj, datum i vreme, stavke); pišu ih samo administrator i menadžer na vebu. Nema stanja, cena ni izbora delova na telefonu.
+- **Otkazivanje:** serviser može da otkaže svoj nalog dugmetom „Otkaži nalog“ uz obavezan razlog; otkazan nalog je konačan, razlog se prikazuje na nalogu i štampi.
 - **Novac** se prikazuje isključivo kao string koji pošalje server — telefon nikada ne računa.
 
 **Još nema:** štampa naloga i reversa sa telefona i Bluetooth A4 štampa (radi se poslednja, kad se zna model štampača).
@@ -75,8 +74,7 @@ Na pravom uređaju, sa serverom na grani koja ima novi endpoint `work-done` (`se
 1. Nalog (nezavršen) → izmena polja i „Sačuvaj izmene“; status bez čuvanja prvo čuva izmene; nazad sa izmenama traži potvrdu.
 2. Završetak naloga bez fotografije „Posle“ mora biti odbijen porukom servera.
 3. Novi nalog (administrator): izbor datuma bez sata; na detalju piše samo datum.
-4. Zaduživanje → štampač → dijalog za štampu / PDF.
-   Magacin (kao serviser) → korekcija +/- i istorija; server na grani `claude/magacin-technicians` ili `master` posle spajanja.
+4. Magacin (kao serviser) → samo lista svojih zaduženja/razduženja, bez dugmadi za izmenu.
 5. Cena i novi statusi na ekranu naloga.
 
 ## Izdanje za produkciju

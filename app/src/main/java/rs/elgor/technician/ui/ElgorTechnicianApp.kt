@@ -41,12 +41,9 @@ import rs.elgor.technician.ui.screens.JobDetailScreen
 import rs.elgor.technician.ui.screens.JobListScreen
 import rs.elgor.technician.ui.screens.LoginScreen
 import rs.elgor.technician.ui.screens.NalogCreateScreen
-import rs.elgor.technician.data.CarriedViewModel
-import rs.elgor.technician.data.CarriedViewModelFactory
-import rs.elgor.technician.data.MagacinViewModel
-import rs.elgor.technician.data.MagacinViewModelFactory
+import rs.elgor.technician.data.StockDocViewModel
+import rs.elgor.technician.data.StockDocViewModelFactory
 import rs.elgor.technician.model.isAdminLevel
-import rs.elgor.technician.ui.screens.CarriedScreen
 import rs.elgor.technician.ui.screens.MagacinScreen
 import rs.elgor.technician.ui.screens.NalogDetailScreen
 import rs.elgor.technician.ui.screens.NalogListScreen
@@ -152,29 +149,16 @@ private fun MainNavHost(
                         authViewModel = authViewModel,
                         onNalogClick = { id -> navController.navigate(Destination.NalogDetail.createRoute(id)) },
                         onCreateNalog = { navController.navigate(Destination.NalogCreate.route) },
-                        onOpenCarried = { navController.navigate(Destination.Carried.route) },
                         onOpenMagacin = { navController.navigate(Destination.Magacin.route) }
                     )
                 }
                 composable(Destination.Magacin.route) {
-                    val magacinViewModel = viewModel<MagacinViewModel>(
-                        factory = MagacinViewModelFactory(nalogRepository),
-                        key = "magacin"
-                    )
-                    MagacinScreen(viewModel = magacinViewModel, onBack = { navController.popBackStack() })
-                }
-                composable(Destination.Carried.route) {
                     val me = (authState as? AuthState.LoggedIn)?.user
-                    val carriedViewModel = viewModel<CarriedViewModel>(
-                        factory = CarriedViewModelFactory(nalogRepository, isAdminLevel(me?.role), (me?.id ?: -1).toLong()),
-                        key = "carried_${me?.id}"
+                    val stockDocViewModel = viewModel<StockDocViewModel>(
+                        factory = StockDocViewModelFactory(nalogRepository),
+                        key = "magacin_${me?.id}"
                     )
-                    CarriedScreen(
-                        viewModel = carriedViewModel,
-                        isAdmin = isAdminLevel(me?.role),
-                        myName = me?.name ?: "",
-                        onBack = { navController.popBackStack() }
-                    )
+                    MagacinScreen(viewModel = stockDocViewModel, onBack = { navController.popBackStack() })
                 }
                 composable(Destination.NalogCreate.route) {
                     val me = (authState as? AuthState.LoggedIn)?.user

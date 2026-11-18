@@ -10,14 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import rs.elgor.technician.model.ApplianceInput
+import rs.elgor.technician.ui.components.DEFAULT_APPLIANCE_TYPES
 import rs.elgor.technician.model.Nalog
 import rs.elgor.technician.model.NalogPreview
-import rs.elgor.technician.model.PartLineInput
-import rs.elgor.technician.model.PartView
 import rs.elgor.technician.model.PreviewRequest
 import rs.elgor.technician.model.UpdateNalogRequest
-
-data class EditLine(val partId: Long, val sku: String?, val name: String, val quantity: Int)
 
 data class EditForm(
     val applianceType: String = "OTHER",
@@ -25,11 +22,9 @@ data class EditForm(
     val model: String = "",
     val serial: String = "",
     val diagnosis: String = "",
-    val workDone: String = "",
     val hours: String = "",
     val price: String = "",
-    val payment: String = "CASH",
-    val lines: List<EditLine> = emptyList()
+    val payment: String = "CASH"
 )
 
 // Edits an existing nalog. The customer is not editable on the phone (the web app does that).
@@ -59,11 +54,8 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
-    private val _partResults = MutableStateFlow<List<PartView>>(emptyList())
-    val partResults: StateFlow<List<PartView>> = _partResults.asStateFlow()
-
-    private val _partsLoading = MutableStateFlow(false)
-    val partsLoading: StateFlow<Boolean> = _partsLoading.asStateFlow()
+    private val _applianceTypes = MutableStateFlow(DEFAULT_APPLIANCE_TYPES)
+    val applianceTypes: StateFlow<List<String>> = _applianceTypes.asStateFlow()
 
     // The form as last loaded or saved, so the screen knows whether there is anything unsaved.
     private var baseline = EditForm()
@@ -72,9 +64,11 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
     val dirty: StateFlow<Boolean> = _dirty.asStateFlow()
 
     private var previewJob: Job? = null
-    private var searchJob: Job? = null
 
-    init { load() }
+    init {
+        load()
+        viewModelScope.launch { repository.applianceTypes().onSuccess { if (it.isNotEmpty()) _applianceTypes.value = it } }
+    }
 
     fun load() {
         viewModelScope.launch {
@@ -88,11 +82,9 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                         model = n.appliance.model ?: "",
                         serial = n.appliance.serialNumber ?: "",
                         diagnosis = n.diagnosis ?: "",
-                        workDone = n.workDone ?: "",
                         hours = n.laborHours,
                         price = n.total,
-                        payment = n.paymentType ?: "CASH",
-                        lines = n.partLines.map { EditLine(it.partId, it.sku, it.name, it.quantity) }
+                        payment = n.paymentType ?: "CASH"
                     )
                     baseline = loaded
                     _form.value = loaded
@@ -123,42 +115,16 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
     private fun priceOk(raw: String): Boolean = raw.isBlank() || priceRegex.matches(raw.trim())
     private fun normalizedPrice(raw: String): String? = raw.trim().replace(',', '.').ifBlank { null }
 
-    private fun lineInputs(f: EditForm) = f.lines.map { PartLineInput(it.partId, it.quantity) }
-
     private fun schedulePreview() {
         previewJob?.cancel()
         previewJob = viewModelScope.launch {
             delay(400) // wait for typing to settle
             val f = _form.value
             val hours = normalizedHours(f.hours) ?: return@launch
-            repository.preview(PreviewRequest(lineInputs(f), hours, id)).fold(
+            repository.preview(PreviewRequest(laborHours = hours, nalogId = id, price = if (priceOk(f.price)) normalizedPrice(f.price) else null)).fold(
                 onSuccess = { _preview.value = it },
                 onFailure = { _error.value = it.message }
             )
-        }
-    }
-
-    fun searchParts(query: String) {
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            delay(300)
-            _partsLoading.value = true
-            repository.searchParts(query.trim().ifBlank { null }).fold(
-                onSuccess = { _partResults.value = it.items },
-                onFailure = { _error.value = it.message }
-            )
-            _partsLoading.value = false
-        }
-    }
-
-    fun addPart(p: PartView) {
-        edit { f ->
-            val existing = f.lines.firstOrNull { it.partId == p.id }
-            if (existing != null) {
-                f.copy(lines = f.lines.map { if (it.partId == p.id) it.copy(quantity = minOf(it.quantity + 1, 999)) else it })
-            } else {
-                f.copy(lines = f.lines + EditLine(p.id, p.sku, p.name, 1))
-            }
         }
     }
 
@@ -197,8 +163,6 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                     serialNumber = f.serial.trim().ifBlank { null }
                 ),
                 diagnosis = f.diagnosis.trim(),
-                workDone = f.workDone.trim().ifBlank { null },
-                partLines = lineInputs(f),
                 laborHours = hours!!,
                 price = normalizedPrice(f.price),
                 paymentType = f.payment,

@@ -96,29 +96,17 @@ class NalogDetailViewModel(private val repository: NalogRepository, private val 
         }
     }
 
-    fun changeStatus(status: String) {
+    // reason is only for CANCELLED (mandatory there, the server refuses a blank one).
+    fun changeStatus(status: String, reason: String? = null) {
         if (_isBusy.value) return          // no double taps -> no double requests
         viewModelScope.launch {
             _isBusy.value = true
             _error.value = null
-            repository.changeStatus(id, status).fold(
+            repository.changeStatus(id, status, reason).fold(
                 onSuccess = { _nalog.value = it },
                 onFailure = { _error.value = it.message }
             )
             repository.history(id).onSuccess { _history.value = it }
-            _isBusy.value = false
-        }
-    }
-
-    fun saveWorkDone(text: String, onDone: () -> Unit) {
-        if (_isBusy.value) return
-        viewModelScope.launch {
-            _isBusy.value = true
-            _error.value = null
-            repository.setWorkDone(id, text.trim().ifBlank { null }).fold(
-                onSuccess = { _nalog.value = it; onDone() },
-                onFailure = { _error.value = it.message }
-            )
             _isBusy.value = false
         }
     }

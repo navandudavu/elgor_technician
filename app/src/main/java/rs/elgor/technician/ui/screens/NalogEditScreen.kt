@@ -47,10 +47,6 @@ import rs.elgor.technician.ui.components.applianceLabel
 import rs.elgor.technician.ui.components.formatMoney
 import rs.elgor.technician.ui.components.paymentLabel
 
-private val APPLIANCE_TYPES = listOf(
-    "AIR_CONDITIONER", "REFRIGERATOR", "FREEZER", "WASHING_MACHINE", "DRYER", "DISHWASHER",
-    "OVEN", "STOVE", "WATER_HEATER", "BOILER", "OTHER"
-)
 private val PAYMENT_TYPES = listOf("CASH", "CARD", "INVOICE")
 
 // The editable part of an unfinished nalog, shown straight on the nalog screen (there is no separate edit screen).
@@ -59,15 +55,14 @@ private val PAYMENT_TYPES = listOf("CASH", "CARD", "INVOICE")
 @Composable
 fun NalogEditFields(viewModel: NalogEditViewModel, afterDiagnosis: @Composable () -> Unit) {
     val form by viewModel.form.collectAsState()
-    val preview by viewModel.preview.collectAsState()
-    var pickingPart by rememberSaveable { mutableStateOf(false) }
+    val applianceTypes by viewModel.applianceTypes.collectAsState()
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         EditCard("UREĐAJ") {
             PickerField(
                 label = "Vrsta",
                 value = applianceLabel(form.applianceType).ifBlank { form.applianceType },
-                options = APPLIANCE_TYPES.map { it to applianceLabel(it) },
+                options = applianceTypes.map { it to applianceLabel(it) },
                 onPick = { code -> viewModel.edit { it.copy(applianceType = code) } }
             )
             OutlinedTextField(
@@ -104,60 +99,6 @@ fun NalogEditFields(viewModel: NalogEditViewModel, afterDiagnosis: @Composable (
 
         afterDiagnosis()
 
-        EditCard("DELOVI") {
-            if (form.lines.isEmpty()) {
-                Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            }
-            form.lines.forEach { line ->
-                Column(Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                    Text(line.name, fontWeight = FontWeight.SemiBold)
-                    line.sku?.takeIf { it.isNotBlank() }?.let {
-                        Text(it, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            OutlinedButton(
-                                onClick = {
-                                    viewModel.edit { f ->
-                                        f.copy(lines = f.lines.map {
-                                            if (it.partId == line.partId) it.copy(quantity = maxOf(1, it.quantity - 1)) else it
-                                        })
-                                    }
-                                },
-                                enabled = line.quantity > 1
-                            ) { Text("−") }
-                            Text("${line.quantity}", fontWeight = FontWeight.Bold)
-                            OutlinedButton(
-                                onClick = {
-                                    viewModel.edit { f ->
-                                        f.copy(lines = f.lines.map {
-                                            if (it.partId == line.partId) it.copy(quantity = minOf(999, it.quantity + 1)) else it
-                                        })
-                                    }
-                                },
-                                enabled = line.quantity < 999
-                            ) { Text("+") }
-                        }
-                        preview?.partLines?.firstOrNull { it.partId == line.partId }?.let {
-                            Text(formatMoney(it.lineTotal))
-                        }
-                        TextButton(onClick = {
-                            viewModel.edit { f -> f.copy(lines = f.lines.filter { it.partId != line.partId }) }
-                        }) { Text("Ukloni") }
-                    }
-                }
-            }
-            OutlinedButton(
-                onClick = { pickingPart = true },
-                enabled = form.lines.size < 50,
-                modifier = Modifier.fillMaxWidth()
-            ) { Text("+ Dodaj deo") }
-        }
-
         EditCard("PLAĆANJE") {
             PickerField(
                 label = "Plaćanje",
@@ -178,29 +119,15 @@ fun NalogEditFields(viewModel: NalogEditViewModel, afterDiagnosis: @Composable (
             )
         }
     }
-
-    if (pickingPart) {
-        PartPickerDialog(viewModel = viewModel, onClose = { pickingPart = false })
-    }
 }
 
-// Izvršeni radovi and the save button sit at the bottom, right above the status buttons.
+// The save button sits at the bottom, right above the status buttons.
 @Composable
-fun NalogWorkDoneAndSave(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
-    val form by viewModel.form.collectAsState()
+fun NalogSaveButton(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
     val isSaving by viewModel.isSaving.collectAsState()
     val error by viewModel.error.collectAsState()
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        EditCard("IZVRŠENI RADOVI") {
-            OutlinedTextField(
-                value = form.workDone,
-                onValueChange = { v -> if (v.length <= 4000) viewModel.edit { it.copy(workDone = v) } },
-                minLines = 3,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-
         error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
 
         Button(
@@ -209,56 +136,6 @@ fun NalogWorkDoneAndSave(viewModel: NalogEditViewModel, onSaved: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         ) { Text(if (isSaving) "Čuvanje…" else "Sačuvaj izmene") }
     }
-}
-
-@Composable
-private fun PartPickerDialog(viewModel: NalogEditViewModel, onClose: () -> Unit) {
-    val results by viewModel.partResults.collectAsState()
-    val loading by viewModel.partsLoading.collectAsState()
-    var query by rememberSaveable { mutableStateOf("") }
-
-    LaunchedEffect(query) { viewModel.searchParts(query) }
-
-    AlertDialog(
-        onDismissRequest = onClose,
-        title = { Text("Dodaj deo") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedTextField(
-                    value = query,
-                    onValueChange = { query = it },
-                    label = { Text("Naziv ili šifra") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                if (loading) Text("Pretraga…", style = MaterialTheme.typography.bodySmall)
-                Column(Modifier.heightIn(max = 320.dp).verticalScroll(rememberScrollState())) {
-                    if (!loading && results.isEmpty()) {
-                        Text("Nema rezultata.", style = MaterialTheme.typography.bodySmall)
-                    }
-                    results.forEach { p ->
-                        val inStock = p.stockQty > 0
-                        TextButton(
-                            onClick = { viewModel.addPart(p); onClose() },
-                            enabled = inStock,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Column(Modifier.fillMaxWidth()) {
-                                Text(p.name)
-                                Text(
-                                    (p.sku?.let { "$it · " } ?: "") + formatMoney(p.unitPrice) +
-                                        " · " + (if (inStock) "na stanju: ${p.stockQty}" else "nema na stanju"),
-                                    style = MaterialTheme.typography.labelSmall
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {},
-        dismissButton = { TextButton(onClick = onClose) { Text("Zatvori") } }
-    )
 }
 
 @Composable

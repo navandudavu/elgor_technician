@@ -10,12 +10,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import rs.elgor.technician.model.ApplianceInput
+import rs.elgor.technician.ui.components.DEFAULT_APPLIANCE_TYPES
 import rs.elgor.technician.model.CreateNalogRequest
 import rs.elgor.technician.model.NalogCustomer
 import rs.elgor.technician.model.NalogPreview
 import rs.elgor.technician.model.NewCustomerInput
-import rs.elgor.technician.model.PartLineInput
-import rs.elgor.technician.model.PartView
 import rs.elgor.technician.model.PreviewRequest
 import rs.elgor.technician.model.TechnicianView
 import java.util.UUID
@@ -39,12 +38,11 @@ data class CreateForm(
     val initialStatus: String = "DRAFT",        // admin only
     val scheduledAtIso: String? = null,         // UTC instant sent to the server
     val scheduledLabel: String? = null,         // the same moment, as the user picked it
-    val assignedToId: Long? = null,             // admin only
-    val lines: List<EditLine> = emptyList()
+    val assignedToId: Long? = null              // admin only
 )
 
 // Creates a nalog, like the web form. Money is never computed here: the totals shown come from the server's
-// preview endpoint and the request carries only hours and part quantities. One Idempotency-Key per form, so a
+// preview endpoint and the request carries only hours and the hand-typed price. One Idempotency-Key per form, so a
 // retry after a timeout can never create two nalozi. A technician's nalog is always DISPATCHED (Dodeljen) and assigned to them
 // (the server enforces it, the phone just does not offer the choice).
 class NalogCreateViewModel(
@@ -80,17 +78,14 @@ class NalogCreateViewModel(
     private val _techniciansError = MutableStateFlow<String?>(null)
     val techniciansError: StateFlow<String?> = _techniciansError.asStateFlow()
 
-    private val _partResults = MutableStateFlow<List<PartView>>(emptyList())
-    val partResults: StateFlow<List<PartView>> = _partResults.asStateFlow()
-
-    private val _partsLoading = MutableStateFlow(false)
-    val partsLoading: StateFlow<Boolean> = _partsLoading.asStateFlow()
+    private val _applianceTypes = MutableStateFlow(DEFAULT_APPLIANCE_TYPES)
+    val applianceTypes: StateFlow<List<String>> = _applianceTypes.asStateFlow()
 
     private var previewJob: Job? = null
     private var customerJob: Job? = null
-    private var partsJob: Job? = null
 
     init {
+        viewModelScope.launch { repository.applianceTypes().onSuccess { if (it.isNotEmpty()) _applianceTypes.value = it } }
         if (isAdmin) loadTechnicians()
         schedulePreview()
     }
@@ -118,8 +113,6 @@ class NalogCreateViewModel(
 
     fun hoursValid(raw: String): Boolean = normalizedHours(raw) != null
 
-    private fun lineInputs(f: CreateForm) = f.lines.map { PartLineInput(it.partId, it.quantity) }
-
     private fun schedulePreview() {
         previewJob?.cancel()
         previewJob = viewModelScope.launch {
@@ -130,7 +123,7 @@ class NalogCreateViewModel(
                 _preview.value = null
                 return@launch
             }
-            repository.preview(PreviewRequest(lineInputs(f), hours, null)).fold(
+            repository.preview(PreviewRequest(laborHours = hours, nalogId = null, price = f.price.trim().replace(',', '.').takeIf { priceRegex.matches(it) })).fold(
                 onSuccess = { _preview.value = it; _previewError.value = null },
                 onFailure = { _preview.value = null; _previewError.value = it.message }
             )
@@ -160,30 +153,6 @@ class NalogCreateViewModel(
 
     fun clearCustomer() {
         _form.value = _form.value.copy(customer = null)
-    }
-
-    fun searchParts(query: String) {
-        partsJob?.cancel()
-        partsJob = viewModelScope.launch {
-            delay(300)
-            _partsLoading.value = true
-            repository.searchParts(query.trim().ifBlank { null }).fold(
-                onSuccess = { _partResults.value = it.items },
-                onFailure = { _error.value = it.message }
-            )
-            _partsLoading.value = false
-        }
-    }
-
-    fun addPart(p: PartView) {
-        edit { f ->
-            val existing = f.lines.firstOrNull { it.partId == p.id }
-            if (existing != null) {
-                f.copy(lines = f.lines.map { if (it.partId == p.id) it.copy(quantity = minOf(it.quantity + 1, 999)) else it })
-            } else {
-                f.copy(lines = f.lines + EditLine(p.id, p.sku, p.name, 1))
-            }
-        }
     }
 
     fun submit(onCreated: (Long) -> Unit) {
@@ -221,7 +190,6 @@ class NalogCreateViewModel(
                 serialNumber = f.serial.trim().ifBlank { null }
             ),
             diagnosis = f.diagnosis.trim(),
-            partLines = lineInputs(f),
             laborHours = validHours,
             price = f.price.trim().replace(',', '.').ifBlank { null },   // typed by hand, a String all the way
             paymentType = f.payment,

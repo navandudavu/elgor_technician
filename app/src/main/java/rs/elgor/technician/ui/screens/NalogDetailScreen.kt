@@ -117,6 +117,8 @@ fun NalogDetailScreen(
     val photos by viewModel.photos.collectAsState()
     val notes by viewModel.notes.collectAsState()
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
+    var confirmCancel by rememberSaveable { mutableStateOf(false) }
+    var cancelReason by rememberSaveable { mutableStateOf("") }
     val isLoading by viewModel.isLoading.collectAsState()
     val isBusy by viewModel.isBusy.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -209,19 +211,19 @@ fun NalogDetailScreen(
                     )
 
                     if (editable) {
-                        NalogWorkDoneAndSave(viewModel = editViewModel, onSaved = { viewModel.load() })
-                    } else {
-                        NalogWorkDoneReadOnly(
-                            n = n,
-                            canEdit = n.status != "CANCELLED" && (n.status != "COMPLETED" || isAdmin),
-                            isBusy = isBusy,
-                            onSave = { text, done -> viewModel.saveWorkDone(text, done) }
-                        )
+                        NalogSaveButton(viewModel = editViewModel, onSaved = { viewModel.load() })
+                    }
+
+                    // Shown ONLY on a cancelled nalog: the reason the technician (or admin) typed in.
+                    if (n.status == "CANCELLED") {
+                        SectionCard("RAZLOG OTKAZIVANJA") {
+                            Text(if (n.cancelReason.isNullOrBlank()) "—" else n.cancelReason)
+                        }
                     }
 
                     error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
 
-                    // Unsaved edits are saved first, so e.g. "Završi nalog" sees the izvršeni radovi just typed.
+                    // Unsaved edits are saved first, so e.g. "Završi nalog" sees the changes just typed.
                     fun changeStatusKeepingEdits(to: String) {
                         if (editable) editViewModel.saveIfDirty { viewModel.changeStatus(to) } else viewModel.changeStatus(to)
                     }
@@ -242,13 +244,13 @@ fun NalogDetailScreen(
 
                     // Printing uses the saved nalog, so unsaved edits must be saved first.
                     OutlinedButton(
-                        onClick = { printNalog(context, n, revers = false) },
+                        onClick = { printNalog(context, n, notes, revers = false) },
                         enabled = !editDirty,
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("Štampaj nalog") }
                     if (n.status == "RECEIVED") {
                         OutlinedButton(
-                            onClick = { printNalog(context, n, revers = true) },
+                            onClick = { printNalog(context, n, notes, revers = true) },
                             enabled = !editDirty,
                             modifier = Modifier.fillMaxWidth()
                         ) { Text("Štampaj revers") }
@@ -265,6 +267,15 @@ fun NalogDetailScreen(
                             enabled = !isBusy,
                             modifier = Modifier.fillMaxWidth()
                         ) { Text(startLabel("COMPLETED")) }
+                    }
+
+                    // Final: a cancelled nalog is never reopened. The reason is mandatory.
+                    if (editable) {
+                        OutlinedButton(
+                            onClick = { cancelReason = ""; confirmCancel = true },
+                            enabled = !isBusy,
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text("Otkaži nalog", color = MaterialTheme.colorScheme.error) }
                     }
 
                     if (isAdmin && n.status != "COMPLETED") {
@@ -303,11 +314,37 @@ fun NalogDetailScreen(
         )
     }
 
+    if (confirmCancel) {
+        AlertDialog(
+            onDismissRequest = { if (!isBusy) confirmCancel = false },
+            title = { Text("Otkazati nalog?") },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Otkazan nalog se ne može ponovo otvoriti. Razlog otkazivanja je obavezan.")
+                    OutlinedTextField(
+                        value = cancelReason,
+                        onValueChange = { v -> if (v.length <= 1000) cancelReason = v },
+                        label = { Text("Razlog otkazivanja") },
+                        minLines = 3,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = !isBusy && cancelReason.isNotBlank(),
+                    onClick = { confirmCancel = false; viewModel.changeStatus("CANCELLED", cancelReason.trim()) }
+                ) { Text("Otkaži nalog", color = MaterialTheme.colorScheme.error) }
+            },
+            dismissButton = { TextButton(onClick = { confirmCancel = false }) { Text("Nazad") } }
+        )
+    }
+
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
             title = { Text("Obrisati radni nalog?") },
-            text = { Text("Nalog se trajno briše, a rezervni delovi se vraćaju na stanje. Ovo se ne može poništiti.") },
+            text = { Text("Nalog se trajno briše. Ovo se ne može poništiti.") },
             confirmButton = {
                 TextButton(onClick = { confirmDelete = false; viewModel.deleteNalog(onBack) }) { Text("Obriši") }
             },
@@ -328,7 +365,7 @@ private fun NalogNotesSection(
     var text by rememberSaveable { mutableStateOf("") }
     var deleting by remember { mutableStateOf<NoteView?>(null) }
 
-    SectionCard("KONSTATACIJA") {
+    SectionCard("KONSTATACIJA/IZVRŠENI RADOVI") {
         if (notes.isEmpty()) {
             Text("Još nema konstatacija.", style = MaterialTheme.typography.bodySmall)
         }
@@ -411,7 +448,7 @@ private fun NalogBody(
     n.scheduledAt?.let { SectionCard("ZAKAZANO") { Text(formatInstantDate(it)) } }
 
     // Read-only view (finished, cancelled, someone else's nalog), in the same order as the editable one:
-    // uređaj, dijagnoza, konstatacije, delovi; photos and izvršeni radovi follow below.
+    // uređaj, dijagnoza, konstatacija/izvršeni radovi, cena; photos follow below.
     if (showDetails) {
         SectionCard("UREĐAJ") {
             Text(listOfNotNull(applianceLabel(n.appliance.type).ifBlank { null }, n.appliance.brand, n.appliance.model).joinToString(" · "))
@@ -424,51 +461,10 @@ private fun NalogBody(
 
         afterDiagnosis()
 
-        SectionCard("DELOVI I RAD") {
-            if (n.partLines.isEmpty()) Text("Nema ugrađenih delova.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-            n.partLines.forEach { l -> Text("${l.name} × ${l.quantity}") }
+        SectionCard("CENA") {
             MoneyRow("CENA", formatMoney(n.total), bold = true)
             Text("Plaćanje: ${paymentLabel(n.paymentType)}", style = MaterialTheme.typography.bodySmall)
         }
-    }
-}
-
-@Composable
-private fun NalogWorkDoneReadOnly(n: Nalog, canEdit: Boolean, isBusy: Boolean, onSave: (String, () -> Unit) -> Unit) {
-    var editingWorkDone by rememberSaveable { mutableStateOf(false) }
-    var workDoneDraft by rememberSaveable { mutableStateOf("") }
-
-    SectionCard("IZVRŠENI RADOVI") {
-        Text(if (n.workDone.isNullOrBlank()) "—" else n.workDone)
-        if (canEdit) {
-            OutlinedButton(
-                onClick = { workDoneDraft = n.workDone ?: ""; editingWorkDone = true },
-                modifier = Modifier.padding(top = 4.dp)
-            ) { Text("Izmeni") }
-        }
-    }
-    if (editingWorkDone) {
-        AlertDialog(
-            onDismissRequest = { if (!isBusy) editingWorkDone = false },
-            title = { Text("Izvršeni radovi") },
-            text = {
-                OutlinedTextField(
-                    value = workDoneDraft,
-                    onValueChange = { v -> if (v.length <= 4000) workDoneDraft = v },
-                    minLines = 4,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            },
-            confirmButton = {
-                TextButton(
-                    enabled = !isBusy,
-                    onClick = { onSave(workDoneDraft) { editingWorkDone = false } }
-                ) { Text("Sačuvaj") }
-            },
-            dismissButton = {
-                TextButton(enabled = !isBusy, onClick = { editingWorkDone = false }) { Text("Otkaži") }
-            }
-        )
     }
 }
 
