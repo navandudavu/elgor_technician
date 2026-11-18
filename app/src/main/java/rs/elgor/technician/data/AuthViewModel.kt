@@ -4,11 +4,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import rs.elgor.technician.data.remote.ElgorNetwork
 import rs.elgor.technician.model.User
 
 sealed class AuthState {
@@ -51,7 +54,8 @@ class AuthViewModel(
     fun checkExistingSession() {
         viewModelScope.launch {
             val token = sessionManager.getToken()
-            if (token.isNullOrBlank()) {
+            // An expired login token with a refresh token still saved is a live session: the network layer renews it.
+            if (token.isNullOrBlank() && sessionManager.getRefreshToken().isNullOrBlank()) {
                 _authState.value = AuthState.LoggedOut
                 return@launch
             }
@@ -60,11 +64,17 @@ class AuthViewModel(
                     _authState.value = AuthState.LoggedIn(user)
                     syncPushToken()
                 },
-                onFailure = {
-                    // Saved token is no longer valid - clear it so the user
-                    // isn't stuck bouncing between a broken "logged in" state.
-                    sessionManager.clearSession()
-                    _authState.value = AuthState.LoggedOut
+                onFailure = { error ->
+                    if (error.cause is java.io.IOException) {
+                        // No connection: the session may be perfectly good, so keep it and let the person retry.
+                        _loginError.value = error.message
+                        _authState.value = AuthState.LoggedOut
+                    } else {
+                        // Saved token is no longer valid - clear it so the user
+                        // isn't stuck bouncing between a broken "logged in" state.
+                        sessionManager.clearSession()
+                        _authState.value = AuthState.LoggedOut
+                    }
                 }
             )
         }
@@ -76,7 +86,7 @@ class AuthViewModel(
             _loginError.value = null
             repository.login(email, password).fold(
                 onSuccess = { response ->
-                    sessionManager.saveToken(response.token)
+                    sessionManager.saveTokens(response.token, response.refreshToken)
                     _authState.value = AuthState.LoggedIn(response.user)
                     syncPushToken()
                 },
@@ -90,8 +100,13 @@ class AuthViewModel(
 
     fun logout() {
         viewModelScope.launch {
+            val refresh = sessionManager.getRefreshToken()
+            val url = sessionManager.getServerUrl()
             sessionManager.clearSession()
             _authState.value = AuthState.LoggedOut
+            if (refresh != null && url != null) {
+                withContext(Dispatchers.IO) { ElgorNetwork.revokeRefreshToken(url, refresh) }
+            }
         }
     }
 
