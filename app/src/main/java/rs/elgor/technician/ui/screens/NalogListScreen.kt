@@ -23,6 +23,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.delay
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -61,6 +68,12 @@ fun NalogListScreen(
     val userName = (authState as? AuthState.LoggedIn)?.user?.name ?: ""
     val isAdmin = isAdminLevel((authState as? AuthState.LoggedIn)?.user?.role)
 
+    val archive by viewModel.archive.collectAsState()
+    var search by rememberSaveable { mutableStateOf("") }
+    LaunchedEffect(search) {
+        if (search.isNotEmpty()) delay(300)      // typing debounce
+        viewModel.setQuery(search)
+    }
     LaunchedEffect(Unit) { viewModel.load() }
 
     Scaffold(
@@ -99,7 +112,22 @@ fun NalogListScreen(
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Column(modifier = Modifier.padding(padding).fillMaxSize()) {
+            OutlinedTextField(
+                value = search,
+                onValueChange = { search = it },
+                label = { Text("Pretraga: broj, klijent, adresa, uređaj") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, top = 8.dp)
+            )
+            // Technician only: the nalozi that were taken away from him stay readable here (read only, with the full history).
+            if (!isAdmin) {
+                Row(Modifier.padding(horizontal = 16.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(selected = !archive, onClick = { viewModel.setArchive(false) }, label = { Text("Moji nalozi") })
+                    FilterChip(selected = archive, onClick = { viewModel.setArchive(true) }, label = { Text("Arhiva") })
+                }
+            }
+        Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
             when {
                 isLoading && items.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
@@ -108,7 +136,7 @@ fun NalogListScreen(
                     Text(error ?: "", color = MaterialTheme.colorScheme.error)
                 }
                 items.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Trenutno nemate radnih naloga.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (archive) "Arhiva je prazna." else if (search.isNotBlank()) "Nema rezultata." else "Trenutno nemate radnih naloga.", color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
                 else -> LazyColumn(
                     modifier = Modifier.fillMaxSize(),
@@ -130,6 +158,7 @@ fun NalogListScreen(
                     }
                 }
             }
+        }
         }
     }
 }

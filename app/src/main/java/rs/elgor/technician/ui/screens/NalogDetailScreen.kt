@@ -17,6 +17,11 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.OutlinedTextField
 import rs.elgor.technician.model.NoteView
+import rs.elgor.technician.model.HeldPart
+import rs.elgor.technician.model.MaterialLine
+import rs.elgor.technician.model.NalogEvent
+import androidx.compose.material3.OutlinedTextField as MaterialField
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -116,6 +121,9 @@ fun NalogDetailScreen(
     val history by viewModel.history.collectAsState()
     val photos by viewModel.photos.collectAsState()
     val notes by viewModel.notes.collectAsState()
+    val material by viewModel.material.collectAsState()
+    val timeline by viewModel.timeline.collectAsState()
+    val held by viewModel.held.collectAsState()
     var confirmDelete by rememberSaveable { mutableStateOf(false) }
     var confirmCancel by rememberSaveable { mutableStateOf(false) }
     var cancelReason by rememberSaveable { mutableStateOf("") }
@@ -169,6 +177,17 @@ fun NalogDetailScreen(
                     // Unfinished nalog the person may change: everything is editable right here.
                     // Otherwise (finished, cancelled, someone else's) it is the read-only view.
                     val editable = n.status in EDITABLE_STATUSES && (isAdmin || n.assignedToId == currentUserId)
+                    // A technician the nalog was taken away from: read only (archive), nothing can be changed.
+                    val archived = !isAdmin && n.assignedToId != currentUserId
+                    if (archived) {
+                        Card(Modifier.fillMaxWidth()) {
+                            Text(
+                                "Ovaj nalog je dodeljen drugom serviseru. Prikaz je samo za čitanje.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.padding(12.dp)
+                            )
+                        }
+                    }
                     NalogBody(
                         n = n,
                         context = context,
@@ -178,7 +197,7 @@ fun NalogDetailScreen(
                                 notes = notes,
                                 isBusy = isBusy,
                                 isAdmin = isAdmin,
-                                locked = n.status == "COMPLETED",
+                                locked = archived || n.status == "COMPLETED",
                                 onAdd = { text, done -> viewModel.addNote(text, done) },
                                 onDelete = { viewModel.deleteNote(it) }
                             )
@@ -191,18 +210,28 @@ fun NalogDetailScreen(
                                 notes = notes,
                                 isBusy = isBusy,
                                 isAdmin = isAdmin,
-                                locked = n.status == "COMPLETED",
+                                locked = archived || n.status == "COMPLETED",
                                 onAdd = { text, done -> viewModel.addNote(text, done) },
                                 onDelete = { viewModel.deleteNote(it) }
                             )
                         })
                     }
 
+                    NalogMaterialSection(
+                        material = material,
+                        held = held,
+                        // The technician of the nalog adds from his own parts; admin-level changes happen on the web.
+                        canAdd = !archived && !isAdmin && n.status !in setOf("COMPLETED", "CANCELLED"),
+                        isBusy = isBusy,
+                        onSearch = { viewModel.searchHeld(it) },
+                        onAdd = { partId, qty, done -> viewModel.addMaterial(partId, qty, done) }
+                    )
+
                     NalogPhotoSection(
                         nalogId = n.id,
                         photos = photos,
                         repository = repository,
-                        canUpload = n.status != "CANCELLED",
+                        canUpload = !archived && n.status != "CANCELLED",
                         isBusy = isBusy,
                         currentUserId = currentUserId,
                         isAdmin = isAdmin,
@@ -228,7 +257,7 @@ fun NalogDetailScreen(
                         if (editable) editViewModel.saveIfDirty { viewModel.changeStatus(to) } else viewModel.changeStatus(to)
                     }
 
-                    val next = nextStatuses(n.status)
+                    val next = if (archived) emptyList() else nextStatuses(n.status)
                     val otherSteps = next.filter { it != "COMPLETED" }
                     if (otherSteps.isNotEmpty()) {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -244,13 +273,13 @@ fun NalogDetailScreen(
 
                     // Printing uses the saved nalog, so unsaved edits must be saved first.
                     OutlinedButton(
-                        onClick = { printNalog(context, n, notes, revers = false) },
+                        onClick = { printNalog(context, n, notes, revers = false, material = material) },
                         enabled = !editDirty,
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("Štampaj nalog") }
                     if (n.status == "RECEIVED") {
                         OutlinedButton(
-                            onClick = { printNalog(context, n, notes, revers = true) },
+                            onClick = { printNalog(context, n, notes, revers = true, material = material) },
                             enabled = !editDirty,
                             modifier = Modifier.fillMaxWidth()
                         ) { Text("Štampaj revers") }
@@ -286,14 +315,13 @@ fun NalogDetailScreen(
                         ) { Text("Obriši nalog", color = MaterialTheme.colorScheme.error) }
                     }
 
-                    if (history.isNotEmpty()) {
+                    if (timeline.isNotEmpty()) {
                         SectionCard("ISTORIJA") {
-                            history.forEach { h ->
+                            timeline.forEach { e ->
                                 Text(
-                                    "${formatInstant(h.changedAt)} · " +
-                                        (h.fromStatus?.let { nalogStatusLabel(it) + " → " } ?: "") +
-                                        nalogStatusLabel(h.toStatus) +
-                                        (h.changedByName?.let { " · $it" } ?: ""),
+                                    "${formatInstant(e.at)} · ${timelineKindLabel(e.kind)}" +
+                                        timelineDetail(e) +
+                                        (e.by?.let { " · $it" } ?: ""),
                                     style = MaterialTheme.typography.bodySmall
                                 )
                             }
@@ -729,6 +757,110 @@ private fun NalogPhotoImage(
             b != null -> Image(b.asImageBitmap(), contentDescription = "Fotografija", contentScale = scale, modifier = Modifier.fillMaxSize())
             failed -> Text("!", color = MaterialTheme.colorScheme.error)
             else -> CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+        }
+    }
+}
+
+
+private fun timelineKindLabel(kind: String) = when (kind) {
+    "CREATED" -> "Kreiran"
+    "STATUS" -> "Status"
+    "ASSIGN" -> "Dodela"
+    "EDIT" -> "Izmena"
+    "NOTE" -> "Konstatacija"
+    "PHOTO" -> "Fotografija"
+    "MATERIAL" -> "Materijal"
+    "SCHEDULE" -> "Zakazivanje"
+    "CANCEL" -> "Otkazivanje"
+    else -> kind
+}
+
+// STATUS details come as "FROM -> TO" codes; everything else is already text.
+private fun timelineDetail(e: NalogEvent): String {
+    val d = e.detail?.takeIf { it.isNotBlank() } ?: return ""
+    return " · " + if (e.kind == "STATUS") d.split(" -> ").joinToString(" → ") { nalogStatusLabel(it) } else d
+}
+
+private val QTY_RE = Regex("^\\d{1,9}([.,]\\d{1,3})?$")
+
+// Materijal: using material is an automatic razduzenje of this technician. Parts are searched among the ones he holds
+// (no quantity is shown); the server refuses more than he holds. He can only add: changes and removal are admin-level.
+@Composable
+private fun NalogMaterialSection(
+    material: List<MaterialLine>,
+    held: List<HeldPart>,
+    canAdd: Boolean,
+    isBusy: Boolean,
+    onSearch: (String) -> Unit,
+    onAdd: (Long, String, () -> Unit) -> Unit
+) {
+    var query by rememberSaveable { mutableStateOf("") }
+    var qty by rememberSaveable { mutableStateOf("1") }
+    var picked by remember { mutableStateOf<HeldPart?>(null) }
+    var localError by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(query, picked) {
+        if (picked == null) { delay(250); onSearch(query) }
+    }
+
+    SectionCard("MATERIJAL") {
+        if (material.isEmpty()) {
+            Text("Još nema utrošenog materijala.", style = MaterialTheme.typography.bodySmall)
+        }
+        material.forEach { m ->
+            Row(Modifier.fillMaxWidth().padding(vertical = 2.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+                Column(Modifier.weight(1f)) {
+                    Text(m.name, style = MaterialTheme.typography.bodyMedium)
+                    m.sku?.takeIf { it.isNotBlank() }?.let { Text(it, style = MaterialTheme.typography.labelSmall) }
+                }
+                Text("${m.quantity.let { q -> if (q.contains('.')) q.trimEnd('0').trimEnd('.') else q }} ${m.unit ?: ""}".trim(), fontWeight = FontWeight.Bold)
+            }
+        }
+        if (canAdd) {
+            MaterialField(
+                value = picked?.let { listOfNotNull(it.sku, it.name).joinToString(" · ") } ?: query,
+                onValueChange = { picked = null; query = it },
+                label = { Text("Pretraga dela (šifra ili naziv)") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            )
+            if (picked == null && query.isNotBlank()) {
+                if (held.isEmpty()) {
+                    Text("Nema takvog dela u vašem zaduženju.", style = MaterialTheme.typography.bodySmall)
+                }
+                held.forEach { p ->
+                    TextButton(onClick = { picked = p; localError = null }, modifier = Modifier.fillMaxWidth()) {
+                        Text(listOfNotNull(p.sku?.takeIf { it.isNotBlank() }, p.name).joinToString(" · ") + (p.unit?.let { " ($it)" } ?: ""))
+                    }
+                }
+            }
+            MaterialField(
+                value = qty,
+                onValueChange = { qty = it },
+                label = { Text("Količina" + (picked?.unit?.let { " ($it)" } ?: "")) },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            )
+            localError?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
+            Button(
+                onClick = {
+                    val p = picked
+                    val q = qty.trim().replace(',', '.')
+                    if (p == null || !QTY_RE.matches(qty.trim()) || q.toDouble() <= 0.0) {
+                        localError = "Izaberite deo i unesite količinu veću od 0."
+                    } else {
+                        localError = null
+                        onAdd(p.partId, q) { picked = null; query = ""; qty = "1" }
+                    }
+                },
+                enabled = !isBusy && picked != null,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            ) { Text("Dodaj materijal") }
+            Text(
+                "Materijal se automatski razdužuje sa vašeg zaduženja. Izmenu ili brisanje može da uradi samo administrator.",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
     }
 }

@@ -29,6 +29,13 @@ Prijava (ServiceHub nalog: serviser, menadžer ili administrator), pa lista **ra
 
 **Zaostatak:** dugme „Stari poslovi“ na listi i ekrani za stare poslove (`JobListScreen`, `JobDetailScreen`, Room baza u `data/local`) ostali su u kodu, ali njihovi endpointi (`/api/jobs`) više ne postoje na Java serveru, pa ne rade. Mogu se ukloniti.
 
+## Magacin, materijal i arhiva
+
+- **Magacin:** samo delovi koje serviser drži (šifra, naziv, jed. mere) uz pretragu. Bez količina, cena i dokumenata.
+- **Materijal u nalogu:** serviser dodaje samo delove iz svog zaduženja (automatsko razduženje); izmena i brisanje samo na vebu (admin/menadžer).
+- **Arhiva:** nalozi koji su mu oduzeti ostaju vidljivi samo za čitanje, sa kompletnom istorijom.
+- **Pretraga naloga:** broj, klijent, adresa, uređaj. Pečat (`app/src/main/assets/elgor-stamp.png`) se štampa na dnu naloga.
+
 ## Obaveštenja (push)
 
 Kada administrator dodeli nalog serviseru, telefon dobija obaveštenje „Novi radni nalog“; dodir otvara taj nalog. Server šalje samo „data“ poruke, pa aplikacija sama prikazuje obaveštenje (i u pozadini). Server svakog punog sata od 08:00 do 19:00 (pon–sub) šalje i podsetnik serviserima koji imaju otvorene naloge: „Izaberite trenutni status svakog naloga“.
