@@ -22,8 +22,10 @@ import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
-import rs.elgor.technician.model.StockDoc
-import rs.elgor.technician.model.StockDocPage
+import rs.elgor.technician.model.HeldPart
+import rs.elgor.technician.model.MaterialLine
+import rs.elgor.technician.model.MaterialRequest
+import rs.elgor.technician.model.NalogEvent
 import rs.elgor.technician.model.NalogPreview
 import rs.elgor.technician.model.PreviewRequest
 import rs.elgor.technician.model.UpdateNalogRequest
@@ -38,6 +40,8 @@ interface NalogApi {
     @GET("api/nalozi")
     suspend fun list(
         @Query("status") status: String? = null,
+        @Query("q") q: String? = null,
+        @Query("archive") archive: Boolean? = null,
         @Query("page") page: Int = 0,
         @Query("size") size: Int = 30
     ): Response<NalogPage>
@@ -77,12 +81,20 @@ interface NalogApi {
     @DELETE("api/nalozi/{id}")
     suspend fun delete(@Path("id") id: Long): Response<Unit>
 
-    // Magacin tab: the caller's own zaduzenja / razduzenja (the server scopes it). Read only.
-    @GET("api/stock-docs")
-    suspend fun stockDocs(@Query("page") page: Int = 0, @Query("size") size: Int = 30): Response<StockDocPage>
+    // Magacin tab: the parts the signed-in technician holds (name, code, unit - no quantity). Search only.
+    @GET("api/stock-docs/held")
+    suspend fun heldParts(@Query("q") q: String? = null): Response<List<HeldPart>>
 
-    @GET("api/stock-docs/{id}")
-    suspend fun stockDoc(@Path("id") id: Long): Response<StockDoc>
+    // Material of a nalog = automatic razduzenje. A technician can only add parts he holds.
+    @GET("api/nalozi/{id}/material")
+    suspend fun material(@Path("id") id: Long): Response<List<MaterialLine>>
+
+    @POST("api/nalozi/{id}/material")
+    suspend fun addMaterial(@Path("id") id: Long, @Body body: MaterialRequest): Response<List<MaterialLine>>
+
+    // Complete history (status, edits, notes, photos, material, assignment...), also for a nalog taken away from the technician.
+    @GET("api/nalozi/{id}/timeline")
+    suspend fun timeline(@Path("id") id: Long): Response<List<NalogEvent>>
 
     @GET("api/nalozi/{id}/notes")
     suspend fun notes(@Path("id") id: Long): Response<List<NoteView>>

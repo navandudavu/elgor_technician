@@ -17,8 +17,11 @@ import rs.elgor.technician.model.NalogHistoryEntry
 import rs.elgor.technician.model.NalogPage
 import rs.elgor.technician.model.NalogPhotoView
 import rs.elgor.technician.model.NalogStatusRequest
-import rs.elgor.technician.model.StockDoc
-import rs.elgor.technician.model.StockDocPage
+import rs.elgor.technician.model.HeldPart
+import rs.elgor.technician.model.MaterialLine
+import rs.elgor.technician.model.MaterialLineRequest
+import rs.elgor.technician.model.MaterialRequest
+import rs.elgor.technician.model.NalogEvent
 import rs.elgor.technician.model.ProblemDetail
 import rs.elgor.technician.model.CreateNoteRequest
 import rs.elgor.technician.model.NoteView
@@ -63,8 +66,8 @@ class NalogRepository(private val api: NalogApi) {
         }
     }
 
-    suspend fun list(status: String? = null, page: Int = 0): Result<NalogPage> =
-        unwrap { api.list(status = status, page = page) }
+    suspend fun list(status: String? = null, q: String? = null, archive: Boolean = false, page: Int = 0): Result<NalogPage> =
+        unwrap { api.list(status = status, q = q?.trim()?.ifBlank { null }, archive = if (archive) true else null, page = page) }
 
     suspend fun get(id: Long): Result<Nalog> = unwrap { api.get(id) }
 
@@ -89,9 +92,14 @@ class NalogRepository(private val api: NalogApi) {
 
     suspend fun deleteNalog(id: Long): Result<Unit> = unwrap { api.delete(id) }
 
-    suspend fun stockDocs(page: Int = 0): Result<StockDocPage> = unwrap { api.stockDocs(page = page) }
+    suspend fun heldParts(q: String? = null): Result<List<HeldPart>> = unwrap { api.heldParts(q?.trim()?.ifBlank { null }) }
 
-    suspend fun stockDoc(id: Long): Result<StockDoc> = unwrap { api.stockDoc(id) }
+    suspend fun material(id: Long): Result<List<MaterialLine>> = unwrap { api.material(id) }
+
+    suspend fun addMaterial(id: Long, partId: Long, quantity: String): Result<List<MaterialLine>> =
+        unwrap { api.addMaterial(id, MaterialRequest(listOf(MaterialLineRequest(partId, quantity)))) }
+
+    suspend fun timeline(id: Long): Result<List<NalogEvent>> = unwrap { api.timeline(id) }
 
     suspend fun notes(id: Long): Result<List<NoteView>> = unwrap { api.notes(id) }
 

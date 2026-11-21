@@ -41,8 +41,8 @@ import rs.elgor.technician.ui.screens.JobDetailScreen
 import rs.elgor.technician.ui.screens.JobListScreen
 import rs.elgor.technician.ui.screens.LoginScreen
 import rs.elgor.technician.ui.screens.NalogCreateScreen
-import rs.elgor.technician.data.StockDocViewModel
-import rs.elgor.technician.data.StockDocViewModelFactory
+import rs.elgor.technician.data.HeldPartsViewModel
+import rs.elgor.technician.data.HeldPartsViewModelFactory
 import rs.elgor.technician.model.isAdminLevel
 import rs.elgor.technician.ui.screens.MagacinScreen
 import rs.elgor.technician.ui.screens.NalogDetailScreen
@@ -154,11 +154,11 @@ private fun MainNavHost(
                 }
                 composable(Destination.Magacin.route) {
                     val me = (authState as? AuthState.LoggedIn)?.user
-                    val stockDocViewModel = viewModel<StockDocViewModel>(
-                        factory = StockDocViewModelFactory(nalogRepository),
+                    val heldPartsViewModel = viewModel<HeldPartsViewModel>(
+                        factory = HeldPartsViewModelFactory(nalogRepository),
                         key = "magacin_${me?.id}"
                     )
-                    MagacinScreen(viewModel = stockDocViewModel, onBack = { navController.popBackStack() })
+                    MagacinScreen(viewModel = heldPartsViewModel, onBack = { navController.popBackStack() })
                 }
                 composable(Destination.NalogCreate.route) {
                     val me = (authState as? AuthState.LoggedIn)?.user

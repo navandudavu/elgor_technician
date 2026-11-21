@@ -7,6 +7,8 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import rs.elgor.technician.model.Nalog
 import rs.elgor.technician.model.NoteView
+import rs.elgor.technician.model.MaterialLine
+import android.util.Base64
 
 // Company details printed in the header. Keep in sync with frontend/src/print/company.ts on the web.
 // TODO(uncle): replace with ELGOR's real legal details before printing anything for customers.
@@ -32,12 +34,18 @@ private fun h(s: String?) = (s ?: "").replace("&", "&amp;").replace("<", "&lt;")
  * Not a fiscal receipt. A nalog is always printed twice, one page each (technician's copy, customer's copy);
  * the revers stays a single page.
  */
-fun printNalog(context: Context, n: Nalog, notes: List<NoteView>, revers: Boolean) {
+fun printNalog(context: Context, n: Nalog, notes: List<NoteView>, revers: Boolean, material: List<MaterialLine> = emptyList()) {
     val c = n.customer
     val a = n.appliance
     val title = if (revers) "REVERS" else "RADNI NALOG"
     val dates = "Datum: ${formatInstantDate(n.createdAt)}" +
         (n.completedAt?.let { " · Završeno: ${formatInstantDate(it)}" } ?: "")
+
+    // Company stamp (app/src/main/assets/elgor-stamp.png) at the bottom of every page; the page still prints without it.
+    val stamp = try {
+        val bytes = context.assets.open("elgor-stamp.png").use { it.readBytes() }
+        "<div class=\"stamp\"><img src=\"data:image/png;base64,${Base64.encodeToString(bytes, Base64.NO_WRAP)}\"></div>"
+    } catch (e: Exception) { "" }
 
     val body = if (revers) {
         """<div class="box" style="margin-bottom:14px;text-align:center;font-size:18px;font-weight:bold;background:#FFF100">APARAT PREUZET U SERVIS</div>
@@ -46,9 +54,14 @@ fun printNalog(context: Context, n: Nalog, notes: List<NoteView>, revers: Boolea
         val konst = if (notes.isEmpty()) "" else
             """<div class="box" style="margin-bottom:14px"><h2>Konstatacija / izvršeni radovi</h2>""" +
                 notes.joinToString("") { "<div style=\"white-space:pre-wrap\">${h(it.body)}</div>" } + "</div>"
+        val mat = if (material.isEmpty()) "" else
+            """<div class="box" style="margin-bottom:14px"><h2>Materijal</h2>""" +
+                material.joinToString("") { m ->
+                    "<div>${h(m.name)}${if (m.sku.isNullOrBlank()) "" else " (" + h(m.sku) + ")"} — ${h(m.quantity)} ${h(m.unit ?: "")}</div>"
+                } + "</div>"
         val cancelled = if (n.status != "CANCELLED") "" else
             """<div class="box" style="margin-bottom:14px"><h2>Razlog otkazivanja</h2><div style="white-space:pre-wrap">${h(n.cancelReason ?: "—")}</div></div>"""
-        """$konst$cancelled
+        """$konst$mat$cancelled
            <table class="totals"><tbody><tr class="grand"><td>CENA</td><td class="num">${h(formatMoney(n.total))} RSD</td></tr></tbody></table>
            <div>Način plaćanja: <b>${h(paymentLabel(n.paymentType))}</b></div>
            <div class="ack">Potpisom korisnik potvrđuje da su navedeni radovi izvršeni, da je uređaj preuzet i da je upoznat sa iznosom.</div>
@@ -85,6 +98,7 @@ fun printNalog(context: Context, n: Nalog, notes: List<NoteView>, revers: Boolea
         </div>
         <div class="box" style="margin-bottom:14px"><h2>Opis kvara / dijagnoza</h2><div style="white-space:pre-wrap">${h(n.diagnosis)}</div></div>
         $body
+        $stamp
         <footer>
           ${if (PrintCompany.WARRANTY.isBlank()) "" else "<div style=\"margin-bottom:4px\">${h(PrintCompany.WARRANTY)}</div>"}
           ${if (revers) "Ovaj dokument je revers o preuzimanju uređaja u servis." else "Ovaj dokument je radni nalog i nije fiskalni račun."}
@@ -119,6 +133,8 @@ fun printNalog(context: Context, n: Nalog, notes: List<NoteView>, revers: Boolea
         .nalog-print .ack { margin-top: 10mm; font-size: 11px; }
         .nalog-print .sign { display: grid; grid-template-columns: 1fr 1fr; gap: 30mm; margin-top: 22mm; text-align: center; }
         .nalog-print .sign div { border-top: 1px solid #000; padding-top: 4px; }
+        .nalog-print .stamp { text-align: right; margin-top: 6mm; break-inside: avoid; page-break-inside: avoid; }
+        .nalog-print .stamp img { height: 28mm; width: auto; }
         .nalog-print footer { margin-top: 12mm; font-size: 10px; color: #5C6B75; }
         </style></head><body>
         $sheets
