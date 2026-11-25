@@ -231,7 +231,7 @@ fun NalogDetailScreen(
                         nalogId = n.id,
                         photos = photos,
                         repository = repository,
-                        canUpload = !archived && n.status != "CANCELLED",
+                        canUpload = !archived && n.status !in setOf("COMPLETED", "CANCELLED"),
                         isBusy = isBusy,
                         currentUserId = currentUserId,
                         isAdmin = isAdmin,
@@ -698,7 +698,7 @@ private fun NalogPhotoSection(
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         OutlinedButton(onClick = { viewing = null }) { Text("Zatvori") }
-                        if (isAdmin || p.uploadedById == currentUserId) {
+                        if (canUpload && (isAdmin || p.uploadedById == currentUserId)) {
                             OutlinedButton(onClick = { deleting = p; viewing = null }, enabled = !isBusy) { Text("Obriši") }
                         }
                     }
