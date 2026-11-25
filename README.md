@@ -31,7 +31,8 @@ Prijava (ServiceHub nalog: serviser, menadžer ili administrator), pa lista **ra
 
 ## Magacin, materijal i arhiva
 
-- **Magacin:** samo delovi koje serviser drži (šifra, naziv, jed. mere) uz pretragu. Bez količina, cena i dokumenata.
+- **Magacin:** samo delovi koje serviser drži (šifra, naziv, jed. mere) i količina koju drži, uz pretragu. Bez cena i dokumenata.
+- **Cena:** serviser je unosi u izmeni naloga (obavezna za završetak, može biti 0). Logo firme je u zaglavlju štampe.
 - **Materijal u nalogu:** serviser dodaje samo delove iz svog zaduženja (automatsko razduženje); izmena i brisanje samo na vebu (admin/menadžer).
 - **Arhiva:** nalozi koji su mu oduzeti ostaju vidljivi samo za čitanje, sa kompletnom istorijom.
 - **Pretraga naloga:** broj, klijent, adresa, uređaj. Pečat (`app/src/main/assets/elgor-stamp.png`) se štampa na dnu naloga.

@@ -83,7 +83,7 @@ class NalogEditViewModel(private val repository: NalogRepository, private val id
                         serial = n.appliance.serialNumber ?: "",
                         diagnosis = n.diagnosis ?: "",
                         hours = n.laborHours,
-                        price = n.total,
+                        price = if (n.priceEntered) n.total else "",
                         payment = n.paymentType ?: "CASH"
                     )
                     baseline = loaded

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import rs.elgor.technician.model.HeldPart
 
-// "Magacin" tab: the parts the technician holds (code, name, unit). No quantity, no documents, nothing to change.
+// "Magacin" tab: the parts the technician holds (code, name, unit, quantity). No prices, no documents, nothing to change.
 class HeldPartsViewModel(private val repository: NalogRepository) : ViewModel() {
 
     private val _items = MutableStateFlow<List<HeldPart>>(emptyList())

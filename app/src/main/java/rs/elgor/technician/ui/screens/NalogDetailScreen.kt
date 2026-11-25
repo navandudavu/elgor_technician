@@ -830,7 +830,7 @@ private fun NalogMaterialSection(
                 }
                 held.forEach { p ->
                     TextButton(onClick = { picked = p; localError = null }, modifier = Modifier.fillMaxWidth()) {
-                        Text(listOfNotNull(p.sku?.takeIf { it.isNotBlank() }, p.name).joinToString(" · ") + (p.unit?.let { " ($it)" } ?: ""))
+                        Text(listOfNotNull(p.sku?.takeIf { it.isNotBlank() }, p.name).joinToString(" · ") + (p.unit?.let { " ($it)" } ?: "") + (p.quantity?.let { q -> " — na stanju " + (if (q.contains('.')) q.trimEnd('0').trimEnd('.') else q) } ?: ""))
                     }
                 }
             }

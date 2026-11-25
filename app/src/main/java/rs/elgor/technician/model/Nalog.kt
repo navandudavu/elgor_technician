@@ -85,7 +85,9 @@ data class Nalog(
     val completedAt: String?,
     val createdAt: String?,
     val updatedAt: String?,
-    val version: Long? = null
+    val version: Long? = null,
+    // False until a price was typed (0 counts); the server refuses to complete the nalog before that.
+    val priceEntered: Boolean = true
 )
 
 @JsonClass(generateAdapter = true)

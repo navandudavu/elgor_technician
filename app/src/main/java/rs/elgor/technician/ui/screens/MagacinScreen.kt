@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import rs.elgor.technician.data.HeldPartsViewModel
 
-// Magacin tab: only the parts the technician holds (šifra, naziv, jed. mere). No quantities, no documents.
+// Magacin tab: only the parts the technician holds (šifra, naziv, jed. mere) and how much of each he holds. No prices, no documents.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MagacinScreen(viewModel: HeldPartsViewModel, onBack: () -> Unit) {
@@ -94,6 +94,10 @@ fun MagacinScreen(viewModel: HeldPartsViewModel, onBack: () -> Unit) {
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
+                                p.quantity?.let { q ->
+                                    val shown = if (q.contains('.')) q.trimEnd('0').trimEnd('.') else q
+                                    Text("Na stanju: $shown ${p.unit ?: ""}".trim(), fontWeight = FontWeight.Bold)
+                                }
                             }
                         }
                     }

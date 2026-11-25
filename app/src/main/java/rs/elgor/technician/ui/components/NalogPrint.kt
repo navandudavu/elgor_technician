@@ -42,6 +42,12 @@ fun printNalog(context: Context, n: Nalog, notes: List<NoteView>, revers: Boolea
         (n.completedAt?.let { " · Završeno: ${formatInstantDate(it)}" } ?: "")
 
     // Company stamp (app/src/main/assets/elgor-stamp.png) at the bottom of every page; the page still prints without it.
+    // Company logo (app/src/main/assets/elgor-logo.png) in the header of every page; prints without it if it cannot be read.
+    val logo = try {
+        val bytes = context.assets.open("elgor-logo.png").use { it.readBytes() }
+        "<img src=\"data:image/png;base64,${Base64.encodeToString(bytes, Base64.NO_WRAP)}\" style=\"width:17mm;height:17mm\">"
+    } catch (e: Exception) { "" }
+
     val stamp = try {
         val bytes = context.assets.open("elgor-stamp.png").use { it.readBytes() }
         "<div class=\"stamp\"><img src=\"data:image/png;base64,${Base64.encodeToString(bytes, Base64.NO_WRAP)}\"></div>"
@@ -72,10 +78,13 @@ fun printNalog(context: Context, n: Nalog, notes: List<NoteView>, revers: Boolea
         <div class="nalog-print${if (pageBreak) " sheet-break" else ""}">
         ${if (copy == null) "" else "<div class=\"copy\">${h(copy)}</div>"}
         <div class="bar">
-          <div>
+          <div style="display:flex;align-items:center;gap:10px">
+            $logo
+            <div>
             <h1>${h(PrintCompany.NAME)}</h1>
             <div class="muted">${h(PrintCompany.ADDRESS)} · ${h(PrintCompany.PHONE)} · ${h(PrintCompany.EMAIL)}</div>
             <div class="muted">PIB ${h(PrintCompany.PIB)} · MB ${h(PrintCompany.MB)} · Tekući račun ${h(PrintCompany.BANK_ACCOUNT)}</div>
+            </div>
           </div>
           <div style="text-align:right">
             <div style="font-size:16px;font-weight:bold">$title</div>
